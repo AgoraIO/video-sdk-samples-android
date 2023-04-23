@@ -13,3 +13,5 @@ To run the sample projects in this folder, take the following steps:
 1. Connect an Android device to your development device.
 
 1. In Android Studio, click **Run app**. A moment later, you see the project installed on your device.
+
+1. Refer to the README file in the project folder for further information.
