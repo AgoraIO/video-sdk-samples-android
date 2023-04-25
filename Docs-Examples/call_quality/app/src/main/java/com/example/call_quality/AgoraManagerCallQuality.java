@@ -24,6 +24,8 @@ public class AgoraManagerCallQuality extends AgoraManager {
     }
 
     public void startProbeTest() {
+        if (agoraEngine == null) setupVideoSDKEngine();
+
         // Configure a LastmileProbeConfig instance.
         LastmileProbeConfig config = new LastmileProbeConfig();
         // Probe the uplink network quality.
@@ -182,6 +184,7 @@ public class AgoraManagerCallQuality extends AgoraManager {
     }
 
     public void startEchoTest(String token) {
+        if (agoraEngine == null) setupVideoSDKEngine();
         EchoTestConfiguration echoConfig = new EchoTestConfiguration();
         echoConfig.enableAudio = true;
         echoConfig.enableVideo = true;
@@ -198,6 +201,7 @@ public class AgoraManagerCallQuality extends AgoraManager {
         agoraEngine.stopEchoTest();
         setupLocalVideo();
         localSurfaceView.setVisibility(View.GONE);
+        destroyVideoSDKEngine();
     }
 
     public void switchStreamQuality() {

@@ -122,8 +122,7 @@ public class AgoraManager {
         this.channelName = channelName;
 
         // Create an instance of RTCEngine
-        setupVideoSDKEngine();
-
+        if (agoraEngine == null) setupVideoSDKEngine();
         // Check that necessary permissions have been granted
         if (checkSelfPermission()) {
             ChannelMediaOptions options = new ChannelMediaOptions();
@@ -137,7 +136,7 @@ public class AgoraManager {
             agoraEngine.startPreview();
             // Join the channel with a temp token.
             // You need to specify the user ID yourself, and ensure that it is unique in the channel.
-            // If the user ID is not assigned or set to 0, the SDK assigns a random number and returns it in the onJoinChannelSuccess callback.
+            // If a user ID is not assigned or set to 0, the SDK assigns a random number and returns it in the onJoinChannelSuccess callback.
             agoraEngine.joinChannel(token, channelName, localUid, options);
         } else {
             sendMessage("Permissions were not granted");

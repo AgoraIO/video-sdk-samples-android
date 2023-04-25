@@ -1,7 +1,6 @@
 package com.example.call_quality;
 
 import androidx.appcompat.app.AppCompatActivity;
-import com.example.agora_helper.AgoraManager;
 
 import android.graphics.Color;
 import android.os.Bundle;
@@ -88,12 +87,6 @@ public class MainActivity extends AppCompatActivity {
             echoTestButton.setText("Start Echo Test");
             isEchoTestRunning = false;
         }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        agoraManager.destroy();
     }
 
     private void showMessage(String message) {
