@@ -57,8 +57,6 @@ public class AgoraManager {
         if (!checkSelfPermission()) {
             ActivityCompat.requestPermissions(activity, REQUESTED_PERMISSIONS, PERMISSION_REQ_ID);
         }
-
-        setupVideoSDKEngine();
     }
 
     public void setListener(AgoraManagerListener mListener) {
@@ -123,6 +121,9 @@ public class AgoraManager {
     public int joinChannel(String channelName, String token) {
         this.channelName = channelName;
 
+        // Create an instance of RTCEngine
+        setupVideoSDKEngine();
+
         // Check that necessary permissions have been granted
         if (checkSelfPermission()) {
             ChannelMediaOptions options = new ChannelMediaOptions();
@@ -159,12 +160,11 @@ public class AgoraManager {
                 if (localSurfaceView != null) localSurfaceView.setVisibility(View.GONE);
             });
             joined = false;
+            destroyVideoSDKEngine();
         }
     }
 
-    public void destroy() {
-        agoraEngine.stopPreview();
-        agoraEngine.leaveChannel();
+    protected void destroyVideoSDKEngine() {
         RtcEngine.destroy();
         agoraEngine = null;
     }

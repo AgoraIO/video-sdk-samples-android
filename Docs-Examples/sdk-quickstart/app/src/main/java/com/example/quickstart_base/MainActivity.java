@@ -1,6 +1,6 @@
 package com.example.quickstart_base;
 
-import com.example.agora_demo.AgoraManager;
+import com.example.agora_helper.AgoraManager;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
@@ -12,7 +12,7 @@ public class MainActivity extends AppCompatActivity {
     private AgoraManager agoraManager;
     private final String appId = "9d2498880e934632b38b0a68fa2f1622"; //""<Your app Id>";
     private String channelName = "demo"; // "<your channel name>";
-    private String token = "007eJxTYNAQPnfxjYnN/EVcTN81k6s+/XtbZ7V2cm93c//h7INhZ84pMFimGJlYWlhYGKRaGpuYGRslGVskGSSaWaQlGqUZmhkZ8Zx3SGkIZGTQnOjHzMgAgSA+C0NKam4+AwMAii8fhg=="; //""<your access token>";
+    private String token = "007eJxTYNjp6aF0+dyMMJu1d23tuo/qBRXUHEus3BEkYlt/ar65OIMCg2WKkYmlhYWFQaqlsYmZsVGSsUWSQaKZRVqiUZqhmZHRqkb3lIZARgbJ1U2MjAwQCOKzMKSk5uYzMAAAuHUc5A=="; //""<your access token>";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,8 +37,8 @@ public class MainActivity extends AppCompatActivity {
         Button btnJoinLeave = findViewById(R.id.btnJoinLeave);
 
         if (!agoraManager.isJoined()) {
-            agoraManager.joinChannel(channelName, token);
-            btnJoinLeave.setText("Leave");
+            int result = agoraManager.joinChannel(channelName, token);
+            if (result == 0) btnJoinLeave.setText("Leave");
         } else {
             agoraManager.leaveChannel();
             btnJoinLeave.setText("Join");
@@ -48,6 +48,5 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        agoraManager.destroy();
     }
 }
