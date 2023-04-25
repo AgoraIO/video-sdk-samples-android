@@ -20,17 +20,23 @@ import io.agora.rtc2.ChannelMediaOptions;
 
 public class AgoraManager {
 
-    protected final Context mContext;
-    protected AgoraManagerListener mListener;
-    protected RtcEngine agoraEngine;
-
-    protected final String appId;
-    protected String channelName;
-    protected int localUid = 0, remoteUid = 0;
-    protected boolean joined = false;
-    protected FrameLayout localFrameLayout, remoteFrameLayout;
+    // The reference to the Android activity you use for video calling
     protected final Activity activity;
-
+    protected final Context mContext;
+    // The RTCEngine instance
+    protected RtcEngine agoraEngine;
+    // The event handler for agoraEngine events
+    protected AgoraManagerListener mListener;
+    // Your App ID from Agora console
+    protected final String appId;
+    // The name of the channel to join
+    protected String channelName;
+    // UIDs of the local and remote users
+    protected int localUid = 0, remoteUid = 0;
+    // Status of the video call
+    protected boolean joined = false;
+    // Reference to FrameLayouts in your UI for rendering local and remote videos
+    protected FrameLayout localFrameLayout, remoteFrameLayout;
     //SurfaceView to render local video in a Container.
     protected SurfaceView localSurfaceView;
     //SurfaceView to render Remote video in a Container.
@@ -65,9 +71,11 @@ public class AgoraManager {
     }
 
     protected void setupLocalVideo() {
-        // Create a SurfaceView object and add it as a child to the FrameLayout.
+        // Run code on the UI thread as the code modifies the UI
         activity.runOnUiThread(() -> {
+            // Create a SurfaceView object
             localSurfaceView = new SurfaceView(mContext);
+            // Add it as a child to a FrameLayout.
             localFrameLayout.addView(localSurfaceView);
             localSurfaceView.setVisibility(View.VISIBLE);
             // Call setupLocalVideo with a VideoCanvas having uid set to 0.
@@ -76,15 +84,18 @@ public class AgoraManager {
     }
 
     protected void setupRemoteVideo () {
-        // Set up remote video
+        // Run code on the UI thread as the code modifies the UI
         activity.runOnUiThread(() -> {
+            // Create a new SurfaceView
             remoteSurfaceView = new SurfaceView(mContext);
             remoteSurfaceView.setZOrderMediaOverlay(true);
+            // Add the SurfaceView to a FrameLayout in the UI
             remoteFrameLayout.addView(remoteSurfaceView);
+            // Create and set up a VideoCanvas
             VideoCanvas videoCanvas = new VideoCanvas(remoteSurfaceView, VideoCanvas.RENDER_MODE_FIT,
                     Constants.VIDEO_MIRROR_MODE_ENABLED, remoteUid);
             agoraEngine.setupRemoteVideo(videoCanvas);
-            // Display RemoteSurfaceView.
+            // Set the visibility
             remoteSurfaceView.setVisibility(View.VISIBLE);
         });
     }
@@ -112,6 +123,7 @@ public class AgoraManager {
     public int joinChannel(String channelName, String token) {
         this.channelName = channelName;
 
+        // Check that necessary permissions have been granted
         if (checkSelfPermission()) {
             ChannelMediaOptions options = new ChannelMediaOptions();
             // For a Video call, set the channel profile as COMMUNICATION.
@@ -124,9 +136,11 @@ public class AgoraManager {
             agoraEngine.startPreview();
             // Join the channel with a temp token.
             // You need to specify the user ID yourself, and ensure that it is unique in the channel.
+            // If the user ID is not assigned or set to 0, the SDK assigns a random number and returns it in the onJoinChannelSuccess callback.
             agoraEngine.joinChannel(token, channelName, localUid, options);
         } else {
-            sendMessage("Permissions was not granted");
+            sendMessage("Permissions were not granted");
+            return -1;
         }
         return 0;
     }
@@ -159,19 +173,22 @@ public class AgoraManager {
 
         return new IRtcEngineEventHandler() {
             @Override
-            // Listen for the remote host joining the channel to get the uid of the host.
+            // Listen for a remote user joining the channel.
             public void onUserJoined(int uid, int elapsed) {
                 sendMessage("Remote user joined " + uid);
+                // Save the uid of the remote user.
                 remoteUid = uid;
 
-                // Set the remote video view
+                // Set the remote video view for the new user.
                 setupRemoteVideo();
             }
 
             @Override
             public void onJoinChannelSuccess(String channel, int uid, int elapsed) {
+                // Set joined status to true.
                 joined = true;
                 sendMessage("Joined Channel " + channel);
+                // Save the uid of the local user.
                 localUid = uid;
             }
 
@@ -182,8 +199,6 @@ public class AgoraManager {
             }
         };
     }
-
-
 
     protected boolean checkSelfPermission() {
         return ContextCompat.checkSelfPermission(mContext, REQUESTED_PERMISSIONS[0]) == PackageManager.PERMISSION_GRANTED &&
