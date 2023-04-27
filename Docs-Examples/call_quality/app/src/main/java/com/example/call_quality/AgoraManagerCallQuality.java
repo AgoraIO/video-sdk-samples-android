@@ -15,9 +15,10 @@ import io.agora.rtc2.video.VideoEncoderConfiguration;
 
 public class AgoraManagerCallQuality extends AgoraManager {
     // Counters to control the frequency of messages
-    private int counter1 = 0;
-    private int counter2 = 0;
-    private boolean highQuality = true; // Quality of the remote video stream being played
+    private int counter1 = 0; 
+    private int counter2 = 0; 
+    // Quality of the remote video stream being played
+    private boolean highQuality = true; 
 
     public AgoraManagerCallQuality(Context context, String appId) {
         super(context, appId);
@@ -49,7 +50,6 @@ public class AgoraManagerCallQuality extends AgoraManager {
             config.mEventHandler = getIRtcEngineEventHandler();
             // Configure the log file
             RtcEngineConfig.LogConfig logConfig = new RtcEngineConfig.LogConfig();
-            //logConfig.filePath = "/storage/emulated/0/Android/data/com.example.call_quality/files/agorasdk1.log.";
             logConfig.fileSizeInKB = 256; // Range 128-1024 Kb
             logConfig.level = Constants.LogLevel.getValue(Constants.LogLevel.LOG_LEVEL_WARN);
             config.mLogConfig = logConfig;
