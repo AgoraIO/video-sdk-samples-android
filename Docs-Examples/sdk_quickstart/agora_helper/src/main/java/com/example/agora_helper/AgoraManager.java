@@ -99,10 +99,13 @@ public class AgoraManager {
 
     protected boolean setupAgoraEngine() {
         try {
+            // Set the engine configuration
             RtcEngineConfig config = new RtcEngineConfig();
             config.mContext = mContext;
             config.mAppId = appId;
+            // Assign an event handler to receive engine callbacks
             config.mEventHandler = getIRtcEngineEventHandler();
+            // Create an RtcEngine instance
             agoraEngine = RtcEngine.create(config);
             // By default, the video module is disabled, call enableVideo to enable it.
             agoraEngine.enableVideo();
@@ -120,7 +123,7 @@ public class AgoraManager {
     public int joinChannel(String channelName, String token) {
         this.channelName = channelName;
 
-        // Create an instance of RTCEngine
+        // Create an RTCEngine instance
         if (agoraEngine == null) setupAgoraEngine();
         // Check that necessary permissions have been granted
         if (checkSelfPermission()) {
@@ -165,6 +168,7 @@ public class AgoraManager {
     }
 
     protected void destroyAgoraEngine() {
+        // Release the RtcEngine instance to free up resources
         RtcEngine.destroy();
         agoraEngine = null;
     }

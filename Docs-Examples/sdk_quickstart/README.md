@@ -1,31 +1,29 @@
 # SDK quickstart
 
-Video Calling enables one-to-one or small-group video chat connections with smooth, jitter-free streaming video. Agora’s Video SDK makes it easy to embed real-time video chat into web, mobile and native apps.
+Video Calling enables one-to-one or small-group video chat connections with smooth, jitter-free streaming video. Agora’s Video SDK makes it easy to embed real-time video chat into web, mobile, and native apps.
 
 Thanks to Agora’s intelligent and global Software Defined Real-time Network ([Agora SD-RTN™](https://docs.agora.io/en/video-calling/overview/core-concepts#agora-sd-rtn)), you can rely on the highest available video and audio quality.
 
-This page shows the minimum code you need to integrate high-quality, low-latency Video Calling features into your app using Video SDK.
+This page provides a sample project with best-practice code that illustrates the integration of high-quality, low-latency Video Calling features into an app using Video SDK.
 
 ## Understand the tech
 
-This section explains how you can integrate Video Calling features into your app. The following figure shows the workflow you need to integrate this feature into your app.
+This section explains how Video Calling works in an app. Best practice is to implement the following steps:
 
-![Video Calling Web UIKit](./images/video-call.png)
+- *Set a token*: A token is a computer-generated string that authenticates a user when an app joins a channel. For testing purposes in this guide, you generate a temporary token from Agora Console. In a production environment, you need to create an authentication server and retrieve the token from it. See [Implement the authentication workflow](https://docs.agora.io/en/video-calling/develop/authentication-workflow) and [Token generators](https://docs.agora.io/en//video-calling/develop/integrate-token-generation) for details.
 
-To start a session, implement the following steps in your app:
-
-- *Retrieve a token*: A token is a computer-generated string that authenticates a user when your app joins a channel. In this guide you retrieve your token from Agora Console. To see how to create an authentication server for development purposes, see [Implement the authentication workflow](https://docs.agora.io/en/video-calling/develop/authentication-workflow). To develop your own token generator and integrate it into your production IAM system, read [Token generators](https://docs.agora.io/en//video-calling/develop/integrate-token-generation).
-
-- *Join a channel*: Call methods to create and join a channel; apps that pass the same channel name join the same channel.
+- *Join a channel*: Call methods to create an Agora Engine instance and join a channel. A token is generated for a single channel. The apps that pass tokens generated using the same app ID and channel name join the same channel.
 
 - *Send and receive video and audio in the channel*: All users send and receive video and audio streams from all users in the channel.
 
 
+![Video Calling Web UIKit](./images/video-call.png)
+
 ## Prerequisites
 
-In order to run the SDK quickstart sample project, you must have
+In order to get and run the SDK quickstart project sample, you must have:
 
-* Installed [Git](https://git-scm.com/downloads)
+* Installed [Git](https://git-scm.com/downloads).
 - [Android Studio](https://developer.android.com/studio) 4.1 or higher.
 - Android SDK API Level 24 or higher.
 - A mobile device that runs Android 4.1 or higher.
@@ -37,37 +35,31 @@ In order to run the SDK quickstart sample project, you must have
 
 ## Project setup
 
-To run the SDK quickstart sample project, take the following steps:
+To get the sample project, take the following steps:
 
-1. Clone the [Video SDK samples Git repository](https://github.com/AgoraIO/video-sdk-samples-android) to your development machine by executing the following command in a terminal window:
+1. Clone the [Video SDK samples Git repository](https://github.com/AgoraIO/video-sdk-samples-android) to your development machine:
 
     ```bash
     git clone https://github.com/AgoraIO/video-sdk-samples-android.git
     ```
 
-1. Launch Android Studio. To open the sample project, select **Open...** from the **File** menu and navigate to the `sdk_quickstart` folder under `video-sdk-samples-android/Docs-Examples/`. Wait for Android Studio to load the project and the Gradle sync process to finish downloading the dependencies.
+1. Launch Android Studio. To open the sample project, select **Open...** from the **File** menu and navigate to the `sdk_quickstart` folder under `video-sdk-samples-android/Docs-Examples/`. Android Studio loads the project and Gradle sync finishes downloading the dependencies.
 
-1. Connect an Android device to your development device.
+1. Connect a physical or virtual Android device to your development environment.
 
-1. In Android Studio, click **Run app**. A moment later, you see the app installed and running on your device.
+## Implementing a client for Video Calling
 
-## Implement a client for Video Calling
-
-When a user opens the app, you initialize Agora Engine. When the user taps a button, the app joins or leaves a channel. When another user joins the same channel, their video and audio is rendered in the app. This simple workflow demonstrates the core Agora features without the UX bells and whistles.
+When a user attempts to join the channel, you initialize Agora Engine and connect to it.
 
 
-The following figure shows the API call sequence of implementing  Video Calling.
+The following workflow demonstrates these core features:
 
 ![image](./images/video-call-logic-android.svg)
 
 
-This section features essential code snippets from the call quality sample project, to demonstrate how you can implement the basic Video Calling API call sequence in your own project. 
-
-Open the file `agora_helper/java/com/example/agora_helper/AgoraManager.java`. This file defines the `AgoraManager` class that encapsulates the `RTCEngine` instance and its core functionality. Inspect the following key code snippets in this file:
+This section highlights essential code from the sample project to demonstrate how you can implement the basic Video Calling API call sequence in your own project. The code highlighted on this page is stored in `agora_helper/java/com/example/agora_helper/AgoraManager.java`. This file defines the `AgoraManager` class that encapsulates the `RTCEngine` instance and its core functionality. The code performs the following functions:
 
 1. **Import Video SDK classes and interfaces**
-
-    The following lines `import` the necessary Video SDK classes and interfaces into the project:
 
     ``` java
     import io.agora.rtc2.RtcEngine;
@@ -78,9 +70,7 @@ Open the file `agora_helper/java/com/example/agora_helper/AgoraManager.java`. Th
     import io.agora.rtc2.ChannelMediaOptions;
     ```
 
-2.  **Variables to create and join a channel**
-
-    The `AgoraManager` class declares the following variables to manage Video Calling:
+2.  **Declare variables to create an Agora Engine instance and join a channel**
 
     ``` java
     // The reference to the Android activity you use for video calling
@@ -106,17 +96,20 @@ Open the file `agora_helper/java/com/example/agora_helper/AgoraManager.java`. Th
     protected SurfaceView remoteSurfaceView;
     ```
 
-3.  **Setup  Agora Engine**
+3.  **Set up  Agora Engine**
 
-    To implement Video Calling, you use Video SDK to create an  Agora Engine instance. The following code in the `AgoraManager` class, uses the application context, and the app ID to create an instance named `agoraEngine` and sets up an event handler for it.
+    The following code in the `AgoraManager` class uses the application context and the app ID to create an instance named `agoraEngine` and sets up an event handler for it.
 
     ``` java
-    protected boolean setupVideoSDKEngine() {
+    protected boolean setupAgoraEngine() {
         try {
+            // Set the engine configuration
             RtcEngineConfig config = new RtcEngineConfig();
             config.mContext = mContext;
             config.mAppId = appId;
+            // Assign an event handler to receive engine callbacks
             config.mEventHandler = getIRtcEngineEventHandler();
+            // Create an RtcEngine instance 
             agoraEngine = RtcEngine.create(config);
             // By default, the video module is disabled, call enableVideo to enable it.
             agoraEngine.enableVideo();
@@ -129,8 +122,6 @@ Open the file `agora_helper/java/com/example/agora_helper/AgoraManager.java`. Th
     ```
 
 4.  **Handle and respond to  Agora Engine events**
-
-    The following method in the `AgoraManager` class, sets up and returns the Agora Engine event handler:
 
     ``` java
     protected IRtcEngineEventHandler getIRtcEngineEventHandler() {
@@ -167,8 +158,6 @@ Open the file `agora_helper/java/com/example/agora_helper/AgoraManager.java`. Th
 
 5.  **Render video from a remote user in the channel**
 
-    When a remote user subscribes to the channel you display their video stream in the interface using the following `setupRemoteVideo` method:
-
     ``` java
     protected void setupRemoteVideo () {
         // Run code on the UI thread as the code modifies the UI
@@ -190,8 +179,6 @@ Open the file `agora_helper/java/com/example/agora_helper/AgoraManager.java`. Th
 
 6.  **Render video from the local user in the channel**
 
-    To render local video, you create a `VideoCanvas` and set its uid to `0`. The following `setupRemoteVideo` method sets up the `localFrameLayout` in the UI to display local video:
-
     ``` java
     protected void setupLocalVideo() {
         // Run code on the UI thread as the code modifies the UI
@@ -209,14 +196,12 @@ Open the file `agora_helper/java/com/example/agora_helper/AgoraManager.java`. Th
 
 7.  **Join a channel to start Video Calling**
 
-    The following method takes a `channelName` and an authentication `token` to securely join a Video Calling channel:
-
     ``` java
     public int joinChannel(String channelName, String token) {
         this.channelName = channelName;
 
-        // Create an instance of RTCEngine
-        if (agoraEngine == null) setupVideoSDKEngine();
+        // Create an RTCEngine instance 
+        if (agoraEngine == null) setupAgoraEngine();
         // Check that necessary permissions have been granted
         if (checkSelfPermission()) {
             ChannelMediaOptions options = new ChannelMediaOptions();
@@ -242,86 +227,59 @@ Open the file `agora_helper/java/com/example/agora_helper/AgoraManager.java`. Th
 
 8.  **Leave the channel when the local user ends the call**
 
-    To leave a channel, you call the `leaveChannel` method of the Agora Engine instance, set the `joined` status to false, and hide the local and remote `SurfaceView`s.
-
     ``` java
     public void leaveChannel() {
         if (!joined) {
             sendMessage("Join a channel first");
         } else {
+            // To leave a channel, call the `leaveChannel` method
             agoraEngine.leaveChannel();
             sendMessage("You left the channel");
 
             activity.runOnUiThread(() -> {
-                // Stop remote video rendering.
+                // Hide local and remote SurfaceViews
                 if (remoteSurfaceView != null)  remoteSurfaceView.setVisibility(View.GONE);
-                // Stop local video rendering.
                 if (localSurfaceView != null) localSurfaceView.setVisibility(View.GONE);
             });
+            // Set the `joined` status to false
             joined = false;
-            destroyVideoSDKEngine();
+            // Destroy the engine instance
+            destroyAgoraEngine();
         }
-    }
+    }    
     ```
 
-    In this implementation, you initiate the Agora Engine when the local user joins a channel and destroy the engine when the user leaves the channel. In order to send video and audio streams to  Agora, you need to ensure that the local user gives permission to access the camera and microphone on the local device.
-
-    To elegantly start and stop your app:
-
-1.  **Check that the app has the correct permissions and initiate  Agora Engine**
-
-    The following method checks whether the `RECORD_AUDIO` and `CAMERA` permissions have been granted by the user:
+1.  **Clean up the resources used by the app**
 
     ``` java
-    protected boolean checkSelfPermission() {
-        return ContextCompat.checkSelfPermission(mContext, REQUESTED_PERMISSIONS[0]) == PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(mContext, REQUESTED_PERMISSIONS[1]) == PackageManager.PERMISSION_GRANTED;
-    }
-    ```
-
-1.  **Clean up the resources used by your app**
-
-    When the user closes the app, stop local preview, leave the joined channel, and call `agoraEngine.destroy` to clean up the resources you created. 
-
-    ``` java
-    protected void onDestroy() {
-        super.onDestroy();
-        agoraEngine.stopPreview();
-        agoraEngine.leaveChannel();
-
-        // Destroy the engine in a sub-thread to avoid congestion
-        new Thread(() -> {
-            RtcEngine.destroy();
-            agoraEngine = null;
-        }).start();
+    protected void destroyAgoraEngine() {
+        // Release the RtcEngine instance to free up resources
+        RtcEngine.destroy();
+        agoraEngine = null;
     }
     ```
 
 ## Test your implementation
 
-Agora recommends you run this project on a physical mobile device, as some simulators may not support the full features of this project. To ensure that you have implemented Video Calling in your app:
+This section explains how to run the sample project and see the corresponding features in an app. Best practice is to run this project on a physical mobile device, as some simulators may not support the full features of this project.
 
 1. [Generate a temporary token](https://docs.agora.io/en/video-calling/reference/manage-agora-account#generate-a-temporary-token) in Agora Console.
 
 2. In your browser, navigate to the <Link target="_blank" to="{{Global.DEMO_BASIC_VIDEO_CALL_URL}}">Agora web demo</Link> and update _App ID_, _Channel_, and _Token_ with the values for your temporary token, then click **Join**.
 
-    3.  In Android Studio, in `app/java/com/example/quickstart_base/MainActivity.java`, update `appId`, `channelName` and `token` with the values for your temporary token.
+    3.  In Android Studio:
 
-    1.  Connect a physical Android device to your development device.
+        1. In `app/java/com/example/quickstart_base/MainActivity.java` of the sample project, update `appId`, `channelName`, and `token` with the values for your temporary token.
 
-    1.  In Android Studio, click **Run app**. A moment later you see the project installed on your device.
+        1.  Click **Run app**. A moment later you see the project installed on your device. If this is the first time you run the project, you need to grant microphone and camera access to your app.
 
-        If this is the first time you run the project, you need to grant microphone and camera access to your app.
-
-    6. Click **Join** to start a call. Now, you can see yourself on the device screen and talk to the remote user using your app.
+    4. Click **Join** to start a call. Now, you can see yourself on the device screen and talk to the remote user using your app.
 
 ## Reference
 
 This section contains information that completes the information in this page, or points you to documentation that explains other aspects to this product.
 
 - [Downloads](https://docs.agora.io/en/video-calling/reference/downloads) shows you how to install Video SDK manually.
-
-- To ensure communication security in a test or production environment, use a token server to generate token is recommended to ensure communication security, see [Implement the authentication workflow](https://docs.agora.io/en/video-calling/develop/authentication-workflow).
 
 - For a more complete example, see the <a href="https://github.com/AgoraIO/API-Examples/tree/main/Android">open source  Video Calling example project</a> on GitHub.
 
