@@ -20,5 +20,5 @@ This sample project shows you how to use Video SDK features to account for these
 
 ## Full Documentation
 
-[Agora's full call quality guide](https://docs.agora.io/en/interactive-live-streaming/develop/ensure-channel-quality?platform=android)
+[Agora's full call quality guide](https://docs.agora.io/en/video-calling/develop/ensure-channel-quality?platform=android)
 
