@@ -69,14 +69,14 @@ Open the file `agora_helper/java/com/example/agora_helper/AgoraManager.java`. Th
 
     The following lines `import` the necessary Video SDK classes and interfaces into the project:
 
-    ``` java
-    import io.agora.rtc2.RtcEngine;
-    import io.agora.rtc2.RtcEngineConfig;
-    import io.agora.rtc2.Constants;
-    import io.agora.rtc2.IRtcEngineEventHandler;
-    import io.agora.rtc2.video.VideoCanvas;
-    import io.agora.rtc2.ChannelMediaOptions;
-    ```
+        ``` java
+        import io.agora.rtc2.RtcEngine;
+        import io.agora.rtc2.RtcEngineConfig;
+        import io.agora.rtc2.Constants;
+        import io.agora.rtc2.IRtcEngineEventHandler;
+        import io.agora.rtc2.video.VideoCanvas;
+        import io.agora.rtc2.ChannelMediaOptions;
+        ```
 
 2.  **Variables to create and join a channel**
 
