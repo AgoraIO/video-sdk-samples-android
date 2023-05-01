@@ -19,7 +19,6 @@ import io.agora.rtc2.video.VideoCanvas;
 import io.agora.rtc2.ChannelMediaOptions;
 
 public class AgoraManager {
-
     // The reference to the Android activity you use for video calling
     protected final Activity activity;
     protected final Context mContext;
@@ -98,7 +97,7 @@ public class AgoraManager {
         });
     }
 
-    protected boolean setupVideoSDKEngine() {
+    protected boolean setupAgoraEngine() {
         try {
             RtcEngineConfig config = new RtcEngineConfig();
             config.mContext = mContext;
@@ -122,7 +121,7 @@ public class AgoraManager {
         this.channelName = channelName;
 
         // Create an instance of RTCEngine
-        if (agoraEngine == null) setupVideoSDKEngine();
+        if (agoraEngine == null) setupAgoraEngine();
         // Check that necessary permissions have been granted
         if (checkSelfPermission()) {
             ChannelMediaOptions options = new ChannelMediaOptions();
@@ -149,21 +148,23 @@ public class AgoraManager {
         if (!joined) {
             sendMessage("Join a channel first");
         } else {
+            // To leave a channel, call the `leaveChannel` method
             agoraEngine.leaveChannel();
             sendMessage("You left the channel");
 
             activity.runOnUiThread(() -> {
-                // Stop remote video rendering.
+                // Hide local and remote SurfaceViews
                 if (remoteSurfaceView != null)  remoteSurfaceView.setVisibility(View.GONE);
-                // Stop local video rendering.
                 if (localSurfaceView != null) localSurfaceView.setVisibility(View.GONE);
             });
+            // Set the `joined` status to false
             joined = false;
-            destroyVideoSDKEngine();
+            // Destroy the engine instance
+            destroyAgoraEngine();
         }
     }
 
-    protected void destroyVideoSDKEngine() {
+    protected void destroyAgoraEngine() {
         RtcEngine.destroy();
         agoraEngine = null;
     }
