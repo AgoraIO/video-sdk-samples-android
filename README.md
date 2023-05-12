@@ -1,4 +1,18 @@
-# Agora Video SDK documentation sample projects
+# Agora Video SDK for Android sample projects
+
+This repository holds the code examples used for the [Agora Video SDK for Android ](https://docs.agora.io/en/video-calling/get-started/get-started-sdk?platform=android) documentation. Clone the repo, run and test the samples, use the code in your own project. Enjoy.
+
+## Samples  
+
+The runnable code examples are:
+
+- [SDK quickstart](./sdk_quickstart/) - The minimum code you need to integrate high-quality, low-latency Video 
+  Calling features into your app using Video SDK.
+- [Call quality best practice](./call_quality/) - How to use Video SDK features to ensure optimal audio and video 
+  quality in your app. 
+
+
+## Run this project
 
 To run the sample projects in this folder, take the following steps:
 
@@ -8,17 +22,11 @@ To run the sample projects in this folder, take the following steps:
     git clone https://github.com/AgoraIO/video-sdk-samples-android
     ```
 
-1. Launch Android Studio. From the **File** menu select **Open...** and navigate to the desired project folder under `video-sdk-samples-android/Docs-Examples/`
+1. Launch Android Studio. From the **File** menu select **Open...**, then navigate to the sample you want to run.
 
-1. Connect an Android device to your development device.
+1. Connect an Android device to your development machine.
 
 1. In Android Studio, click **Run app**. A moment later, you see the project installed on your device.
 
 1. Refer to the README file in the project folder for further information.
 
-
-Each folder contains the runnable code explained in the documentation.
-
-    Advantages are that we supply runnable code where the UI is abstracted so we concentrate more clearly on Agora SDK. This means the docs become much shorter and simpler. Possible disadvantage is that we have to write the code for the project. TBH, we already have the code, we are just putting it in a better format for learning.
-- [SDK quickstart](./Docs-Examples/sdk_quickstart/)
-- [Call quality](./Docs-Examples/call_quality/)
