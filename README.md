@@ -1,20 +1,24 @@
-# Video SDK for Android code examples POC
+# Agora Video SDK documentation sample projects
 
-Use the contents in this repo to compare the following ways of presenting runnable code examples in an open source repository. In all examples, the code corresponds to a page in the Agora developer documentation. 
+To run the sample projects in this folder, take the following steps:
 
-- **Current Doc examples**
+1. Clone the Git repository by executing the following command in a terminal window:
 
-  Each folder contains the project that is created when you follow the steps in the current documentation.
+    ```bash
+    git clone https://github.com/AgoraIO/video-sdk-samples-android
+    ```
 
-  Advantages are that the code and doc already exist. Disadvantage is that you have to follow the docs to make the code run.
-  - [SDK quickstart](./current-examples/get-started-sdk/)
-  - [Call quality](./current-examples/ensure-channel-quality/)
+1. Launch Android Studio. From the **File** menu select **Open...** and navigate to the desired project folder under `video-sdk-samples-android/Docs-Examples/`
+
+1. Connect an Android device to your development device.
+
+1. In Android Studio, click **Run app**. A moment later, you see the project installed on your device.
+
+1. Refer to the README file in the project folder for further information.
 
 
-- **Simplified examples that extend from a base class**
-
-   Each folder contains the runnable code explained in the documentation. 
+Each folder contains the runnable code explained in the documentation.
 
     Advantages are that we supply runnable code where the UI is abstracted so we concentrate more clearly on Agora SDK. This means the docs become much shorter and simpler. Possible disadvantage is that we have to write the code for the project. TBH, we already have the code, we are just putting it in a better format for learning.
-  - [SDK quickstart](./Docs-Examples/sdk_quickstart/)
-  - [Call quality](./Docs-Examples/call_quality/)
+- [SDK quickstart](./Docs-Examples/sdk_quickstart/)
+- [Call quality](./Docs-Examples/call_quality/)
