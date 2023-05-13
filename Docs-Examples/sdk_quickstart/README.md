@@ -286,10 +286,7 @@ This section contains information that completes the information in this page, o
 ### API reference
 
 - <a href="https://api-ref.agora.io/en/video-sdk/android/4.x/API/class_irtcengine.html#api_irtcengine_joinchannel2">joinChannel</a>
-
 - <a href="https://api-ref.agora.io/en/video-sdk/android/4.x/API/class_irtcengine.html#api_irtcengine_enablevideo">enableVideo</a>
-
 - <a href="https://api-ref.agora.io/en/video-sdk/android/4.x/API/class_irtcengine.html#api_irtcengine_startpreview">startPreview</a>
-
 - <a href="https://api-ref.agora.io/en/video-sdk/android/4.x/API/class_irtcengine.html#api_irtcengine_leavechannel">leaveChannel</a>
 
