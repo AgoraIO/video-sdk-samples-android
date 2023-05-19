@@ -15,5 +15,5 @@ dependencyResolutionManagement {
 rootProject.name = "call_quality"
 include ':app'
 
-include ':app', ':agora_helper'
-project(':agora_helper').projectDir = new File('../sdk_quickstart/agora_helper')
+include ':app', ':agora_manager'
+project(':agora_manager').projectDir = new File('../agora_manager')

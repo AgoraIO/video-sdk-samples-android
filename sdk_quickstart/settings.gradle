@@ -14,4 +14,5 @@ dependencyResolutionManagement {
 }
 rootProject.name = "sdk_quickstart"
 include ':app'
-include ':agora_helper'
+include ':agora_manager'
+project(':agora_manager').projectDir = new File('../agora_manager')

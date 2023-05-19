@@ -12,7 +12,7 @@ public class MainActivity extends AppCompatActivity {
     private AgoraManager agoraManager;
     private final String appId = "<Your app Id>";
     private String channelName = "<your channel name>";
-    private String token = "<your access token>";
+    private final String token = "<your access token>";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

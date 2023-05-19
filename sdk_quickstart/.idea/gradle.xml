@@ -9,8 +9,8 @@
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="modules">
           <set>
+            <option value="$PROJECT_DIR$/../agora_manager" />
             <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/agora_helper" />
             <option value="$PROJECT_DIR$/app" />
           </set>
         </option>
