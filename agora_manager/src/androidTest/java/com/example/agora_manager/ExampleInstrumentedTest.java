@@ -1,4 +1,4 @@
-package com.example.agora_helper;
+package com.example.agora_manager;
 
 import android.content.Context;
 
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
     public void useAppContext() {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
-        assertEquals("com.example.agora_helper.test", appContext.getPackageName());
+        assertEquals("com.example.agora_manager.test", appContext.getPackageName());
     }
 }

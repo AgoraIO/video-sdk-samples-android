@@ -3,7 +3,7 @@ package com.example.call_quality;
 import android.content.Context;
 import android.view.View;
 
-import com.example.agora_helper.AgoraManager;
+import com.example.agora_manager.AgoraManager;
 
 import io.agora.rtc2.Constants;
 import io.agora.rtc2.EchoTestConfiguration;

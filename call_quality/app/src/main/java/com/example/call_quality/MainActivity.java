@@ -11,9 +11,9 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
     private AgoraManagerCallQuality agoraManager;
-    private final String appId = "<Your app Id>";
-    private String channelName = "<your channel name>";
-    private final String token = "<your access token>";
+    private final String appId = "9d2498880e934632b38b0a68fa2f1622";
+    private String channelName = "demo";
+    private final String token = "007eJxTYOhYW1gU7mA18f65LXl/pl1oWdu1K1lo5svzVwRCHc8KvFZRYLBMMTKxtLCwMEi1NDYxMzZKMrZIMkg0s0hLNEozNDMyYpyRntIQyMigd9uBkZEBAkF8FoaU1Nx8BgYAorIfmA==";
 
     private TextView networkStatus; // For updating the network status
     private boolean isEchoTestRunning = false; // Keeps track of the echo test

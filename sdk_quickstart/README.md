@@ -57,7 +57,7 @@ The following workflow demonstrates these core features:
 ![image](./images/video-call-logic-android.svg)
 
 
-This section highlights essential code from the sample project to demonstrate how you can implement the basic Video Calling API call sequence in your own project. The code highlighted on this page is stored in `agora_helper/java/com/example/agora_helper/AgoraManager.java`. This file defines the `AgoraManager` class that encapsulates the `RTCEngine` instance and its core functionality. The code performs the following functions:
+This section highlights essential code from the sample project to demonstrate how you can implement the basic Video Calling API call sequence in your own project. The code highlighted on this page is stored in `agora_manager/src/main/java/com/example/agora_manager/AgoraManager.java`. This file defines the `AgoraManager` class that encapsulates the `RTCEngine` instance and its core functionality. The code performs the following functions:
 
 1. **Import Video SDK classes and interfaces**
 

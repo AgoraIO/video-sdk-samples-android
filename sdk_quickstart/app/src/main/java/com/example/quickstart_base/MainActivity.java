@@ -1,6 +1,6 @@
 package com.example.quickstart_base;
 
-import com.example.agora_helper.AgoraManager;
+import com.example.agora_manager.AgoraManager;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;

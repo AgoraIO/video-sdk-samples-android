@@ -1,4 +1,4 @@
-package com.example.agora_helper;
+package com.example.agora_manager;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
