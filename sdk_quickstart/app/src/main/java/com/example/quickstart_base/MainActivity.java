@@ -20,6 +20,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         agoraManager = new AgoraManager(this, appId);
+        // Set the current product depending on your application
+        agoraManager.setCurrentProduct(AgoraManager.ProductName.VIDEO_CALLING);
         agoraManager.setVideoFrameLayouts(
                 findViewById(R.id.local_video_view_container),
                 findViewById(R.id.remote_video_view_container)

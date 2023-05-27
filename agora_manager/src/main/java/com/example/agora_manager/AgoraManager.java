@@ -40,6 +40,22 @@ public class AgoraManager {
     protected SurfaceView localSurfaceView;
     //SurfaceView to render Remote video in a Container.
     protected SurfaceView remoteSurfaceView;
+    private ProductName currentProduct = ProductName.VIDEO_CALLING;
+
+    public enum ProductName {
+        VIDEO_CALLING,
+        VOICE_CALLING,
+        INTERACTIVE_LIVE_STREAMING,
+        BROADCAST_STREAMING
+    }
+
+    public void setCurrentProduct(ProductName product) {
+        currentProduct = product;
+    }
+
+    public ProductName getCurrentProduct() {
+        return currentProduct;
+    }
 
     protected static final int PERMISSION_REQ_ID = 22;
     protected static final String[] REQUESTED_PERMISSIONS =
