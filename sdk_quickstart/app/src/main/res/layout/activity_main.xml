@@ -28,11 +28,38 @@
             android:layout_margin="6dp"
             android:background="@android:color/darker_gray" />
 
+        <RadioGroup
+            android:id="@+id/radioGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_below="@id/remote_video_view_container"
+            android:layout_alignStart="@id/remote_video_view_container"
+            android:layout_alignEnd="@id/remote_video_view_container">
+
+            <RadioButton
+                android:id="@+id/radioButtonBroadcaster"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Broadcaster"
+                android:checked="true"/>
+
+            <RadioButton
+                android:id="@+id/radioButtonAudience"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Audience" />
+
+        </RadioGroup>
+
+
         <Button
             android:id="@+id/btnJoinLeave"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/remote_video_view_container"
+            android:layout_below="@+id/radioGroup"
             android:layout_alignStart="@id/remote_video_view_container"
             android:layout_alignEnd="@id/remote_video_view_container"
             android:layout_margin="6dp"

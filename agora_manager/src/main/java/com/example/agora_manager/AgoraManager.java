@@ -41,6 +41,11 @@ public class AgoraManager {
     //SurfaceView to render Remote video in a Container.
     protected SurfaceView remoteSurfaceView;
     private ProductName currentProduct = ProductName.VIDEO_CALLING;
+    private boolean isBroadcaster = true;
+
+    public void setBroadcasterRole(boolean isBroadcaster) {
+        this.isBroadcaster = isBroadcaster;
+    }
 
     public enum ProductName {
         VIDEO_CALLING,
@@ -137,29 +142,45 @@ public class AgoraManager {
     }
 
     public int joinChannel(String channelName, String token) {
-        this.channelName = channelName;
+        // Check that necessary permissions have been granted
+        if (!checkSelfPermission()) {
+            sendMessage("Permissions were not granted");
+            return -1;
+        }
 
+        this.channelName = channelName;
         // Create an RTCEngine instance
         if (agoraEngine == null) setupAgoraEngine();
-        // Check that necessary permissions have been granted
-        if (checkSelfPermission()) {
             ChannelMediaOptions options = new ChannelMediaOptions();
-            // For a Video call, set the channel profile as COMMUNICATION.
-            options.channelProfile = Constants.CHANNEL_PROFILE_COMMUNICATION;
+            if (currentProduct == ProductName.VIDEO_CALLING) {
+                // For a Video call, set the channel profile as COMMUNICATION.
+                options.channelProfile = Constants.CHANNEL_PROFILE_COMMUNICATION;
+                isBroadcaster = true;
+            } else {
+                // For Live Streaming and Broadcast streaming, set the channel profile as LIVE_BROADCASTING.
+                options.channelProfile = Constants.CHANNEL_PROFILE_LIVE_BROADCASTING;
+                if (currentProduct == ProductName.BROADCAST_STREAMING) {
+                    // Set Low latency for Broadcast straming
+                   // options.audienceLatencyLevel = Constants.AUDIENCE_LATENCY_LEVEL_LOW_LATENCY;
+                }
+            }
+
             // Set the client role as BROADCASTER or AUDIENCE according to the scenario.
-            options.clientRoleType = Constants.CLIENT_ROLE_BROADCASTER;
-            // Display LocalSurfaceView.
-            setupLocalVideo();
-            // Start local preview.
-            agoraEngine.startPreview();
+            if (isBroadcaster) { // Broadcasting Host or Video-calling client
+                options.clientRoleType = Constants.CLIENT_ROLE_BROADCASTER;
+                // Display LocalSurfaceView.
+                setupLocalVideo();
+                // Start local preview.
+                agoraEngine.startPreview();
+            } else { // Audience
+                options.clientRoleType = Constants.CLIENT_ROLE_AUDIENCE;
+            }
+
             // Join the channel with a temp token.
             // You need to specify the user ID yourself, and ensure that it is unique in the channel.
             // If a user ID is not assigned or set to 0, the SDK assigns a random number and returns it in the onJoinChannelSuccess callback.
             agoraEngine.joinChannel(token, channelName, localUid, options);
-        } else {
-            sendMessage("Permissions were not granted");
-            return -1;
-        }
+
         return 0;
     }
 
