@@ -222,11 +222,11 @@ public class AgoraManager {
                 // Save the uid of the remote user.
                 remoteUid = uid;
 
-                // Set the remote video view for the new user.
                 if (isBroadcaster && (currentProduct == ProductName.INTERACTIVE_LIVE_STREAMING
                     || currentProduct == ProductName.BROADCAST_STREAMING)) {
                     return;
                 } else {
+                    // Set the remote video view for the new user.
                     setupRemoteVideo();
                 }
             }
