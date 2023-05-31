@@ -16,7 +16,6 @@
         android:id="@+id/remote_video_view_container"
         android:layout_width="320dp"
         android:layout_height="240dp"
-        android:layout_margin="6dp"
         android:background="@android:color/darker_gray" />
 
     <RadioGroup

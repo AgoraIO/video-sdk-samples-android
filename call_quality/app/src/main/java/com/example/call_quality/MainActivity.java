@@ -6,15 +6,22 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.agora_manager.AgoraManager;
+
 public class MainActivity extends AppCompatActivity {
     private AgoraManagerCallQuality agoraManager;
-    private final String appId = "<Your app Id>";
-    private String channelName = "<your channel name>";
-    private final String token = "<your access token>";
-    
+    private final String appId = "9d2498880e934632b38b0a68fa2f1622";
+    private String channelName = "demo";
+    private final String token = "007eJxTYHgq8qJxAu/hHuPJ++exVQlqvPmRMk3pgsjmw8+fXFFcMP2MAoNlipGJpYWFhUGqpbGJmbFRkrFFkkGimUVaolGaoZmRkQtDWUpDICPD/OqfTIwMEAjiszCkpObmMzAAAJVgIBg=";
+
+    private LinearLayout baseLayout;
+    private Button btnJoinLeave;
     private TextView networkStatus; // For updating the network status
     private boolean isEchoTestRunning = false; // Keeps track of the echo test
     private Button echoTestButton;
@@ -34,11 +41,19 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        // Find the root view of the included layout
+        baseLayout = findViewById(R.id.base_layout);
+        // Find the widgets inside the included layout using the root view
+        btnJoinLeave = baseLayout.findViewById(com.example.agora_manager.R.id.btnJoinLeave);
+        btnJoinLeave.setOnClickListener(this::joinLeave);
+        FrameLayout remoteFrameLayout = baseLayout.findViewById(com.example.agora_manager.R.id.remote_video_view_container);
 
         agoraManager = new AgoraManagerCallQuality(this, appId);
+        // Set the current product depending on your application
+        agoraManager.setCurrentProduct(AgoraManager.ProductName.VIDEO_CALLING);
         agoraManager.setVideoFrameLayouts(
-                findViewById(R.id.local_video_view_container),
-                findViewById(R.id.remote_video_view_container)
+                baseLayout.findViewById(com.example.agora_manager.R.id.local_video_view_container),
+                baseLayout.findViewById(com.example.agora_manager.R.id.remote_video_view_container)
         );
         agoraManager.setListener(new AgoraManagerCallQuality.AgoraManagerCallQualityListener() {
             @Override
@@ -58,6 +73,23 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        RadioGroup radioGroup = findViewById(com.example.agora_manager.R.id.radioGroup);
+
+        // Manage Broadcaster and Audience roles in Interactive live streaming
+        if (agoraManager.getCurrentProduct()==AgoraManager.ProductName.INTERACTIVE_LIVE_STREAMING
+                || agoraManager.getCurrentProduct()==AgoraManager.ProductName.BROADCAST_STREAMING) {
+            radioGroup.setVisibility(View.VISIBLE);
+        } else {
+            radioGroup.setVisibility(View.GONE);
+        }
+
+        radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
+            agoraManager.setBroadcasterRole(checkedId == com.example.agora_manager.R.id.radioButtonBroadcaster);
+        });
+
+        // Switch stream quality when a user taps the remote video
+        remoteFrameLayout.setOnClickListener(this::setStreamQuality);
+
         // Start the probe test
         agoraManager.startProbeTest();
 
@@ -66,14 +98,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void joinLeave(View view) {
-        Button btnJoinLeave = findViewById(R.id.btnJoinLeave);
+        RadioGroup radioGroup = findViewById(com.example.agora_manager.R.id.radioGroup);
 
         if (!agoraManager.isJoined()) {
-            agoraManager.joinChannel(channelName, token);
-            btnJoinLeave.setText("Leave");
+            int result = agoraManager.joinChannel(channelName, token);
+            if (result == 0) {
+                btnJoinLeave.setText("Leave");
+                if (radioGroup.getVisibility() != View.GONE) radioGroup.setVisibility(View.INVISIBLE);
+            }
         } else {
             agoraManager.leaveChannel();
             btnJoinLeave.setText("Join");
+            if (radioGroup.getVisibility() != View.GONE) radioGroup.setVisibility(View.VISIBLE);
         }
     }
 
