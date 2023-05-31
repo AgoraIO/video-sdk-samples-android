@@ -157,11 +157,13 @@ public class AgoraManager {
                 options.channelProfile = Constants.CHANNEL_PROFILE_COMMUNICATION;
                 isBroadcaster = true;
             } else {
-                // For Live Streaming and Broadcast streaming, set the channel profile as LIVE_BROADCASTING.
+                // For Live Streaming and Broadcast streaming,
+                // set the channel profile as LIVE_BROADCASTING.
                 options.channelProfile = Constants.CHANNEL_PROFILE_LIVE_BROADCASTING;
                 if (currentProduct == ProductName.BROADCAST_STREAMING) {
-                    // Set Low latency for Broadcast straming
-                   // options.audienceLatencyLevel = Constants.AUDIENCE_LATENCY_LEVEL_LOW_LATENCY;
+                   // Set Low latency for Broadcast streaming
+                   if (!isBroadcaster)
+                       options.audienceLatencyLevel = Constants.AUDIENCE_LATENCY_LEVEL_LOW_LATENCY;
                 }
             }
 
@@ -220,8 +222,13 @@ public class AgoraManager {
                 // Save the uid of the remote user.
                 remoteUid = uid;
 
-                // Set the remote video view for the new user.
-                setupRemoteVideo();
+                if (isBroadcaster && (currentProduct == ProductName.INTERACTIVE_LIVE_STREAMING
+                    || currentProduct == ProductName.BROADCAST_STREAMING)) {
+                    return;
+                } else {
+                    // Set the remote video view for the new user.
+                    setupRemoteVideo();
+                }
             }
 
             @Override
