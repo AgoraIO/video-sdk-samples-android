@@ -1,20 +1,32 @@
-# Video SDK for Android code examples POC
+# Agora Video SDK for Android sample projects
 
-Use the contents in this repo to compare the following ways of presenting runnable code examples in an open source repository. In all examples, the code corresponds to a page in the Agora developer documentation. 
+This repository holds the code examples used for the [Agora Video SDK for Android ](https://docs.agora.io/en/video-calling/get-started/get-started-sdk?platform=android) documentation. Clone the repo, run and test the samples, use the code in your own project. Enjoy.
 
-- **Current Doc examples**
+## Samples  
 
-  Each folder contains the project that is created when you follow the steps in the current documentation.
+The runnable code examples are:
 
-  Advantages are that the code and doc already exist. Disadvantage is that you have to follow the docs to make the code run.
-  - [SDK quickstart](./current-examples/get-started-sdk/)
-  - [Call quality](./current-examples/ensure-channel-quality/)
+- [SDK quickstart](./sdk_quickstart/) - The minimum code you need to integrate high-quality, low-latency Video 
+  Calling features into your app using Video SDK.
+- [Call quality best practice](./call_quality/) - How to use Video SDK features to ensure optimal audio and video 
+  quality in your app. 
 
 
-- **Simplified examples that extend from a base class**
+## Run this project
 
-   Each folder contains the runnable code explained in the documentation. 
+To run the sample projects in this folder, take the following steps:
 
-    Advantages are that we supply runnable code where the UI is abstracted so we concentrate more clearly on Agora SDK. This means the docs become much shorter and simpler. Possible disadvantage is that we have to write the code for the project. TBH, we already have the code, we are just putting it in a better format for learning.
-  - [SDK quickstart](./Docs-Examples/sdk_quickstart/)
-  - [Call quality](./Docs-Examples/call_quality/)
+1. Clone the Git repository by executing the following command in a terminal window:
+
+    ```bash
+    git clone https://github.com/AgoraIO/video-sdk-samples-android
+    ```
+
+1. Launch Android Studio. From the **File** menu select **Open...**, then navigate to the sample you want to run.
+
+1. Connect an Android device to your development machine.
+
+1. In Android Studio, click **Run app**. A moment later, you see the project installed on your device.
+
+1. Refer to the README file in the project folder for further information.
+
