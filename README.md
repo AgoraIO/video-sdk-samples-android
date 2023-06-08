@@ -2,7 +2,7 @@
 
 This repository holds the code examples used for the [Agora Video SDK for Android ](https://docs.agora.io/en/video-calling/get-started/get-started-sdk?platform=android) documentation. Clone the repo, run and test the samples, use the code in your own project. Enjoy.
 
-## Samples  
+## Sample projects
 
 The runnable code examples are:
 
@@ -12,9 +12,9 @@ The runnable code examples are:
   quality in your app. 
 
 
-## Run this project
+## Run a sample project
 
-To run the sample projects in this folder, take the following steps:
+To run a sample projects in this folder, take the following steps:
 
 1. Clone the Git repository by executing the following command in a terminal window:
 
@@ -22,11 +22,10 @@ To run the sample projects in this folder, take the following steps:
     git clone https://github.com/AgoraIO/video-sdk-samples-android
     ```
 
-1. Launch Android Studio. From the **File** menu select **Open...**, then navigate to the sample you want to run.
+1. Launch Android Studio. From the **File** menu, select **Open...** then choose the folder for the sample project you want to run. Wait for Gradle sync to complete.
+
+1. Refer to the README file in the selected project folder for further information on setting up the project.
 
 1. Connect an Android device to your development machine.
 
 1. In Android Studio, click **Run app**. A moment later, you see the project installed on your device.
-
-1. Refer to the README file in the project folder for further information.
-
