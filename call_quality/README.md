@@ -22,8 +22,8 @@ This sample project shows you how to use Video SDK features to account for these
 
 Refer to the following complete guides for more context per product and explanation of the essential code snippets used in this sample project:
 
-* [Video-calling](https://docs.agora.io/en/video-calling/develop/ensure-channel-quality?platform=android)
-* [Voice-Calling](https://docs.agora.io/en/voice-calling/develop/ensure-channel-quality?platform=android)
+* [Video calling](https://docs.agora.io/en/video-calling/develop/ensure-channel-quality?platform=android)
+* [Voice calling](https://docs.agora.io/en/voice-calling/develop/ensure-channel-quality?platform=android)
 * [Interactive live Streaming](https://docs.agora.io/en/interactive-live-streaming/develop/ensure-channel-quality?platform=android)
 * [Broadcast streaming](https://docs.agora.io/en/broadcast-streaming/develop/ensure-channel-quality?platform=android)
 
