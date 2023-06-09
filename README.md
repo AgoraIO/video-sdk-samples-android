@@ -14,9 +14,9 @@ The runnable code examples are:
 
 ## Run a sample project
 
-To run a sample projects in this folder, take the following steps:
+To run a sample project in this repository, take the following steps:
 
-1. Clone the Git repository by executing the following command in a terminal window:
+1. Clone this Git repository by executing the following command in a terminal window:
 
     ```bash
     git clone https://github.com/AgoraIO/video-sdk-samples-android
@@ -24,7 +24,7 @@ To run a sample projects in this folder, take the following steps:
 
 1. Launch Android Studio. From the **File** menu, select **Open...** then choose the folder for the sample project you want to run. Wait for Gradle sync to complete.
 
-1. Refer to the README file in the selected project folder for further information on setting up the project.
+1. Refer to the README file in the selected project folder and follow the link to view complete project documentation for your product of interest.
 
 1. Connect an Android device to your development machine.
 
