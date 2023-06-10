@@ -1,6 +1,6 @@
 # Call quality best practice
 
-Customer satisfaction for your Video Calling integrated app depends on the quality of video and audio it provides. Quality of audiovisual communication through your app is affected by the following factors:
+Customer satisfaction for your Video SDK integrated app depends on the quality of video and audio it provides. Quality of audiovisual communication through your app is affected by the following factors:
 
 - Bandwidth of network connection: Bandwidth is the volume of information that an Internet connection can handle per unit of time. When the available bandwidth is not sufficient to transmit the amount of data necessary to provide the desired video quality, your users see jerky or frozen video along with audio that cuts in and out.
 
@@ -20,13 +20,14 @@ This sample project shows you how to use Video SDK features to account for these
 
 ## Understand the code
 
-Refer to the following complete guides for more context per product and explanation of the essential code snippets used in this sample project:
+For context on this sample, and a full explanation of the essential code snippets used in this project, read the following guides:
 
-* [Video calling](https://docs.agora.io/en/video-calling/develop/ensure-channel-quality?platform=android)
-* [Voice calling](https://docs.agora.io/en/voice-calling/develop/ensure-channel-quality?platform=android)
-* [Interactive live Streaming](https://docs.agora.io/en/interactive-live-streaming/develop/ensure-channel-quality?platform=android)
-* [Broadcast streaming](https://docs.agora.io/en/broadcast-streaming/develop/ensure-channel-quality?platform=android)
+* [Call quality best practice for Video calling](https://docs.agora.io/en/video-calling/develop/ensure-channel-quality?platform=android)
+* [Call quality best practice for Voice calling](https://docs.agora.io/en/voice-calling/develop/ensure-channel-quality?platform=android)
+* [Call quality best practice for Interactive live Streaming](https://docs.agora.io/en/interactive-live-streaming/develop/ensure-channel-quality?platform=android)
+* [Call quality best practice for Broadcast streaming](https://docs.agora.io/en/broadcast-streaming/develop/ensure-channel-quality?platform=android)
 
 ## How to run this project
 
-Refer to [README](../README.md) in the root folder or one of the complete product guides for steps to run this sample project.
+To see how to run this project, refer to [README](../README.md) in the root folder or one of the complete product guides.
+
