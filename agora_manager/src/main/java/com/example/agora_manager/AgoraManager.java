@@ -18,6 +18,13 @@ import io.agora.rtc2.RtcEngineConfig;
 import io.agora.rtc2.video.VideoCanvas;
 import io.agora.rtc2.ChannelMediaOptions;
 
+import android.content.res.AssetManager;
+import org.json.JSONException;
+import org.json.JSONObject;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+
 public class AgoraManager {
     // The reference to the Android activity you use for video calling
     protected final Activity activity;
@@ -26,6 +33,8 @@ public class AgoraManager {
     protected RtcEngine agoraEngine;
     // The event handler for agoraEngine events
     protected AgoraManagerListener mListener;
+    // Configuration parameters from the config.json file
+    JSONObject config;
     // Your App ID from Agora console
     protected final String appId;
     // The name of the channel to join
@@ -69,10 +78,12 @@ public class AgoraManager {
                     Manifest.permission.CAMERA
             };
 
-    public AgoraManager(Context context, String appId) {
+    public AgoraManager(Context context) {
+        config = readConfig(context.getApplicationContext());
+
         mContext = context;
         activity = (Activity) mContext;
-        this.appId = appId;
+        this.appId = config.optString("appId");
 
         if (!checkSelfPermission()) {
             ActivityCompat.requestPermissions(activity, REQUESTED_PERMISSIONS, PERMISSION_REQ_ID);
@@ -81,6 +92,24 @@ public class AgoraManager {
 
     public void setListener(AgoraManagerListener mListener) {
         this.mListener = mListener;
+    }
+
+    public JSONObject readConfig(Context context) {
+        AssetManager assetManager = context.getAssets();
+
+        try {
+            InputStream inputStream = assetManager.open("config.json");
+            int size = inputStream.available();
+            byte[] buffer = new byte[size];
+            inputStream.read(buffer);
+            inputStream.close();
+            String jsonString = new String(buffer, StandardCharsets.UTF_8);
+
+            return new JSONObject(jsonString);
+        } catch (IOException | JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public void setVideoFrameLayouts(FrameLayout localFrameLayout, FrameLayout remoteFrameLayout) {
@@ -110,8 +139,8 @@ public class AgoraManager {
             // Add the SurfaceView to a FrameLayout in the UI
             remoteFrameLayout.addView(remoteSurfaceView);
             // Create and set up a VideoCanvas
-            VideoCanvas videoCanvas = new VideoCanvas(remoteSurfaceView, VideoCanvas.RENDER_MODE_FIT,
-                    Constants.VIDEO_MIRROR_MODE_ENABLED, remoteUid);
+            VideoCanvas videoCanvas = new VideoCanvas(remoteSurfaceView,
+                    VideoCanvas.RENDER_MODE_FIT, remoteUid);
             agoraEngine.setupRemoteVideo(videoCanvas);
             // Set the visibility
             remoteSurfaceView.setVisibility(View.VISIBLE);

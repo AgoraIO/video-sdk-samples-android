@@ -12,9 +12,6 @@ import android.widget.RadioGroup;
 
 public class MainActivity extends AppCompatActivity {
     private AgoraManager agoraManager;
-    private final String appId = "9d2498880e934632b38b0a68fa2f1622"; // "<Your app Id>";
-    private String channelName = "demo"; // "<your channel name>";
-    private final String token = "007eJxTYFCbt4/j3/VMYUtOG9mfZkc/T/y5QbXT6vuB54djreUYfM4rMFimGJlYWlhYGKRaGpuYGRslGVskGSSaWaQlGqUZmhkZ1VwrTWkIZGRgupbNyMgAgSA+C0NKam4+AwMAK6Uevg=="; // "<your access token>";
     private LinearLayout baseLayout;
     private Button btnJoinLeave;
 
@@ -27,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
         // Find the widgets inside the included layout using the root view
         btnJoinLeave = baseLayout.findViewById(com.example.agora_manager.R.id.btnJoinLeave);
 
-        agoraManager = new AgoraManager(this, appId);
+        agoraManager = new AgoraManager(this);
         // Set the current product depending on your application
         agoraManager.setCurrentProduct(AgoraManager.ProductName.VIDEO_CALLING);
         agoraManager.setVideoFrameLayouts(
@@ -60,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
         RadioGroup radioGroup = findViewById(com.example.agora_manager.R.id.radioGroup);
 
         if (!agoraManager.isJoined()) {
-            int result = agoraManager.joinChannel(channelName, token);
+            int result = agoraManager.joinChannel();
             if (result == 0) {
                 btnJoinLeave.setText("Leave");
                 if (radioGroup.getVisibility() != View.GONE) radioGroup.setVisibility(View.INVISIBLE);
