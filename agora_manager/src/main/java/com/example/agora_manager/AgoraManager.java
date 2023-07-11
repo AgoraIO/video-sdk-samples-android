@@ -40,7 +40,7 @@ public class AgoraManager {
     // The name of the channel to join
     protected String channelName;
     // UIDs of the local and remote users
-    protected int localUid = 0, remoteUid = 0;
+    protected int localUid, remoteUid;
     // Status of the video call
     protected boolean joined = false;
     // Reference to FrameLayouts in your UI for rendering local and remote videos
@@ -80,10 +80,12 @@ public class AgoraManager {
 
     public AgoraManager(Context context) {
         config = readConfig(context.getApplicationContext());
+        appId = config.optString("appId");
+        channelName = config.optString("channelName");
+        localUid = config.optInt("uid");
 
         mContext = context;
         activity = (Activity) mContext;
-        this.appId = config.optString("appId");
 
         if (!checkSelfPermission()) {
             ActivityCompat.requestPermissions(activity, REQUESTED_PERMISSIONS, PERMISSION_REQ_ID);
@@ -170,7 +172,12 @@ public class AgoraManager {
         return joined;
     }
 
-    public int joinChannel(String channelName, String token) {
+    public int joinChannel() {
+        String token = config.optString("rtcToken");
+        return  joinChannel(channelName, localUid, token);
+    }
+
+    public int joinChannel(String channelName, int uid, String token) {
         // Check that necessary permissions have been granted
         if (!checkSelfPermission()) {
             sendMessage("Permissions were not granted");
@@ -178,6 +185,8 @@ public class AgoraManager {
         }
 
         this.channelName = channelName;
+        this.localUid = uid;
+
         // Create an RTCEngine instance
         if (agoraEngine == null) setupAgoraEngine();
             ChannelMediaOptions options = new ChannelMediaOptions();
@@ -210,7 +219,7 @@ public class AgoraManager {
             // Join the channel with a temp token.
             // You need to specify the user ID yourself, and ensure that it is unique in the channel.
             // If a user ID is not assigned or set to 0, the SDK assigns a random number and returns it in the onJoinChannelSuccess callback.
-            agoraEngine.joinChannel(token, channelName, localUid, options);
+            agoraEngine.joinChannel(token, channelName, uid, options);
 
         return 0;
     }
