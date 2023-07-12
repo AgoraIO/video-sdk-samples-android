@@ -5,8 +5,8 @@ import com.example.agora_manager.AgoraManager;
 
 public class AgoraManagerAuthenticationWorkflow extends AgoraManager {
 
-    public AgoraManagerAuthenticationWorkflow(Context context, String appId) {
-        super(context, appId);
+    public AgoraManagerAuthenticationWorkflow(Context context) {
+        super(context);
     }
 
 }

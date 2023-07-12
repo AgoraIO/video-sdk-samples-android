@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
         baseLayout = findViewById(R.id.base_layout);
         // Find the widgets inside the included layout using the root view
         btnJoinLeave = baseLayout.findViewById(com.example.agora_manager.R.id.btnJoinLeave);
-
+        // Create an instance of the AgoraManager class
         agoraManager = new AgoraManager(this);
         // Set the current product depending on your application
         agoraManager.setCurrentProduct(AgoraManager.ProductName.VIDEO_CALLING);

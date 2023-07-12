@@ -100,7 +100,7 @@ public class AgoraManager {
         AssetManager assetManager = context.getAssets();
 
         try {
-            InputStream inputStream = assetManager.open("config.json");
+            InputStream inputStream = context.getResources().openRawResource(R.raw.config); //assetManager.open(R.raw.config); //"config.json");
             int size = inputStream.available();
             byte[] buffer = new byte[size];
             inputStream.read(buffer);
@@ -146,6 +146,7 @@ public class AgoraManager {
             agoraEngine.setupRemoteVideo(videoCanvas);
             // Set the visibility
             remoteSurfaceView.setVisibility(View.VISIBLE);
+
         });
     }
 

@@ -15,5 +15,5 @@ dependencyResolutionManagement {
 rootProject.name = "authentication_workflow"
 include ':app'
 
-include ':app', ':agora_manager'
+include ':agora_manager'
 project(':agora_manager').projectDir = new File('../agora_manager')
