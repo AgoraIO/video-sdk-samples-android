@@ -34,7 +34,7 @@ public class AgoraManager {
     // The event handler for agoraEngine events
     protected AgoraManagerListener mListener;
     // Configuration parameters from the config.json file
-    JSONObject config;
+    protected JSONObject config;
     // Your App ID from Agora console
     protected final String appId;
     // The name of the channel to join
@@ -50,7 +50,7 @@ public class AgoraManager {
     //SurfaceView to render Remote video in a Container.
     protected SurfaceView remoteSurfaceView;
     private ProductName currentProduct = ProductName.VIDEO_CALLING;
-    private boolean isBroadcaster = true;
+    protected boolean isBroadcaster = true;
 
     public void setBroadcasterRole(boolean isBroadcaster) {
         this.isBroadcaster = isBroadcaster;

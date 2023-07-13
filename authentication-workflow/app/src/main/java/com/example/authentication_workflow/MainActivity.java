@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 import android.widget.RadioGroup;
@@ -14,6 +15,7 @@ public class MainActivity extends AppCompatActivity {
     private AgoraManagerAuthenticationWorkflow agoraManager;
     private LinearLayout baseLayout;
     private Button btnJoinLeave;
+    private EditText editChannelName; // To read the channel name from the UI.
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +53,8 @@ public class MainActivity extends AppCompatActivity {
         radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
             agoraManager.setBroadcasterRole(checkedId == com.example.agora_manager.R.id.radioButtonBroadcaster);
         });
+
+        editChannelName = (EditText) findViewById(R.id.editChannelName);
     }
 
     public void joinLeave(View view) {
