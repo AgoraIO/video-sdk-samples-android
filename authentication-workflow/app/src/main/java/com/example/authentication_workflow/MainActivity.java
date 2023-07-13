@@ -11,9 +11,10 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 import android.widget.RadioGroup;
 
+import java.util.Map;
+
 public class MainActivity extends AppCompatActivity {
     private AgoraManagerAuthenticationWorkflow agoraManager;
-    private LinearLayout baseLayout;
     private Button btnJoinLeave;
     private EditText editChannelName; // To read the channel name from the UI.
 
@@ -22,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         // Find the root view of the included layout
-        baseLayout = findViewById(R.id.base_layout);
+        LinearLayout baseLayout = findViewById(R.id.base_layout);
         // Find the widgets inside the included layout using the root view
         btnJoinLeave = baseLayout.findViewById(com.example.agora_manager.R.id.btnJoinLeave);
         // Create an instance of the AgoraManager class
@@ -39,6 +40,11 @@ public class MainActivity extends AppCompatActivity {
                 runOnUiThread(() ->
                         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show());
             }
+
+            @Override
+            public void onEvent(String eventName, Map<String, Object> eventArgs) {
+
+            }
         });
 
         RadioGroup radioGroup = findViewById(com.example.agora_manager.R.id.radioGroup);
@@ -50,22 +56,25 @@ public class MainActivity extends AppCompatActivity {
             radioGroup.setVisibility(View.GONE);
         }
 
-        radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
-            agoraManager.setBroadcasterRole(checkedId == com.example.agora_manager.R.id.radioButtonBroadcaster);
-        });
+        radioGroup.setOnCheckedChangeListener((group, checkedId) ->
+                agoraManager.setBroadcasterRole(checkedId == com.example.agora_manager.R.id.radioButtonBroadcaster));
 
-        editChannelName = (EditText) findViewById(R.id.editChannelName);
+        editChannelName = findViewById(R.id.editChannelName);
     }
 
     public void joinLeave(View view) {
         RadioGroup radioGroup = findViewById(com.example.agora_manager.R.id.radioGroup);
 
         if (!agoraManager.isJoined()) {
-            int result = agoraManager.joinChannel();
+            String channelName = editChannelName.getText().toString();
+            agoraManager.fetchToken(channelName);
+            btnJoinLeave.setText("Leave");
+
+           /* int result = agoraManager.joinChannel(channelName, agoraManager.localUid ,token);
             if (result == 0) {
                 btnJoinLeave.setText("Leave");
                 if (radioGroup.getVisibility() != View.GONE) radioGroup.setVisibility(View.INVISIBLE);
-            }
+            }*/
         } else {
             agoraManager.leaveChannel();
             btnJoinLeave.setText("Join");

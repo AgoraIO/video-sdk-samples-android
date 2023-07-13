@@ -18,12 +18,12 @@ import io.agora.rtc2.RtcEngineConfig;
 import io.agora.rtc2.video.VideoCanvas;
 import io.agora.rtc2.ChannelMediaOptions;
 
-import android.content.res.AssetManager;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
 
 public class AgoraManager {
     // The reference to the Android activity you use for video calling
@@ -38,9 +38,9 @@ public class AgoraManager {
     // Your App ID from Agora console
     protected final String appId;
     // The name of the channel to join
-    protected String channelName;
+    public String channelName;
     // UIDs of the local and remote users
-    protected int localUid, remoteUid;
+    public int localUid, remoteUid;
     // Status of the video call
     protected boolean joined = false;
     // Reference to FrameLayouts in your UI for rendering local and remote videos
@@ -49,7 +49,7 @@ public class AgoraManager {
     protected SurfaceView localSurfaceView;
     //SurfaceView to render Remote video in a Container.
     protected SurfaceView remoteSurfaceView;
-    private ProductName currentProduct = ProductName.VIDEO_CALLING;
+    protected ProductName currentProduct = ProductName.VIDEO_CALLING;
     protected boolean isBroadcaster = true;
 
     public void setBroadcasterRole(boolean isBroadcaster) {
@@ -97,8 +97,6 @@ public class AgoraManager {
     }
 
     public JSONObject readConfig(Context context) {
-        AssetManager assetManager = context.getAssets();
-
         try {
             InputStream inputStream = context.getResources().openRawResource(R.raw.config); //assetManager.open(R.raw.config); //"config.json");
             int size = inputStream.available();
@@ -217,7 +215,7 @@ public class AgoraManager {
                 options.clientRoleType = Constants.CLIENT_ROLE_AUDIENCE;
             }
 
-            // Join the channel with a temp token.
+            // Join the channel with a token.
             // You need to specify the user ID yourself, and ensure that it is unique in the channel.
             // If a user ID is not assigned or set to 0, the SDK assigns a random number and returns it in the onJoinChannelSuccess callback.
             agoraEngine.joinChannel(token, channelName, uid, options);
@@ -294,6 +292,7 @@ public class AgoraManager {
 
     public interface AgoraManagerListener {
         void onMessageReceived(String message);
+        void onEvent(String eventName, Map<String, Object> eventArgs);
     }
 
     protected void sendMessage(String message) {
