@@ -23,7 +23,6 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.Map;
 
 public class AgoraManager {
     // The reference to the Android activity you use for video calling
@@ -79,7 +78,7 @@ public class AgoraManager {
             };
 
     public AgoraManager(Context context) {
-        config = readConfig(context.getApplicationContext());
+        config = readConfig(context);
         appId = config.optString("appId");
         channelName = config.optString("channelName");
         localUid = config.optInt("uid");
@@ -144,7 +143,6 @@ public class AgoraManager {
             agoraEngine.setupRemoteVideo(videoCanvas);
             // Set the visibility
             remoteSurfaceView.setVisibility(View.VISIBLE);
-
         });
     }
 
@@ -172,6 +170,7 @@ public class AgoraManager {
     }
 
     public int joinChannel() {
+        // Use channelName and token from the config file
         String token = config.optString("rtcToken");
         return  joinChannel(channelName, token);
     }

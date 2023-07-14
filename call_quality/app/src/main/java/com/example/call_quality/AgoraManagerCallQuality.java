@@ -3,7 +3,7 @@ package com.example.call_quality;
 import android.content.Context;
 import android.view.View;
 
-import com.example.agora_manager.AgoraManager;
+import com.example.authentication_workflow.AgoraManagerAuthenticationWorkflow;
 
 import io.agora.rtc2.Constants;
 import io.agora.rtc2.EchoTestConfiguration;
@@ -13,15 +13,15 @@ import io.agora.rtc2.RtcEngineConfig;
 import io.agora.rtc2.internal.LastmileProbeConfig;
 import io.agora.rtc2.video.VideoEncoderConfiguration;
 
-public class AgoraManagerCallQuality extends AgoraManager {
+public class AgoraManagerCallQuality extends AgoraManagerAuthenticationWorkflow {
     // Counters to control the frequency of messages
     private int counter1 = 0; 
     private int counter2 = 0; 
     // Quality of the remote video stream being played
     private boolean highQuality = true; 
 
-    public AgoraManagerCallQuality(Context context, String appId) {
-        super(context, appId);
+    public AgoraManagerCallQuality(Context context) {
+        super(context);
     }
 
     public void startProbeTest() {

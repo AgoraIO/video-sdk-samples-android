@@ -1,5 +1,6 @@
 package com.example.call_quality;
 
+import com.example.authentication_workflow.AgoraManagerAuthenticationWorkflow;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.graphics.Color;
@@ -12,13 +13,8 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.agora_manager.AgoraManager;
-
 public class MainActivity extends AppCompatActivity {
     private AgoraManagerCallQuality agoraManager;
-    private final String appId = "9d2498880e934632b38b0a68fa2f1622";
-    private String channelName = "demo";
-    private final String token = "007eJxTYHgq8qJxAu/hHuPJ++exVQlqvPmRMk3pgsjmw8+fXFFcMP2MAoNlipGJpYWFhUGqpbGJmbFRkrFFkkGimUVaolGaoZmRkQtDWUpDICPD/OqfTIwMEAjiszCkpObmMzAAAJVgIBg=";
 
     private LinearLayout baseLayout;
     private Button btnJoinLeave;
@@ -48,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
         btnJoinLeave.setOnClickListener(this::joinLeave);
         FrameLayout remoteFrameLayout = baseLayout.findViewById(com.example.agora_manager.R.id.remote_video_view_container);
 
-        agoraManager = new AgoraManagerCallQuality(this, appId);
+        agoraManager = new AgoraManagerCallQuality(this);
         // Set the current product depending on your application
         agoraManager.setCurrentProduct(AgoraManager.ProductName.VIDEO_CALLING);
         agoraManager.setVideoFrameLayouts(
@@ -101,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
         RadioGroup radioGroup = findViewById(com.example.agora_manager.R.id.radioGroup);
 
         if (!agoraManager.isJoined()) {
-            int result = agoraManager.joinChannel(channelName, token);
+            int result = agoraManager.joinChannel();
             if (result == 0) {
                 btnJoinLeave.setText("Leave");
                 if (radioGroup.getVisibility() != View.GONE) radioGroup.setVisibility(View.INVISIBLE);
@@ -116,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
     public void echoTest(View view) {
         if (!isEchoTestRunning) {
             echoTestButton.setText("Stop Echo Test");
-            agoraManager.startEchoTest(token);
+            agoraManager.startEchoTest();
             isEchoTestRunning = true;
         } else {
             agoraManager.stopEchoTest();

@@ -19,7 +19,7 @@ public class AgoraManagerAuthenticationWorkflow extends AgoraManager {
     private final String serverUrl; // The base URL to your token server
     private final int tokenExpiryTime; // Time in seconds after which the token will expire.
 
-    // Token Callback interface
+    // Callback interface to receive the http response from an async token request
     public interface TokenCallback {
         void onTokenReceived(String rtcToken);
         void onError(String errorMessage);
@@ -27,10 +27,9 @@ public class AgoraManagerAuthenticationWorkflow extends AgoraManager {
 
     public AgoraManagerAuthenticationWorkflow(Context context) {
         super(context);
-
         // Read the server url and expiry time from the config file
         serverUrl = config.optString("serverUrl");
-        tokenExpiryTime = config.optInt("tokenExpiryTime",300);
+        tokenExpiryTime = config.optInt("tokenExpiryTime",600);
     }
 
     @Override
@@ -40,14 +39,14 @@ public class AgoraManagerAuthenticationWorkflow extends AgoraManager {
             // Listen for the event that the token is about to expire
             @Override
             public void onTokenPrivilegeWillExpire(String token) {
-                sendMessage("Token expiring...");
+                sendMessage("Token is about to expire");
                 // Get a new token
                 fetchToken(channelName, new AgoraManagerAuthenticationWorkflow.TokenCallback() {
                     @Override
                     public void onTokenReceived(String rtcToken) {
                         // Use the token to renew
                         agoraEngine.renewToken(rtcToken);
-                        sendMessage("Expiring token renewed");
+                        sendMessage("Token renewed");
                     }
 
                     @Override
@@ -117,25 +116,47 @@ public class AgoraManagerAuthenticationWorkflow extends AgoraManager {
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                 if (response.isSuccessful()) {
-                    // Extract rtcToken from the response
-                    String rtcToken = null;
                     try {
-                        String result = response.body().string();
-                        JSONObject jsonObject = new JSONObject(result);
-                        rtcToken = jsonObject.getString("rtcToken");
+                        // Extract rtcToken from the response
+                        String responseBody = response.body().string();
+                        JSONObject jsonObject = new JSONObject(responseBody);
+                        String rtcToken = jsonObject.getString("rtcToken");
+                        // Return the token through the callback
+                        callback.onTokenReceived(rtcToken);
                     } catch (JSONException e) {
                         e.printStackTrace();
-                        callback.onTokenReceived("Token request failed");
+                        callback.onError("Invalid token response");
                     }
-                    // Return the token through a callback
-                    callback.onTokenReceived(rtcToken);
                 } else {
-                    callback.onTokenReceived("Token request failed");
+                    callback.onError("Token request failed");
                 }
             }
         });
     }
 
+    public int joinChannel(String channelName) {
+        if (serverUrl.contains("http")) { // A valid server url is available
+            // Fetch a token from the server for channelName
+            // Uses the uid from the config.json file
+            fetchToken(channelName, new AgoraManagerAuthenticationWorkflow.TokenCallback() {
+                @Override
+                public void onTokenReceived(String rtcToken) {
+                    // Handle the received rtcToken
+                    joinChannel(channelName, rtcToken);
+                }
+
+                @Override
+                public void onError(String errorMessage) {
+                    // Handle the error
+                    sendMessage("Error: " + errorMessage);
+                }
+            });
+            return 0;
+        } else { // use the token from the config.json file
+            String token = config.optString("rtcToken");
+            return  joinChannel(channelName, token);
+        }
+    }
 }
 
 

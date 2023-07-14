@@ -53,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
                 agoraManager.setBroadcasterRole(checkedId == com.example.agora_manager.R.id.radioButtonBroadcaster));
 
         editChannelName = findViewById(R.id.editChannelName);
+        editChannelName.setText(agoraManager.channelName);
     }
 
     public void joinLeave(View view) {
@@ -74,14 +75,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
             btnJoinLeave.setText("Leave");
-
-
-           /* int result = agoraManager.joinChannel(channelName, agoraManager.localUid ,token);
-            if (result == 0) {
-                btnJoinLeave.setText("Leave");
-                if (radioGroup.getVisibility() != View.GONE) radioGroup.setVisibility(View.INVISIBLE);
-            }*/
-
         } else {
             agoraManager.leaveChannel();
             btnJoinLeave.setText("Join");
