@@ -3,11 +3,8 @@ package com.example.authentication_workflow;
 import android.content.Context;
 import com.example.agora_manager.AgoraManager;
 
-import android.util.Log;
 import android.view.View;
-
 import androidx.annotation.NonNull;
-
 import io.agora.rtc2.IRtcEngineEventHandler;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -22,6 +19,12 @@ public class AgoraManagerAuthenticationWorkflow extends AgoraManager {
     private final String serverUrl; // The base URL to your token server
     private final int tokenExpiryTime; // Time in seconds after which the token will expire.
 
+    // Token Callback interface
+    public interface TokenCallback {
+        void onTokenReceived(String rtcToken);
+        void onError(String errorMessage);
+    }
+
     public AgoraManagerAuthenticationWorkflow(Context context) {
         super(context);
 
@@ -33,6 +36,29 @@ public class AgoraManagerAuthenticationWorkflow extends AgoraManager {
     @Override
     protected IRtcEngineEventHandler getIRtcEngineEventHandler() {
         return new IRtcEngineEventHandler() {
+
+            // Listen for the event that the token is about to expire
+            @Override
+            public void onTokenPrivilegeWillExpire(String token) {
+                sendMessage("Token expiring...");
+                // Get a new token
+                fetchToken(channelName, new AgoraManagerAuthenticationWorkflow.TokenCallback() {
+                    @Override
+                    public void onTokenReceived(String rtcToken) {
+                        // Use the token to renew
+                        agoraEngine.renewToken(rtcToken);
+                        sendMessage("Expiring token renewed");
+                    }
+
+                    @Override
+                    public void onError(String errorMessage) {
+                        // Handle the error
+                        sendMessage("Error: " + errorMessage);
+                    }
+                });
+                super.onTokenPrivilegeWillExpire(token);
+            }
+
             @Override
             // Listen for a remote user joining the channel.
             public void onUserJoined(int uid, int elapsed) {
@@ -42,7 +68,7 @@ public class AgoraManagerAuthenticationWorkflow extends AgoraManager {
 
                 if (isBroadcaster && (currentProduct == ProductName.INTERACTIVE_LIVE_STREAMING
                         || currentProduct == ProductName.BROADCAST_STREAMING)) {
-                    return;
+                    // Do nothing
                 } else {
                     // Set the remote video view for the new user.
                     setupRemoteVideo();
@@ -66,7 +92,7 @@ public class AgoraManagerAuthenticationWorkflow extends AgoraManager {
         };
     }
 
-    public void fetchToken(String channelName) {
+    public void fetchToken(String channelName, TokenCallback callback) {
         int tokenRole = isBroadcaster ? 1 : 2;
         // Prepare the Url
         String URLString = serverUrl + "/rtc/" + channelName + "/" + tokenRole + "/"
@@ -85,37 +111,31 @@ public class AgoraManagerAuthenticationWorkflow extends AgoraManager {
 
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                Log.e("IOException", e.toString());
+                callback.onError("IOException: " + e);
             }
 
             @Override
-            public void onResponse(Call call, Response response) throws IOException {
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                 if (response.isSuccessful()) {
                     // Extract rtcToken from the response
                     String rtcToken = null;
-                    String result = response.body().string();
                     try {
+                        String result = response.body().string();
                         JSONObject jsonObject = new JSONObject(result);
                         rtcToken = jsonObject.getString("rtcToken");
                     } catch (JSONException e) {
                         e.printStackTrace();
+                        callback.onTokenReceived("Token request failed");
                     }
-                    // Use the token to join a channel or to renew an expiring token
-                    useToken(rtcToken);
+                    // Return the token through a callback
+                    callback.onTokenReceived(rtcToken);
+                } else {
+                    callback.onTokenReceived("Token request failed");
                 }
             }
         });
     }
 
-    private void useToken(String token) {
-        if (!joined) { // not joined
-            // Join the channel with a token.
-            joinChannel(channelName, localUid, token);
-        } else { // Already joined, renew the token by calling renewToken
-            agoraEngine.renewToken(token);
-            sendMessage("Expiring token renewed");
-        }
-    }
 }
 
 

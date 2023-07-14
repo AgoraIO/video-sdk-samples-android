@@ -173,10 +173,10 @@ public class AgoraManager {
 
     public int joinChannel() {
         String token = config.optString("rtcToken");
-        return  joinChannel(channelName, localUid, token);
+        return  joinChannel(channelName, token);
     }
 
-    public int joinChannel(String channelName, int uid, String token) {
+    public int joinChannel(String channelName, String token) {
         // Check that necessary permissions have been granted
         if (!checkSelfPermission()) {
             sendMessage("Permissions were not granted");
@@ -184,7 +184,6 @@ public class AgoraManager {
         }
 
         this.channelName = channelName;
-        this.localUid = uid;
 
         // Create an RTCEngine instance
         if (agoraEngine == null) setupAgoraEngine();
@@ -218,7 +217,7 @@ public class AgoraManager {
             // Join the channel with a token.
             // You need to specify the user ID yourself, and ensure that it is unique in the channel.
             // If a user ID is not assigned or set to 0, the SDK assigns a random number and returns it in the onJoinChannelSuccess callback.
-            agoraEngine.joinChannel(token, channelName, uid, options);
+            agoraEngine.joinChannel(token, channelName, localUid, options);
 
         return 0;
     }
@@ -281,6 +280,7 @@ public class AgoraManager {
             public void onUserOffline(int uid, int reason) {
                 sendMessage("Remote user offline " + uid + " " + reason);
                 activity.runOnUiThread(() -> remoteSurfaceView.setVisibility(View.GONE));
+                remoteUid = 0;
             }
         };
     }
@@ -292,7 +292,6 @@ public class AgoraManager {
 
     public interface AgoraManagerListener {
         void onMessageReceived(String message);
-        void onEvent(String eventName, Map<String, Object> eventArgs);
     }
 
     protected void sendMessage(String message) {

@@ -11,8 +11,6 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 import android.widget.RadioGroup;
 
-import java.util.Map;
-
 public class MainActivity extends AppCompatActivity {
     private AgoraManagerAuthenticationWorkflow agoraManager;
     private Button btnJoinLeave;
@@ -40,11 +38,6 @@ public class MainActivity extends AppCompatActivity {
                 runOnUiThread(() ->
                         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show());
             }
-
-            @Override
-            public void onEvent(String eventName, Map<String, Object> eventArgs) {
-
-            }
         });
 
         RadioGroup radioGroup = findViewById(com.example.agora_manager.R.id.radioGroup);
@@ -67,14 +60,28 @@ public class MainActivity extends AppCompatActivity {
 
         if (!agoraManager.isJoined()) {
             String channelName = editChannelName.getText().toString();
-            agoraManager.fetchToken(channelName);
+            agoraManager.fetchToken(channelName, new AgoraManagerAuthenticationWorkflow.TokenCallback() {
+                @Override
+                public void onTokenReceived(String rtcToken) {
+                    // Handle the received rtcToken
+                    agoraManager.joinChannel(channelName, rtcToken);
+                }
+
+                @Override
+                public void onError(String errorMessage) {
+                    // Handle the error
+                    System.out.println("Error: " + errorMessage);
+                }
+            });
             btnJoinLeave.setText("Leave");
+
 
            /* int result = agoraManager.joinChannel(channelName, agoraManager.localUid ,token);
             if (result == 0) {
                 btnJoinLeave.setText("Leave");
                 if (radioGroup.getVisibility() != View.GONE) radioGroup.setVisibility(View.INVISIBLE);
             }*/
+
         } else {
             agoraManager.leaveChannel();
             btnJoinLeave.setText("Join");
