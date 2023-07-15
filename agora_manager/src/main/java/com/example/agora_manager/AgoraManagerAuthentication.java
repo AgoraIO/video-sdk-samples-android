@@ -1,7 +1,6 @@
-package com.example.authentication_workflow;
+package com.example.agora_manager;
 
 import android.content.Context;
-import com.example.agora_manager.AgoraManager;
 
 import android.view.View;
 import androidx.annotation.NonNull;
