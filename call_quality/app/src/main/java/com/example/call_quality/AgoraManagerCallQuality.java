@@ -16,8 +16,7 @@ import io.agora.rtc2.video.VideoEncoderConfiguration;
 
 public class AgoraManagerCallQuality extends AgoraManagerAuthentication {
     // Counters to control the frequency of messages
-    private int counter1 = 0; 
-    private int counter2 = 0; 
+    private int counter = 0;
     // Quality of the remote video stream being played
     private boolean highQuality = true;
     private final IRtcEngineEventHandler baseEventHandler;
@@ -128,14 +127,14 @@ public class AgoraManagerCallQuality extends AgoraManagerAuthentication {
 
             @Override
             public void onRtcStats(RtcStats rtcStats) {
-                counter1 += 1;
+                counter += 1;
                 String msg = "";
 
-                if (counter1 == 5)
+                if (counter == 5)
                     msg = rtcStats.users + " user(s)";
-                else if (counter1 == 10 ) {
+                else if (counter == 10 ) {
                     msg = "Packet loss rate: " + rtcStats.rxPacketLossRate;
-                    counter1 = 0;
+                    counter = 0;
                 }
 
                 if (msg.length()>0) sendMessage(msg);
@@ -153,21 +152,17 @@ public class AgoraManagerCallQuality extends AgoraManagerAuthentication {
 
             @Override
             public void onRemoteVideoStats(RemoteVideoStats stats) {
-                counter2 += 1;
-
-                if (counter2 == 5) {
-                    String msg = "Remote Video Stats: "
-                            + "\n User id =" + stats.uid
-                            + "\n Received bitrate =" + stats.receivedBitrate
-                            + "\n Total frozen time =" + stats.totalFrozenTime;
-                    counter2 = 0;
-                    sendMessage(msg);
-                }
+                ((AgoraManagerCallQualityListener) mListener).onRemoteVideoStats(
+                        stats
+                );
             }
 
             @Override
             public void onUserJoined(int uid, int elapsed) {
                 baseEventHandler.onUserJoined(uid, elapsed);
+                ((AgoraManagerCallQualityListener) mListener).onUserJoined(
+                        uid
+                );
             }
 
             @Override
@@ -189,21 +184,21 @@ public class AgoraManagerCallQuality extends AgoraManagerAuthentication {
 
     public void startEchoTest() {
         if (agoraEngine == null) setupAgoraEngine();
+        // Set test configuration parameters
         EchoTestConfiguration echoConfig = new EchoTestConfiguration();
         echoConfig.enableAudio = true;
         echoConfig.enableVideo = true;
         echoConfig.channelId = channelName;
-        echoConfig.view = localSurfaceView;
         echoConfig.intervalInSeconds = 2;
         // Set up the video view
         setupLocalVideo();
-        localSurfaceView.setVisibility(View.VISIBLE);
+        echoConfig.view = localSurfaceView;
 
         // Get a token from the server or from the config file
         if (serverUrl.contains("http")) { // A valid server url is available
             // Fetch a token from the server for channelName
             // Uses the uid from the config.json file
-            fetchToken(channelName, new AgoraManagerAuthentication.TokenCallback() {
+            fetchToken(channelName, 0, new AgoraManagerAuthentication.TokenCallback() {
                 @Override
                 public void onTokenReceived(String rtcToken) {
                     // Handle the received rtcToken
@@ -227,12 +222,12 @@ public class AgoraManagerCallQuality extends AgoraManagerAuthentication {
 
     public void stopEchoTest() {
         agoraEngine.stopEchoTest();
-        setupLocalVideo();
-        localSurfaceView.setVisibility(View.GONE);
+        activity.runOnUiThread(() -> localSurfaceView.setVisibility(View.GONE));
         destroyAgoraEngine();
     }
 
     public void switchStreamQuality() {
+        if (!isJoined() || remoteUid <=0) return;
         highQuality = !highQuality;
 
         if (highQuality) {
@@ -248,6 +243,8 @@ public class AgoraManagerCallQuality extends AgoraManagerAuthentication {
         void onMessageReceived(String message);
         void onNetworkQuality(int uid, int txQuality, int rxQuality);
         void onLastMileQuality(int quality);
+        void onUserJoined(int uid);
+        void onRemoteVideoStats(IRtcEngineEventHandler.RemoteVideoStats stats);
     }
 
 }

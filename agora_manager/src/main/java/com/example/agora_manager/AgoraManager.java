@@ -39,7 +39,7 @@ public class AgoraManager {
     // The name of the channel to join
     public String channelName;
     // UIDs of the local and remote users
-    public int localUid, remoteUid;
+    public int localUid, remoteUid=0;
     // Status of the video call
     protected boolean joined = false;
     // Reference to FrameLayouts in your UI for rendering local and remote videos
