@@ -29,7 +29,6 @@ android {
 }
 
 dependencies {
-    implementation 'com.squareup.okhttp3:okhttp:4.9.3'
     implementation project(':agora_manager')
     implementation 'io.agora.rtc:full-sdk:4.2.1'
     implementation 'androidx.appcompat:appcompat:1.6.1'

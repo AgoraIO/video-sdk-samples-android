@@ -1,6 +1,8 @@
 package com.example.authentication_workflow;
 
 import com.example.agora_manager.AgoraManager;
+import com.example.agora_manager.AgoraManagerAuthentication;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
@@ -12,7 +14,7 @@ import android.widget.Toast;
 import android.widget.RadioGroup;
 
 public class MainActivity extends AppCompatActivity {
-    private AgoraManagerAuthenticationWorkflow agoraManager;
+    private AgoraManagerAuthentication agoraManager;
     private Button btnJoinLeave;
     private EditText editChannelName; // To read the channel name from the UI.
 
@@ -25,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
         // Find the widgets inside the included layout using the root view
         btnJoinLeave = baseLayout.findViewById(com.example.agora_manager.R.id.btnJoinLeave);
         // Create an instance of the AgoraManager class
-        agoraManager = new AgoraManagerAuthenticationWorkflow(this);
+        agoraManager = new AgoraManagerAuthentication(this);
         // Set the current product depending on your application
         agoraManager.setCurrentProduct(AgoraManager.ProductName.VIDEO_CALLING);
         agoraManager.setVideoFrameLayouts(
@@ -61,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (!agoraManager.isJoined()) {
             String channelName = editChannelName.getText().toString();
-            agoraManager.fetchToken(channelName, new AgoraManagerAuthenticationWorkflow.TokenCallback() {
+            agoraManager.fetchToken(channelName, new AgoraManagerAuthentication.TokenCallback() {
                 @Override
                 public void onTokenReceived(String rtcToken) {
                     // Handle the received rtcToken

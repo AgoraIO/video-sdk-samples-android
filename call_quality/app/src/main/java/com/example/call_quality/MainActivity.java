@@ -1,6 +1,6 @@
 package com.example.call_quality;
 
-import com.example.authentication_workflow.AgoraManagerAuthenticationWorkflow;
+import com.example.agora_manager.AgoraManager;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.graphics.Color;
@@ -16,7 +16,6 @@ import android.widget.Toast;
 public class MainActivity extends AppCompatActivity {
     private AgoraManagerCallQuality agoraManager;
 
-    private LinearLayout baseLayout;
     private Button btnJoinLeave;
     private TextView networkStatus; // For updating the network status
     private boolean isEchoTestRunning = false; // Keeps track of the echo test
@@ -38,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         // Find the root view of the included layout
-        baseLayout = findViewById(R.id.base_layout);
+        LinearLayout baseLayout = findViewById(R.id.base_layout);
         // Find the widgets inside the included layout using the root view
         btnJoinLeave = baseLayout.findViewById(com.example.agora_manager.R.id.btnJoinLeave);
         btnJoinLeave.setOnClickListener(this::joinLeave);
@@ -79,9 +78,8 @@ public class MainActivity extends AppCompatActivity {
             radioGroup.setVisibility(View.GONE);
         }
 
-        radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
-            agoraManager.setBroadcasterRole(checkedId == com.example.agora_manager.R.id.radioButtonBroadcaster);
-        });
+        radioGroup.setOnCheckedChangeListener((group, checkedId)
+                -> agoraManager.setBroadcasterRole(checkedId == com.example.agora_manager.R.id.radioButtonBroadcaster));
 
         // Switch stream quality when a user taps the remote video
         remoteFrameLayout.setOnClickListener(this::setStreamQuality);
@@ -97,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
         RadioGroup radioGroup = findViewById(com.example.agora_manager.R.id.radioGroup);
 
         if (!agoraManager.isJoined()) {
-            int result = agoraManager.joinChannel();
+            int result = agoraManager.joinChannel("demoChannel");
             if (result == 0) {
                 btnJoinLeave.setText("Leave");
                 if (radioGroup.getVisibility() != View.GONE) radioGroup.setVisibility(View.INVISIBLE);

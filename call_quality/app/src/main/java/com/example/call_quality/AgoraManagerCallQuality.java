@@ -3,7 +3,8 @@ package com.example.call_quality;
 import android.content.Context;
 import android.view.View;
 
-import com.example.authentication_workflow.AgoraManagerAuthenticationWorkflow;
+import com.example.agora_manager.AgoraManagerAuthentication;
+import com.example.agora_manager.AgoraManager;
 
 import io.agora.rtc2.Constants;
 import io.agora.rtc2.EchoTestConfiguration;
@@ -13,15 +14,17 @@ import io.agora.rtc2.RtcEngineConfig;
 import io.agora.rtc2.internal.LastmileProbeConfig;
 import io.agora.rtc2.video.VideoEncoderConfiguration;
 
-public class AgoraManagerCallQuality extends AgoraManagerAuthenticationWorkflow {
+public class AgoraManagerCallQuality extends AgoraManagerAuthentication {
     // Counters to control the frequency of messages
     private int counter1 = 0; 
     private int counter2 = 0; 
     // Quality of the remote video stream being played
-    private boolean highQuality = true; 
+    private boolean highQuality = true;
+    private final IRtcEngineEventHandler baseEventHandler;
 
     public AgoraManagerCallQuality(Context context) {
         super(context);
+        baseEventHandler = super.getIRtcEngineEventHandler();
     }
 
     public void startProbeTest() {
@@ -62,7 +65,11 @@ public class AgoraManagerCallQuality extends AgoraManagerAuthenticationWorkflow 
         }
 
         // Enable the dual stream mode
-        agoraEngine.enableDualStreamMode(true);
+        agoraEngine.setDualStreamMode(Constants.SimulcastStreamMode.ENABLE_SIMULCAST_STREAM);
+        // If you se the mode to AUTO_SIMULCAST_STREAM: the low-quality video
+        // steam is not sent; the SDK automatically switches to low-quality after
+        // // it receives a request to subscribe to a low-quality video stream.
+
         // Set audio profile and audio scenario.
         agoraEngine.setAudioProfile(Constants.AUDIO_PROFILE_DEFAULT, Constants.AUDIO_SCENARIO_GAME_STREAMING);
 
@@ -92,29 +99,6 @@ public class AgoraManagerCallQuality extends AgoraManagerAuthenticationWorkflow 
     protected IRtcEngineEventHandler getIRtcEngineEventHandler() {
 
         return new IRtcEngineEventHandler() {
-            @Override
-            // Listen for the remote host joining the channel to get the uid of the host.
-            public void onUserJoined(int uid, int elapsed) {
-                sendMessage("Remote user joined " + uid);
-                remoteUid = uid;
-
-                // Set the remote video view
-                setupRemoteVideo();
-            }
-
-            @Override
-            public void onJoinChannelSuccess(String channel, int uid, int elapsed) {
-                joined = true;
-                sendMessage("Joined Channel " + channel);
-                localUid = uid;
-            }
-
-            @Override
-            public void onUserOffline(int uid, int reason) {
-                sendMessage("Remote user offline " + uid + " " + reason);
-                activity.runOnUiThread(() -> remoteSurfaceView.setVisibility(View.GONE));
-            }
-
             @Override
             public void onConnectionStateChanged(int state, int reason) {
                 sendMessage("Connection state changed"
@@ -180,21 +164,65 @@ public class AgoraManagerCallQuality extends AgoraManagerAuthenticationWorkflow 
                     sendMessage(msg);
                 }
             }
+
+            @Override
+            public void onUserJoined(int uid, int elapsed) {
+                baseEventHandler.onUserJoined(uid, elapsed);
+            }
+
+            @Override
+            public void onJoinChannelSuccess(String channel, int uid, int elapsed) {
+                baseEventHandler.onJoinChannelSuccess(channel, uid, elapsed);
+            }
+
+            @Override
+            public void onUserOffline(int uid, int reason) {
+                baseEventHandler.onUserOffline(uid, reason);
+            }
+
+            @Override
+            public void onTokenPrivilegeWillExpire(String token) {
+                baseEventHandler.onTokenPrivilegeWillExpire(token);
+            }
         };
     }
 
-    public void startEchoTest(String token) {
+    public void startEchoTest() {
         if (agoraEngine == null) setupAgoraEngine();
         EchoTestConfiguration echoConfig = new EchoTestConfiguration();
         echoConfig.enableAudio = true;
         echoConfig.enableVideo = true;
-        echoConfig.token = token ;
         echoConfig.channelId = channelName;
-
-        setupLocalVideo();
         echoConfig.view = localSurfaceView;
+        echoConfig.intervalInSeconds = 2;
+        // Set up the video view
+        setupLocalVideo();
         localSurfaceView.setVisibility(View.VISIBLE);
-        agoraEngine.startEchoTest(echoConfig);
+
+        // Get a token from the server or from the config file
+        if (serverUrl.contains("http")) { // A valid server url is available
+            // Fetch a token from the server for channelName
+            // Uses the uid from the config.json file
+            fetchToken(channelName, new AgoraManagerAuthentication.TokenCallback() {
+                @Override
+                public void onTokenReceived(String rtcToken) {
+                    // Handle the received rtcToken
+                    echoConfig.token = rtcToken ;
+                    // Start the echo test
+                    agoraEngine.startEchoTest(echoConfig);
+                }
+
+                @Override
+                public void onError(String errorMessage) {
+                    // Handle the error
+                    sendMessage("Error: " + errorMessage);
+                }
+            });
+        } else { // use the token from the config.json file
+            echoConfig.token = config.optString("rtcToken");
+            // Start the echo test
+            agoraEngine.startEchoTest(echoConfig);
+        }
     }
 
     public void stopEchoTest() {

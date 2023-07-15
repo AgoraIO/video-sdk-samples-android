@@ -14,8 +14,8 @@ import java.io.IOException;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class AgoraManagerAuthenticationWorkflow extends AgoraManager {
-    private final String serverUrl; // The base URL to your token server
+public class AgoraManagerAuthentication extends AgoraManager {
+    protected final String serverUrl; // The base URL to your token server
     private final int tokenExpiryTime; // Time in seconds after which the token will expire.
 
     // Callback interface to receive the http response from an async token request
@@ -24,7 +24,7 @@ public class AgoraManagerAuthenticationWorkflow extends AgoraManager {
         void onError(String errorMessage);
     }
 
-    public AgoraManagerAuthenticationWorkflow(Context context) {
+    public AgoraManagerAuthentication(Context context) {
         super(context);
         // Read the server url and expiry time from the config file
         serverUrl = config.optString("serverUrl");
@@ -40,7 +40,7 @@ public class AgoraManagerAuthenticationWorkflow extends AgoraManager {
             public void onTokenPrivilegeWillExpire(String token) {
                 sendMessage("Token is about to expire");
                 // Get a new token
-                fetchToken(channelName, new AgoraManagerAuthenticationWorkflow.TokenCallback() {
+                fetchToken(channelName, new AgoraManagerAuthentication.TokenCallback() {
                     @Override
                     public void onTokenReceived(String rtcToken) {
                         // Use the token to renew
@@ -137,7 +137,7 @@ public class AgoraManagerAuthenticationWorkflow extends AgoraManager {
         if (serverUrl.contains("http")) { // A valid server url is available
             // Fetch a token from the server for channelName
             // Uses the uid from the config.json file
-            fetchToken(channelName, new AgoraManagerAuthenticationWorkflow.TokenCallback() {
+            fetchToken(channelName, new AgoraManagerAuthentication.TokenCallback() {
                 @Override
                 public void onTokenReceived(String rtcToken) {
                     // Handle the received rtcToken
