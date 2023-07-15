@@ -6,10 +6,10 @@ This repository holds the code examples used for the [Agora Video SDK for Androi
 
 The runnable code examples are:
 
-- [SDK quickstart](./sdk_quickstart/) - The minimum code you need to integrate high-quality, low-latency Video 
+- [SDK quickstart](./sdk_quickstart/) - The minimum code you need to integrate high-quality, low-latency Video. 
+- [Authentication workflow](./authentication_workflow/) - Connect securely to a channel using an authentication token obtained from a token server. 
   Calling features into your app using Video SDK.
-- [Call quality best practice](./call_quality/) - How to use Video SDK features to ensure optimal audio and video 
-  quality in your app. 
+- [Call quality best practice](./call_quality/) - How to use Video SDK features to ensure optimal audio and video quality in your app. 
 
 
 ## Run a sample project
