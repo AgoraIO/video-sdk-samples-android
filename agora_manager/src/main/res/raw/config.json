@@ -1,8 +1,0 @@
-{
-    "uid": "0",
-    "appId": "<--Your app Id-->",
-    "channelName": "<--A channel name-->",
-    "rtcToken": "<--Authentication token from Agora Console-->",
-    "serverUrl": "<--Token server url-->",
-    "tokenExpiryTime": "600"
-}

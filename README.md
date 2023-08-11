@@ -1,31 +1,8 @@
-# Agora Video SDK for Android sample projects
+# Agora Video SDK sample projects for Android
 
-This repository holds the code examples used for the [Agora Video SDK for Android ](https://docs.agora.io/en/video-calling/get-started/get-started-sdk?platform=android) documentation. Clone the repo, run and test the samples, use the code in your own project. Enjoy.
+This repository contains code from the following demo projects presented in Agora documentation:
 
-## Sample projects
-
-The runnable code examples are:
-
-- [SDK quickstart](./sdk_quickstart/) - The minimum code you need to integrate high-quality, low-latency Video. 
-- [Authentication workflow](./authentication_workflow/) - Connect securely to a channel using an authentication token obtained from a token server. 
-  Calling features into your app using Video SDK.
-- [Call quality best practice](./call_quality/) - How to use Video SDK features to ensure optimal audio and video quality in your app. 
-
-
-## Run a sample project
-
-To run a sample project in this repository, take the following steps:
-
-1. Clone this Git repository by executing the following command in a terminal window:
-
-    ```bash
-    git clone https://github.com/AgoraIO/video-sdk-samples-android
-    ```
-
-1. Launch Android Studio. From the **File** menu, select **Open...** then choose the folder for the sample project you want to run. Wait for Gradle sync to complete.
-
-1. Refer to the README file in the selected project folder and follow the link to view complete project documentation for your product of interest.
-
-1. Connect an Android device to your development machine.
-
-1. In Android Studio, click **Run app**. A moment later, you see the project installed on your device.
+| Agora document | Repository Folder |
+|----------|--------|
+| [SDK quickstart](https://docs.agora.io/en/video-calling/get-started/get-started-sdk?platform=android) |  [sdk-quickstart-docs](sdk-quickstart-docs) |
+| [Call quality](https://docs.agora.io/en/video-calling/develop/ensure-channel-quality?platform=android) | [call-quality-docs](call-quality-docs) |
