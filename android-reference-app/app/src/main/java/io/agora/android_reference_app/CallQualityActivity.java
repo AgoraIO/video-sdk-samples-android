@@ -2,7 +2,7 @@ package io.agora.android_reference_app;
 
 import io.agora.agora_manager.AgoraManager;
 import io.agora.call_quality_manager.CallQualityManager;
-import androidx.appcompat.app.AppCompatActivity;
+import io.agora.rtc2.IRtcEngineEventHandler;
 
 import android.graphics.Color;
 import android.os.Bundle;
@@ -11,21 +11,16 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
-import android.widget.RadioGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import io.agora.rtc2.IRtcEngineEventHandler;
-
-public class CallQualityActivity extends AppCompatActivity {
-    private CallQualityManager agoraManager;
+public class CallQualityActivity extends BasicImplementationActivity {
+    private CallQualityManager callQualityManager;
 
     private TextView networkStatus; // For updating the network status
     private boolean isEchoTestRunning = false; // Keeps track of the echo test
-    private Button echoTestButton, btnJoinLeave;
-    FrameLayout remoteFrameLayout;
-
+    private Button echoTestButton;
+    private final AgoraManager.AgoraManagerListener baseListener = getAgoraManagerListener();
+    private TextView remoteStatsText;
     private void updateNetworkStatus(int quality) {
         if (quality > 0 && quality < 3) networkStatus.setBackgroundColor(Color.GREEN);
         else if (quality <= 4) networkStatus.setBackgroundColor(Color.YELLOW);
@@ -34,40 +29,25 @@ public class CallQualityActivity extends AppCompatActivity {
     }
 
     public void setStreamQuality(View view) {
-       // agoraManager.switchStreamQuality();
+        //callQualityManager.switchStreamQuality();
+    }
+
+     @Override
+    protected int getLayoutResourceId() {
+        return R.layout.activity_call_quality;
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_call_quality);
-        // Find the root view of the included layout
-        LinearLayout baseLayout = findViewById(R.id.base_layout);
-        // Find the widgets inside the included layout using the root view
-        btnJoinLeave = baseLayout.findViewById(R.id.btnJoinLeave);
-        btnJoinLeave.setOnClickListener(this::joinLeave);
-        remoteFrameLayout = baseLayout.findViewById(R.id.remote_video_view_container);
+    protected void initializeAgoraManager() {
+        callQualityManager = new CallQualityManager(this);
+        agoraManager = callQualityManager;
 
-        agoraManager = new CallQualityManager(this);
         // Set the current product depending on your application
         agoraManager.setCurrentProduct(AgoraManager.ProductName.VIDEO_CALLING);
-
+        // Set up a listener for updating the UI
         agoraManager.setListener(new CallQualityManager.CallQualityManagerListener() {
-            @Override
-            public void onMessageReceived(String message) {
-                showMessage(message);
-            }
 
             @Override
-            public void onRemoteUserJoined(int remoteUid, SurfaceView surfaceView) {
-
-            }
-
-            @Override
-            public void onRemoteUserLeft(int remoteUid) {
-
-            }
-
             public void onNetworkQuality(int uid, int txQuality, int rxQuality) {
                 // Use down-link network quality to update the network status
                 runOnUiThread(() -> updateNetworkStatus(rxQuality));
@@ -80,7 +60,9 @@ public class CallQualityActivity extends AppCompatActivity {
 
             @Override
             public void onUserJoined(int uid) {
-                setupOverlayText();
+
+                //setupOverlayText();
+
             }
 
             @Override
@@ -94,61 +76,68 @@ public class CallQualityActivity extends AppCompatActivity {
                     );
                 }
             }
+
+            @Override
+            public void onMessageReceived(String message) {
+                baseListener.onMessageReceived(message);
+            }
+
+            @Override
+            public void onRemoteUserJoined(int remoteUid, SurfaceView surfaceView) {
+                baseListener.onRemoteUserJoined(remoteUid, surfaceView);
+            }
+
+            @Override
+            public void onRemoteUserLeft(int remoteUid) {
+                baseListener.onRemoteUserLeft(remoteUid);
+            }
         });
+    }
 
-        RadioGroup radioGroup = findViewById(R.id.radioGroup);
-
-        // Manage Broadcaster and Audience roles in Interactive live streaming
-        if (agoraManager.getCurrentProduct()==AgoraManager.ProductName.INTERACTIVE_LIVE_STREAMING
-                || agoraManager.getCurrentProduct()==AgoraManager.ProductName.BROADCAST_STREAMING) {
-            radioGroup.setVisibility(View.VISIBLE);
-        } else {
-            radioGroup.setVisibility(View.GONE);
-        }
-
-        radioGroup.setOnCheckedChangeListener((group, checkedId)
-                -> agoraManager.setBroadcasterRole(checkedId == R.id.radioButtonBroadcaster));
-
-        // Switch stream quality when a user taps the remote video
-        remoteFrameLayout.setOnClickListener(this::setStreamQuality);
-
-        // Start the probe test
-        agoraManager.startProbeTest();
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_call_quality);
 
         networkStatus = findViewById(R.id.networkStatus);
         echoTestButton = findViewById(R.id.echoTestButton);
+
+        // Start the probe test
+        callQualityManager.startProbeTest();
     }
 
-    public void joinLeave(View view) {
-        RadioGroup radioGroup = findViewById(R.id.radioGroup);
 
-        if (!agoraManager.isJoined()) {
-            int result = agoraManager.joinChannelWithToken();
-            if (result == 0) {
+    @Override
+    protected void join() {
+        int result = callQualityManager.joinChannelWithToken();
+        if (result == 0) {
+            // Start local video
+            showLocalVideo();
+//            runOnUiThread(()-> {
                 btnJoinLeave.setText(R.string.leave);
-                if (radioGroup.getVisibility() != View.GONE) radioGroup.setVisibility(View.INVISIBLE);
-            }
-        } else {
-            agoraManager.leaveChannel();
-            btnJoinLeave.setText(R.string.join);
-            if (radioGroup.getVisibility() != View.GONE) radioGroup.setVisibility(View.VISIBLE);
-            removeOverlayText();
+  //          });
+            if (radioGroup.getVisibility() != View.GONE) radioGroup.setVisibility(View.INVISIBLE);
         }
+    }
+
+    @Override
+    protected void leave() {
+        super.leave();
+        removeOverlayText();
     }
 
     public void echoTest(View view) {
         if (!isEchoTestRunning) {
-            echoTestButton.setText("Stop Echo Test");
-            agoraManager.startEchoTest();
+            echoTestButton.setText(R.string.stop_echo_test);
+            callQualityManager.startEchoTest();
             isEchoTestRunning = true;
         } else {
-            agoraManager.stopEchoTest();
-            echoTestButton.setText("Start Echo Test");
+            callQualityManager.stopEchoTest();
+            echoTestButton.setText(R.string.start_echo_test);
             isEchoTestRunning = false;
         }
     }
 
-    TextView remoteStatsText;
     public void setupOverlayText() {
         // Create a new TextView
         remoteStatsText = new TextView(this);
@@ -163,18 +152,13 @@ public class CallQualityActivity extends AppCompatActivity {
         remoteStatsText.setPadding(10, 0, 0, 0);
         // Add the TextView to the FrameLayout
         runOnUiThread(() ->
-                remoteFrameLayout.addView(remoteStatsText));
+                mainFrame.addView(remoteStatsText));
     }
 
     private void removeOverlayText() {
         runOnUiThread(() ->
-                remoteFrameLayout.removeView(remoteStatsText));
+                mainFrame.removeView(remoteStatsText));
         // Dispose the TextView
         remoteStatsText = null;
-    }
-
-    private void showMessage(String message) {
-        runOnUiThread(() ->
-                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show());
     }
 }

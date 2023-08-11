@@ -4,9 +4,10 @@
     <string name="leave">Leave</string>
     <string name="join">Join</string>
     <string name="Authentication_server_hint">Authentication serrver URL</string>
-    <string name="start_echo_test">Start Echo Test</string>
     <string name="network_status">Network Status:</string>
     <string name="channel_name_hint">Type the channel name here</string>
     <string name="broadcaster">Broadcaster</string>
     <string name="audience">Audience</string>
+    <string name="start_echo_test">Start Echo Test</string>
+    <string name="stop_echo_test">Stop Echo Test</string>
 </resources>

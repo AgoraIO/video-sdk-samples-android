@@ -9,25 +9,20 @@
         android:id="@+id/main_video_container"
         android:layout_width="match_parent"
         android:layout_height="240dp"
-        android:background="@color/dark_gray" />
-
-    <FrameLayout
-        android:id="@+id/remote_video_view_container"
-        android:layout_width="320dp"
-        android:layout_height="240dp"
-        android:visibility="gone"
-        android:background="@color/dark_gray" />
+        android:background="@drawable/border_drawable" />
 
     <HorizontalScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:scrollbars="none">
+        android:scrollbars="none"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/border_drawable">
 
         <LinearLayout
             android:id="@+id/containerLayout"
             android:layout_width="wrap_content"
             android:layout_height="120dp"
-            android:paddingVertical="6dp"
+            android:paddingVertical="3dp"
             android:orientation="horizontal">
         </LinearLayout>
     </HorizontalScrollView>
