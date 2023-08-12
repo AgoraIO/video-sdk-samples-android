@@ -18,23 +18,33 @@ public class CallQualityActivity extends BasicImplementationActivity {
 
     private TextView networkStatus; // For updating the network status
     private boolean isEchoTestRunning = false; // Keeps track of the echo test
-    private Button echoTestButton;
+    private Button btnEchoTest;
     private final AgoraManager.AgoraManagerListener baseListener = getAgoraManagerListener();
-    private TextView remoteStatsText;
+    private TextView overlayText;
+
     private void updateNetworkStatus(int quality) {
         if (quality > 0 && quality < 3) networkStatus.setBackgroundColor(Color.GREEN);
         else if (quality <= 4) networkStatus.setBackgroundColor(Color.YELLOW);
         else if (quality <= 6) networkStatus.setBackgroundColor(Color.RED);
         else networkStatus.setBackgroundColor(Color.WHITE);
+
+        networkStatus.setText(Integer.toString(quality));
     }
 
-    public void setStreamQuality(View view) {
-        //callQualityManager.switchStreamQuality();
-    }
-
-     @Override
+    @Override
     protected int getLayoutResourceId() {
         return R.layout.activity_call_quality;
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        networkStatus = findViewById(R.id.networkStatus);
+        btnEchoTest = findViewById(R.id.btnEchoTest);
+
+        // Start the probe test
+        callQualityManager.startProbeTest();
     }
 
     @Override
@@ -60,19 +70,23 @@ public class CallQualityActivity extends BasicImplementationActivity {
 
             @Override
             public void onUserJoined(int uid) {
-
-                //setupOverlayText();
-
+                if (overlayText == null ) setupOverlayText();
             }
 
             @Override
             public void onRemoteVideoStats(IRtcEngineEventHandler.RemoteVideoStats stats) {
-                if (agoraManager.remoteUids.contains(stats.uid) ) {
-                    String caption = "Renderer frame rate: " + stats.rendererOutputFrameRate
+                int selectedUserId = (int) mainFrame.getTag();
+                if (selectedUserId == agoraManager.localUid) {
+                    runOnUiThread(() -> overlayText.setText(""));
+                    return;
+                }
+                if (selectedUserId == stats.uid)  {
+                    String caption = "Uid: " + stats.uid
+                            + "\nRenderer frame rate: " + stats.rendererOutputFrameRate
                             + "\nReceived bitrate: " + stats.receivedBitrate
                             + "\nPublish duration: " + stats.publishDuration
                             + "\nFrame loss rate: " + stats.frameLossRate;
-                    runOnUiThread(() -> remoteStatsText.setText(caption)
+                    runOnUiThread(() -> overlayText.setText(caption)
                     );
                 }
             }
@@ -85,27 +99,17 @@ public class CallQualityActivity extends BasicImplementationActivity {
             @Override
             public void onRemoteUserJoined(int remoteUid, SurfaceView surfaceView) {
                 baseListener.onRemoteUserJoined(remoteUid, surfaceView);
+                // Choose low quality when the video plays in a small frame
+                callQualityManager.setStreamQuality(remoteUid, false);
             }
 
             @Override
             public void onRemoteUserLeft(int remoteUid) {
+                runOnUiThread(() -> overlayText.setText(""));
                 baseListener.onRemoteUserLeft(remoteUid);
             }
         });
     }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_call_quality);
-
-        networkStatus = findViewById(R.id.networkStatus);
-        echoTestButton = findViewById(R.id.echoTestButton);
-
-        // Start the probe test
-        callQualityManager.startProbeTest();
-    }
-
 
     @Override
     protected void join() {
@@ -113,9 +117,8 @@ public class CallQualityActivity extends BasicImplementationActivity {
         if (result == 0) {
             // Start local video
             showLocalVideo();
-//            runOnUiThread(()-> {
-                btnJoinLeave.setText(R.string.leave);
-  //          });
+            btnJoinLeave.setText(R.string.leave);
+            btnEchoTest.setEnabled(false);
             if (radioGroup.getVisibility() != View.GONE) radioGroup.setVisibility(View.INVISIBLE);
         }
     }
@@ -123,42 +126,56 @@ public class CallQualityActivity extends BasicImplementationActivity {
     @Override
     protected void leave() {
         super.leave();
-        removeOverlayText();
+        btnEchoTest.setEnabled(true);
+        overlayText = null;
     }
 
     public void echoTest(View view) {
         if (!isEchoTestRunning) {
-            echoTestButton.setText(R.string.stop_echo_test);
-            callQualityManager.startEchoTest();
+            btnEchoTest.setText(R.string.stop_echo_test);
+            surfaceViewMain = callQualityManager.startEchoTest();
+            mainFrame.addView(surfaceViewMain);
             isEchoTestRunning = true;
         } else {
             callQualityManager.stopEchoTest();
-            echoTestButton.setText(R.string.start_echo_test);
+            btnEchoTest.setText(R.string.start_echo_test);
+            mainFrame.removeView(surfaceViewMain);
             isEchoTestRunning = false;
         }
+        btnJoinLeave.setEnabled(!isEchoTestRunning);
     }
 
     public void setupOverlayText() {
         // Create a new TextView
-        remoteStatsText = new TextView(this);
+        overlayText = new TextView(this);
         FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.WRAP_CONTENT,
                 FrameLayout.LayoutParams.WRAP_CONTENT
         );
         layoutParams.gravity = Gravity.BOTTOM; // Set gravity to bottom left
-        remoteStatsText.setLayoutParams(layoutParams);
-        remoteStatsText.setTextSize(14);
-        remoteStatsText.setTextColor(Color.WHITE);
-        remoteStatsText.setPadding(10, 0, 0, 0);
+        overlayText.setLayoutParams(layoutParams);
+        overlayText.setTextSize(14);
+        overlayText.setTextColor(Color.WHITE);
+        overlayText.setPadding(10, 0, 0, 0);
         // Add the TextView to the FrameLayout
         runOnUiThread(() ->
-                mainFrame.addView(remoteStatsText));
+                mainFrame.addView(overlayText));
     }
 
-    private void removeOverlayText() {
-        runOnUiThread(() ->
-                mainFrame.removeView(remoteStatsText));
-        // Dispose the TextView
-        remoteStatsText = null;
+    @Override
+    protected void swapVideo(int frameId) {
+        // Switch to high-quality for the remote video going into the main frame
+        FrameLayout smallFrame = findViewById(frameId);
+        int smallFrameUid = (int) smallFrame.getTag();
+        if (smallFrameUid != agoraManager.localUid)
+            callQualityManager.setStreamQuality(smallFrameUid, true);
+
+        // Switch to low-quality for the remote video going into the small frame
+        int mainFrameUid = (int) mainFrame.getTag();
+        if (mainFrameUid != agoraManager.localUid)
+            callQualityManager.setStreamQuality(mainFrameUid, false);
+
+        // Swap the videos
+        super.swapVideo(frameId);
     }
 }

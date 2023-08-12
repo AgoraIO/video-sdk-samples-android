@@ -108,25 +108,9 @@ public class AgoraManager {
         return null;
     }
 
-    protected void setupLocalVideo() {
-        // Run code on the UI thread as the code modifies the UI
-     /*   activity.runOnUiThread(() -> {
-            // Create a SurfaceView object
-            localSurfaceView = new SurfaceView(mContext);
-            // Add it as a child to a FrameLayout.
-            localFrameLayout.addView(localSurfaceView);
-            localSurfaceView.setVisibility(View.VISIBLE);
-            // Call setupLocalVideo with a VideoCanvas having uid set to 0.
-            agoraEngine.setupLocalVideo(new VideoCanvas(localSurfaceView, VideoCanvas.RENDER_MODE_HIDDEN, 0));
-        });
-      */
-    }
-
     public SurfaceView getLocalVideo() {
         // Create a SurfaceView object
         SurfaceView localSurfaceView = new SurfaceView(mContext);
-        // Add it as a child to a FrameLayout.
-        //localFrameLayout.addView(localSurfaceView);
         localSurfaceView.setVisibility(View.VISIBLE);
         // Call setupLocalVideo with a VideoCanvas having uid set to 0.
         agoraEngine.setupLocalVideo(new VideoCanvas(localSurfaceView, VideoCanvas.RENDER_MODE_HIDDEN, 0));

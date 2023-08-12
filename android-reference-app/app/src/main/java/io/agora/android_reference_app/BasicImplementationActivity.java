@@ -23,6 +23,7 @@ public class BasicImplementationActivity extends AppCompatActivity {
     protected LinearLayout containerLayout;
     protected RadioGroup radioGroup;
     protected Map<Integer, FrameLayout> videoFrameMap;
+    protected SurfaceView surfaceViewMain;
 
     protected void initializeAgoraManager() {
         agoraManager = new AgoraManager(this);
@@ -56,8 +57,8 @@ public class BasicImplementationActivity extends AppCompatActivity {
         // Create an instance of the AgoraManager class
         initializeAgoraManager();
 
-        if (agoraManager.getCurrentProduct()==AgoraManager.ProductName.INTERACTIVE_LIVE_STREAMING
-                || agoraManager.getCurrentProduct()==AgoraManager.ProductName.BROADCAST_STREAMING) {
+        if (agoraManager.getCurrentProduct() == AgoraManager.ProductName.INTERACTIVE_LIVE_STREAMING
+                || agoraManager.getCurrentProduct() == AgoraManager.ProductName.BROADCAST_STREAMING) {
             radioGroup.setVisibility(View.VISIBLE);
         } else {
             radioGroup.setVisibility(View.GONE);
@@ -79,11 +80,12 @@ public class BasicImplementationActivity extends AppCompatActivity {
 
     protected void showLocalVideo() {
         if (agoraManager.isBroadcaster) {
-            runOnUiThread(()->{
+            runOnUiThread(() -> {
                 // Get the SurfaceView for the local video
                 SurfaceView localVideoSurfaceView = agoraManager.getLocalVideo();
                 // Add te SurfaceView to a FrameLayout
                 mainFrame.addView(localVideoSurfaceView);
+                surfaceViewMain = localVideoSurfaceView;
                 // Associate the FrameLayout
                 videoFrameMap.put(agoraManager.localUid, mainFrame);
                 mainFrame.setTag(agoraManager.localUid);
@@ -117,65 +119,67 @@ public class BasicImplementationActivity extends AppCompatActivity {
     }
 
     protected AgoraManager.AgoraManagerListener getAgoraManagerListener() {
-    return  (new AgoraManager.AgoraManagerListener() {
-        @Override
-        public void onMessageReceived(String message) {
-            showMessage(message);
-        }
+        return (new AgoraManager.AgoraManagerListener() {
+            @Override
+            public void onMessageReceived(String message) {
+                showMessage(message);
+            }
 
-        @Override
-        public void onRemoteUserJoined(int remoteUid, SurfaceView surfaceView) {
-            runOnUiThread(() -> {
-                // Create a new FrameLayout
-                FrameLayout remoteFrameLayout = new FrameLayout(getApplicationContext());
-                // Add the SurfaceView to the FrameLayout
-                remoteFrameLayout.addView(surfaceView);
-                // Set the layout parameters for the new FrameLayout
-                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-                        400,
-                        LinearLayout.LayoutParams.MATCH_PARENT
-                );
-                layoutParams.setMargins(6,6,6,6);
-                // Set the id for the new FrameLayout
-                remoteFrameLayout.setId(View.generateViewId());
-                // Associate the remoteUid with the FrameLayout for use in swapping
-                remoteFrameLayout.setTag(remoteUid);
-                videoFrameMap.put(remoteUid, remoteFrameLayout);
-                // Set an onclick listener for video swapping
-                remoteFrameLayout.setOnClickListener(videoClickListener);
-                // Add the new FrameLayout to the parent LinearLayout
-                containerLayout.addView(remoteFrameLayout,layoutParams);
-            });
-        }
+            @Override
+            public void onRemoteUserJoined(int remoteUid, SurfaceView surfaceView) {
+                runOnUiThread(() -> {
+                    // Create a new FrameLayout
+                    FrameLayout remoteFrameLayout = new FrameLayout(getApplicationContext());
+                    // Add the SurfaceView to the FrameLayout
+                    remoteFrameLayout.addView(surfaceView);
+                    // Set the layout parameters for the new FrameLayout
+                    LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                            400,
+                            LinearLayout.LayoutParams.MATCH_PARENT
+                    );
+                    layoutParams.setMargins(6, 6, 6, 6);
+                    // Set the id for the new FrameLayout
+                    remoteFrameLayout.setId(View.generateViewId());
+                    // Associate the remoteUid with the FrameLayout for use in swapping
+                    remoteFrameLayout.setTag(remoteUid);
+                    videoFrameMap.put(remoteUid, remoteFrameLayout);
+                    // Set an onclick listener for video swapping
+                    remoteFrameLayout.setOnClickListener(getVideoClickListener());
+                    // Add the new FrameLayout to the parent LinearLayout
+                    containerLayout.addView(remoteFrameLayout, layoutParams);
+                });
+            }
 
-        @Override
-        public void onRemoteUserLeft(int remoteUid) {
-            runOnUiThread(() -> {
-                // Get the FrameLayout in which the video was displayed
-                FrameLayout frameLayoutOfUser = videoFrameMap.get(remoteUid);
+            @Override
+            public void onRemoteUserLeft(int remoteUid) {
+                runOnUiThread(() -> {
+                    // Get the FrameLayout in which the video was displayed
+                    FrameLayout frameLayoutOfUser = videoFrameMap.get(remoteUid);
 
-                // If the video was in the main frame swap it with the local frame
-                if (frameLayoutOfUser.getId() == mainFrame.getId()) {
-                    swapVideo(videoFrameMap.get(agoraManager.localUid).getId());
-                }
+                    // If the video was in the main frame swap it with the local frame
+                    if (frameLayoutOfUser.getId() == mainFrame.getId()) {
+                        swapVideo(videoFrameMap.get(agoraManager.localUid).getId());
+                    }
 
-                // Remove the FrameLayout from the LinearLayout
-                FrameLayout frameLayoutToDelete = videoFrameMap.get(remoteUid);
-                containerLayout.removeView(frameLayoutToDelete);
-                videoFrameMap.remove(remoteUid);
-            });
-        }
-    });
+                    // Remove the FrameLayout from the LinearLayout
+                    FrameLayout frameLayoutToDelete = videoFrameMap.get(remoteUid);
+                    containerLayout.removeView(frameLayoutToDelete);
+                    videoFrameMap.remove(remoteUid);
+                });
+            }
+        });
     }
 
 
-    View.OnClickListener videoClickListener = (new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            // A small video frame was clicked
-            swapVideo(v.getId());
-        }
-    });
+    protected View.OnClickListener getVideoClickListener() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // A small video frame was clicked
+                swapVideo(v.getId());
+            }
+        };
+    }
 
     protected void swapVideo(int frameId) {
         // Swap the  video in the small frame with the main frame
@@ -183,15 +187,15 @@ public class BasicImplementationActivity extends AppCompatActivity {
             // Swap the videos in the small frame and the main frame
             FrameLayout smallFrame = findViewById(frameId);
 
-            // Get the SurfaceView in the frames
-            SurfaceView surfaceViewMain = (SurfaceView) mainFrame.getChildAt(0);
+            // Get the SurfaceView in the small frame
             SurfaceView surfaceViewSmall = (SurfaceView) smallFrame.getChildAt(0);
 
             // Swap the SurfaceViews
             mainFrame.removeView(surfaceViewMain);
             smallFrame.removeView(surfaceViewSmall);
-            mainFrame.addView(surfaceViewSmall);
+            mainFrame.addView(surfaceViewSmall,0);
             smallFrame.addView(surfaceViewMain);
+            surfaceViewMain = surfaceViewSmall;
 
             // Swap the FrameLayout tags
             int tag = (int) mainFrame.getTag();

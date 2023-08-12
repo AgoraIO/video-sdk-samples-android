@@ -1,6 +1,7 @@
 package io.agora.call_quality_manager;
 
 import android.content.Context;
+import android.view.SurfaceView;
 import android.view.View;
 
 import io.agora.authentication_manager.AuthenticationManager;
@@ -12,6 +13,7 @@ import io.agora.rtc2.IRtcEngineEventHandler;
 import io.agora.rtc2.RtcEngine;
 import io.agora.rtc2.RtcEngineConfig;
 import io.agora.rtc2.internal.LastmileProbeConfig;
+import io.agora.rtc2.video.VideoCanvas;
 import io.agora.rtc2.video.VideoEncoderConfiguration;
 
 public class CallQualityManager extends AuthenticationManager {
@@ -182,7 +184,7 @@ public class CallQualityManager extends AuthenticationManager {
         };
     }
 
-    public void startEchoTest() {
+    public SurfaceView startEchoTest() {
         if (agoraEngine == null) setupAgoraEngine();
         // Set test configuration parameters
         EchoTestConfiguration echoConfig = new EchoTestConfiguration();
@@ -190,9 +192,12 @@ public class CallQualityManager extends AuthenticationManager {
         echoConfig.enableVideo = true;
         echoConfig.channelId = channelName;
         echoConfig.intervalInSeconds = 2;
-        // Set up the video view
-        setupLocalVideo();
-        //echoConfig.view = localSurfaceView;
+        // Set up a SurfaceView
+        SurfaceView localSurfaceView = new SurfaceView(mContext);
+        localSurfaceView.setVisibility(View.VISIBLE);
+        // Call setupLocalVideo with a VideoCanvas having uid set to 0.
+        agoraEngine.setupLocalVideo(new VideoCanvas(localSurfaceView, VideoCanvas.RENDER_MODE_HIDDEN, 0));
+        echoConfig.view = localSurfaceView;
 
         // Get a token from the server or from the config file
         if (serverUrl.contains("http")) { // A valid server url is available
@@ -218,6 +223,7 @@ public class CallQualityManager extends AuthenticationManager {
             // Start the echo test
             agoraEngine.startEchoTest(echoConfig);
         }
+        return localSurfaceView;
     }
 
     public void stopEchoTest() {
@@ -226,16 +232,11 @@ public class CallQualityManager extends AuthenticationManager {
         destroyAgoraEngine();
     }
 
-    public void switchStreamQuality(int remoteUid) {
-        if (!isJoined() || remoteUid <=0) return;
-        highQuality = !highQuality;
-
+    public void setStreamQuality(int remoteUid, boolean highQuality) {
         if (highQuality) {
             agoraEngine.setRemoteVideoStreamType(remoteUid, Constants.VIDEO_STREAM_HIGH);
-            sendMessage("Switching to high-quality video");
         } else {
             agoraEngine.setRemoteVideoStreamType(remoteUid, Constants.VIDEO_STREAM_LOW);
-            sendMessage("Switching to low-quality video");
         }
     }
 

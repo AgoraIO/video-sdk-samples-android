@@ -133,6 +133,7 @@ public class AuthenticationManager extends AgoraManager {
     }
 
     public int joinChannelWithToken(String channelName) {
+        if (agoraEngine == null) setupAgoraEngine();
         if (isValidURL(serverUrl)) { // A valid server url is available
             // Fetch a token from the server for channelName
             fetchToken(channelName, new AuthenticationManager.TokenCallback() {
