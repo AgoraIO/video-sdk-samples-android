@@ -71,11 +71,6 @@ public class BasicImplementationActivity extends AppCompatActivity {
 
     protected void join() {
         int result = agoraManager.joinChannel();
-        if (result == 0) {
-            btnJoinLeave.setText("Leave");
-            showLocalVideo();
-            if (radioGroup.getVisibility() != View.GONE) radioGroup.setVisibility(View.INVISIBLE);
-        }
     }
 
     protected void showLocalVideo() {
@@ -167,6 +162,15 @@ public class BasicImplementationActivity extends AppCompatActivity {
                     videoFrameMap.remove(remoteUid);
                 });
             }
+
+            @Override
+            public void onJoinChannelSuccess(String channel, int uid, int elapsed) {
+                runOnUiThread(() -> {
+                    btnJoinLeave.setText("Leave");
+                    showLocalVideo();
+                    if (radioGroup.getVisibility() != View.GONE) radioGroup.setVisibility(View.INVISIBLE);
+                });
+            }
         });
     }
 
@@ -211,5 +215,13 @@ public class BasicImplementationActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (agoraManager.isJoined()) {
+            leave();
+        }
+        super.onBackPressed();
     }
 }

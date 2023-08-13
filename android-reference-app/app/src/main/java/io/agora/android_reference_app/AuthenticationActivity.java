@@ -52,11 +52,6 @@ public class AuthenticationActivity extends BasicImplementationActivity {
             public void onTokenReceived(String rtcToken) {
                 // Join a channel using the token
                 agoraManager.joinChannel(channelName, rtcToken);
-                // Start local video
-                showLocalVideo();
-                runOnUiThread(()->
-                    btnJoinLeave.setText(R.string.leave)
-                );
             }
 
             @Override

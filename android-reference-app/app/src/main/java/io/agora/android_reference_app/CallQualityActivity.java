@@ -108,19 +108,18 @@ public class CallQualityActivity extends BasicImplementationActivity {
                 runOnUiThread(() -> overlayText.setText(""));
                 baseListener.onRemoteUserLeft(remoteUid);
             }
+
+            @Override
+            public void onJoinChannelSuccess(String channel, int uid, int elapsed) {
+                baseListener.onJoinChannelSuccess(channel, uid, elapsed);
+                btnEchoTest.setEnabled(false);
+            }
         });
     }
 
     @Override
     protected void join() {
         int result = callQualityManager.joinChannelWithToken();
-        if (result == 0) {
-            // Start local video
-            showLocalVideo();
-            btnJoinLeave.setText(R.string.leave);
-            btnEchoTest.setEnabled(false);
-            if (radioGroup.getVisibility() != View.GONE) radioGroup.setVisibility(View.INVISIBLE);
-        }
     }
 
     @Override

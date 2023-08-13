@@ -1,5 +1,7 @@
 package io.agora.agora_manager;
 
+import static io.agora.rtc2.IRtcEngineEventHandler.ErrorCode;
+
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
@@ -43,7 +45,7 @@ public class AgoraManager {
     // An object to store uids of remote users
     public HashSet<Integer> remoteUids = new HashSet<>();
     // Status of the video call
-    protected boolean joined = false;
+    private boolean joined = false;
     // The Agora product to test
     protected ProductName currentProduct = ProductName.VIDEO_CALLING;
     public boolean isBroadcaster = true;
@@ -190,8 +192,6 @@ public class AgoraManager {
             // Set the client role as BROADCASTER or AUDIENCE according to the scenario.
             if (isBroadcaster) { // Broadcasting Host or Video-calling client
                 options.clientRoleType = Constants.CLIENT_ROLE_BROADCASTER;
-                // Display LocalSurfaceView.
-                // setupLocalVideo();
                 // Start local preview.
                 agoraEngine.startPreview();
             } else { // Audience
@@ -253,6 +253,7 @@ public class AgoraManager {
                 sendMessage("Joined Channel " + channel);
                 // Save the uid of the local user.
                 localUid = uid;
+                mListener.onJoinChannelSuccess(channel, uid, elapsed);
             }
 
             @Override
@@ -260,6 +261,21 @@ public class AgoraManager {
                 sendMessage("Remote user offline " + uid + " " + reason);
                 remoteUids.remove(uid);
                 mListener.onRemoteUserLeft(uid);
+            }
+
+            @Override
+            public void onError(int err) {
+                switch (err) {
+                    case ErrorCode.ERR_TOKEN_EXPIRED:
+                        sendMessage("Your token has expired");
+                        break;
+                    case ErrorCode.ERR_INVALID_TOKEN:
+                        sendMessage("Your token is invalid");
+                        break;
+                    default:
+                        sendMessage("Error code: " + err);
+                }
+
             }
         };
     }
@@ -273,6 +289,7 @@ public class AgoraManager {
         void onMessageReceived(String message);
         void onRemoteUserJoined(int remoteUid, SurfaceView surfaceView);
         void onRemoteUserLeft(int remoteUid);
+        void onJoinChannelSuccess(String channel, int uid, int elapsed);
     }
 
     protected void sendMessage(String message) {

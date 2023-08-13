@@ -69,7 +69,7 @@ public class AuthenticationManager extends AgoraManager {
 
             @Override
             public void onJoinChannelSuccess(String channel, int uid, int elapsed) {
-                baseEventHandler.onJoinChannelSuccess(channel,uid,elapsed);
+                baseEventHandler.onJoinChannelSuccess(channel, uid, elapsed);
             }
 
             @Override
