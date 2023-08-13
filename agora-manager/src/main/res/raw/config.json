@@ -2,7 +2,7 @@
   "uid": "10",
   "appId": "9d2498880e934632b38b0a68fa2f1622",
   "channelName": "demo",
-  "rtcToken": "xx007eJxTYFj18dBe7e5JPNk+jhePZLtEX64VM/gfFrQjp7nYIHUqW6cCg2WKkYmlhYWFQaqlsYmZsVGSsUWSQaKZRVqiUZqhmZHRt5PXUxoCGRkKgviYGBkgEMRnYUhJzc1nYAAAH1Eefw==",
+  "rtcToken": "007eJxTYFj18dBe7e5JPNk+jhePZLtEX64VM/gfFrQjp7nYIHUqW6cCg2WKkYmlhYWFQaqlsYmZsVGSsUWSQaKZRVqiUZqhmZHRt5PXUxoCGRkKgviYGBkgEMRnYUhJzc1nYAAAH1Eefw==",
   "serverUrl": "https://agora-token-service-production-b619.up.railway.app",
   "tokenExpiryTime": "70"
 }

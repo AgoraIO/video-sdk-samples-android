@@ -116,8 +116,8 @@ public class CallQualityManager extends AuthenticationManager {
             public void onLastmileProbeResult(LastmileProbeResult result) {
                 agoraEngine.stopLastmileProbeTest();
                 // The result object contains the detailed test results that help you
-                // manage call quality, for example, the downlink jitter.
-                sendMessage("Downlink jitter: " + result.downlinkReport.jitter);
+                // manage call quality, for example, the downlink bandwidth.
+                sendMessage("Available downlink bandwidth: " + result.downlinkReport.availableBandwidth);
             }
 
             @Override

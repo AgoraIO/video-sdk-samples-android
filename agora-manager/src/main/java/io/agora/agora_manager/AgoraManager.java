@@ -1,10 +1,7 @@
 package io.agora.agora_manager;
 
-import static io.agora.rtc2.IRtcEngineEventHandler.ErrorCode;
-
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -12,19 +9,19 @@ import android.Manifest;
 import android.view.SurfaceView;
 import android.view.View;
 
-import io.agora.rtc2.Constants;
-import io.agora.rtc2.IRtcEngineEventHandler;
-import io.agora.rtc2.RtcEngine;
-import io.agora.rtc2.RtcEngineConfig;
-import io.agora.rtc2.video.VideoCanvas;
-import io.agora.rtc2.ChannelMediaOptions;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
+
+import io.agora.rtc2.Constants;
+import io.agora.rtc2.IRtcEngineEventHandler;
+import io.agora.rtc2.RtcEngine;
+import io.agora.rtc2.RtcEngineConfig;
+import io.agora.rtc2.video.VideoCanvas;
+import io.agora.rtc2.ChannelMediaOptions;
 
 public class AgoraManager {
     // The reference to the Android activity you use for video calling
@@ -46,9 +43,9 @@ public class AgoraManager {
     public HashSet<Integer> remoteUids = new HashSet<>();
     // Status of the video call
     private boolean joined = false;
-    // The Agora product to test
-    protected ProductName currentProduct = ProductName.VIDEO_CALLING;
     public boolean isBroadcaster = true;
+    // The Agora product to test. Choose the product depending on your application
+    protected ProductName currentProduct = ProductName.INTERACTIVE_LIVE_STREAMING;
 
     public void setBroadcasterRole(boolean isBroadcaster) {
         this.isBroadcaster = isBroadcaster;

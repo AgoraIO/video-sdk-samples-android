@@ -4,7 +4,6 @@ import io.agora.agora_manager.AgoraManager;
 import io.agora.authentication_manager.AuthenticationManager;
 
 import android.os.Bundle;
-import android.view.SurfaceView;
 import android.widget.EditText;
 
 public class AuthenticationActivity extends BasicImplementationActivity {
@@ -33,8 +32,6 @@ public class AuthenticationActivity extends BasicImplementationActivity {
         authenticationManager = new AuthenticationManager(this);
         agoraManager = authenticationManager;
 
-        // Set the current product depending on your application
-        agoraManager.setCurrentProduct(AgoraManager.ProductName.VIDEO_CALLING);
         // Set up a listener for updating the UI
         agoraManager.setListener(getAgoraManagerListener());
     }

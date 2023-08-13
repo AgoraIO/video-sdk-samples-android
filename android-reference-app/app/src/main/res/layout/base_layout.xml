@@ -12,6 +12,7 @@
         android:background="@drawable/border_drawable" />
 
     <HorizontalScrollView
+        android:id="@+id/smallVideosView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:scrollbars="none"

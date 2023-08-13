@@ -52,8 +52,6 @@ public class CallQualityActivity extends BasicImplementationActivity {
         callQualityManager = new CallQualityManager(this);
         agoraManager = callQualityManager;
 
-        // Set the current product depending on your application
-        agoraManager.setCurrentProduct(AgoraManager.ProductName.VIDEO_CALLING);
         // Set up a listener for updating the UI
         agoraManager.setListener(new CallQualityManager.CallQualityManagerListener() {
 

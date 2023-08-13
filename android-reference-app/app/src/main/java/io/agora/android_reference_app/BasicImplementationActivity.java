@@ -3,6 +3,8 @@ package io.agora.android_reference_app;
 import io.agora.agora_manager.AgoraManager;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.SurfaceView;
 import android.view.View;
@@ -27,8 +29,7 @@ public class BasicImplementationActivity extends AppCompatActivity {
 
     protected void initializeAgoraManager() {
         agoraManager = new AgoraManager(this);
-        // Set the current product depending on your application
-        agoraManager.setCurrentProduct(AgoraManager.ProductName.VIDEO_CALLING);
+
         // Set up a listener for updating the UI
         agoraManager.setListener(getAgoraManagerListener());
     }
@@ -57,9 +58,19 @@ public class BasicImplementationActivity extends AppCompatActivity {
         // Create an instance of the AgoraManager class
         initializeAgoraManager();
 
+        // Set the Agora product
+        Intent intent = getIntent();
+        if (intent != null) {
+            int intValue = intent.getIntExtra("selectedProduct", 0);
+            AgoraManager.ProductName selectedProduct = AgoraManager.ProductName.values()[intValue];
+            agoraManager.setCurrentProduct(selectedProduct);
+        }
+
         if (agoraManager.getCurrentProduct() == AgoraManager.ProductName.INTERACTIVE_LIVE_STREAMING
                 || agoraManager.getCurrentProduct() == AgoraManager.ProductName.BROADCAST_STREAMING) {
             radioGroup.setVisibility(View.VISIBLE);
+            // Hide the horizontal scrolling video view
+            findViewById(R.id.smallVideosView).setVisibility(View.GONE);
         } else {
             radioGroup.setVisibility(View.GONE);
         }
@@ -70,7 +81,7 @@ public class BasicImplementationActivity extends AppCompatActivity {
     }
 
     protected void join() {
-        int result = agoraManager.joinChannel();
+        agoraManager.joinChannel();
     }
 
     protected void showLocalVideo() {
@@ -123,25 +134,35 @@ public class BasicImplementationActivity extends AppCompatActivity {
             @Override
             public void onRemoteUserJoined(int remoteUid, SurfaceView surfaceView) {
                 runOnUiThread(() -> {
-                    // Create a new FrameLayout
-                    FrameLayout remoteFrameLayout = new FrameLayout(getApplicationContext());
+                    FrameLayout targetLayout;
+                    if (agoraManager.getCurrentProduct() == AgoraManager.ProductName.VIDEO_CALLING ) {
+                        // Create a new FrameLayout
+                        targetLayout = new FrameLayout(getApplicationContext());
+                        // Set an onclick listener for video swapping
+                        targetLayout.setOnClickListener(getVideoClickListener());
+                        // Set the layout parameters for the new FrameLayout
+                        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                                400,
+                                LinearLayout.LayoutParams.MATCH_PARENT
+                        );
+                        layoutParams.setMargins(6, 6, 6, 6);
+                        // Set the id for the new FrameLayout
+                        targetLayout.setId(View.generateViewId());
+                        // Add the new FrameLayout to the parent LinearLayout
+                        containerLayout.addView(targetLayout, layoutParams);
+                    } else if (!agoraManager.isBroadcaster) {
+                        // Use the main frame
+                        targetLayout = mainFrame;
+                        surfaceViewMain = surfaceView;
+                    } else {
+                        return;
+                    }
+
                     // Add the SurfaceView to the FrameLayout
-                    remoteFrameLayout.addView(surfaceView);
-                    // Set the layout parameters for the new FrameLayout
-                    LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-                            400,
-                            LinearLayout.LayoutParams.MATCH_PARENT
-                    );
-                    layoutParams.setMargins(6, 6, 6, 6);
-                    // Set the id for the new FrameLayout
-                    remoteFrameLayout.setId(View.generateViewId());
+                    targetLayout.addView(surfaceView);
                     // Associate the remoteUid with the FrameLayout for use in swapping
-                    remoteFrameLayout.setTag(remoteUid);
-                    videoFrameMap.put(remoteUid, remoteFrameLayout);
-                    // Set an onclick listener for video swapping
-                    remoteFrameLayout.setOnClickListener(getVideoClickListener());
-                    // Add the new FrameLayout to the parent LinearLayout
-                    containerLayout.addView(remoteFrameLayout, layoutParams);
+                    targetLayout.setTag(remoteUid);
+                    videoFrameMap.put(remoteUid, targetLayout);
                 });
             }
 
@@ -153,12 +174,15 @@ public class BasicImplementationActivity extends AppCompatActivity {
 
                     // If the video was in the main frame swap it with the local frame
                     if (frameLayoutOfUser.getId() == mainFrame.getId()) {
-                        swapVideo(videoFrameMap.get(agoraManager.localUid).getId());
+                        if (agoraManager.getCurrentProduct() == AgoraManager.ProductName.VIDEO_CALLING) {
+                            swapVideo(videoFrameMap.get(agoraManager.localUid).getId());
+                            // Remove the FrameLayout from the LinearLayout
+                            FrameLayout frameLayoutToDelete = videoFrameMap.get(remoteUid);
+                            containerLayout.removeView(frameLayoutToDelete);
+                        } else {
+                            mainFrame.removeView(surfaceViewMain);
+                        }
                     }
-
-                    // Remove the FrameLayout from the LinearLayout
-                    FrameLayout frameLayoutToDelete = videoFrameMap.get(remoteUid);
-                    containerLayout.removeView(frameLayoutToDelete);
                     videoFrameMap.remove(remoteUid);
                 });
             }
@@ -176,12 +200,9 @@ public class BasicImplementationActivity extends AppCompatActivity {
 
 
     protected View.OnClickListener getVideoClickListener() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // A small video frame was clicked
-                swapVideo(v.getId());
-            }
+        return v -> {
+            // A small video frame was clicked
+            swapVideo(v.getId());
         };
     }
 
