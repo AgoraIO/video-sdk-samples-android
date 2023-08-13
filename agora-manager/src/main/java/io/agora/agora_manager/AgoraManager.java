@@ -45,7 +45,7 @@ public class AgoraManager {
     private boolean joined = false;
     public boolean isBroadcaster = true;
     // The Agora product to test. Choose the product depending on your application
-    protected ProductName currentProduct = ProductName.INTERACTIVE_LIVE_STREAMING;
+    protected ProductName currentProduct = ProductName.VIDEO_CALLING;
 
     public void setBroadcasterRole(boolean isBroadcaster) {
         this.isBroadcaster = isBroadcaster;
@@ -196,8 +196,6 @@ public class AgoraManager {
             }
 
             // Join the channel with a token.
-            // You need to specify the user ID yourself, and ensure that it is unique in the channel.
-            // If a user ID is not assigned or set to 0, the SDK assigns a random number and returns it in the onJoinChannelSuccess callback.
             agoraEngine.joinChannel(token, channelName, localUid, options);
 
         return 0;
