@@ -85,7 +85,7 @@ public class BasicImplementationActivity extends AppCompatActivity {
     }
 
     protected void showLocalVideo() {
-        if (agoraManager.isBroadcaster) {
+        if (agoraManager.isBroadcaster()) {
             runOnUiThread(() -> {
                 // Get the SurfaceView for the local video
                 SurfaceView localVideoSurfaceView = agoraManager.getLocalVideo();
@@ -93,8 +93,8 @@ public class BasicImplementationActivity extends AppCompatActivity {
                 mainFrame.addView(localVideoSurfaceView);
                 surfaceViewMain = localVideoSurfaceView;
                 // Associate the FrameLayout
-                videoFrameMap.put(agoraManager.localUid, mainFrame);
-                mainFrame.setTag(agoraManager.localUid);
+                videoFrameMap.put(agoraManager.getLocalUid(), mainFrame);
+                mainFrame.setTag(agoraManager.getLocalUid());
             });
         }
     }
@@ -150,7 +150,7 @@ public class BasicImplementationActivity extends AppCompatActivity {
                         targetLayout.setId(View.generateViewId());
                         // Add the new FrameLayout to the parent LinearLayout
                         containerLayout.addView(targetLayout, layoutParams);
-                    } else if (!agoraManager.isBroadcaster) {
+                    } else if (!agoraManager.isBroadcaster()) {
                         // Use the main frame
                         targetLayout = mainFrame;
                         surfaceViewMain = surfaceView;
@@ -175,7 +175,7 @@ public class BasicImplementationActivity extends AppCompatActivity {
                     // If the video was in the main frame swap it with the local frame
                     if (frameLayoutOfUser.getId() == mainFrame.getId()) {
                         if (agoraManager.getCurrentProduct() == AgoraManager.ProductName.VIDEO_CALLING) {
-                            swapVideo(videoFrameMap.get(agoraManager.localUid).getId());
+                            swapVideo(videoFrameMap.get(agoraManager.getLocalUid()).getId());
                             // Remove the FrameLayout from the LinearLayout
                             FrameLayout frameLayoutToDelete = videoFrameMap.get(remoteUid);
                             containerLayout.removeView(frameLayoutToDelete);

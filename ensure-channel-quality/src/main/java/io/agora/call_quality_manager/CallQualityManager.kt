@@ -1,36 +1,20 @@
 package io.agora.call_quality_manager
 
 import android.content.Context
-import io.agora.authentication_manager.AuthenticationManager.iRtcEngineEventHandler
-import io.agora.agora_manager.AgoraManager.sendMessage
-import io.agora.authentication_manager.AuthenticationManager.fetchToken
-import io.agora.agora_manager.AgoraManager.destroyAgoraEngine
 import io.agora.authentication_manager.AuthenticationManager
 import io.agora.rtc2.internal.LastmileProbeConfig
 import io.agora.rtc2.video.VideoEncoderConfiguration
-import io.agora.call_quality_manager.CallQualityManager.CallQualityManagerListener
-import io.agora.rtc2.IRtcEngineEventHandler.LastmileProbeResult
-import io.agora.rtc2.IRtcEngineEventHandler.RtcStats
 import io.agora.rtc2.IRtcEngineEventHandler.RemoteVideoStats
 import android.view.SurfaceView
 import android.view.View
 import io.agora.rtc2.video.VideoCanvas
-import io.agora.authentication_manager.AuthenticationManager.TokenCallback
-import io.agora.agora_manager.AgoraManager.AgoraManagerListener
 import io.agora.rtc2.*
 import java.lang.Exception
 
 class CallQualityManager(context: Context?) : AuthenticationManager(context) {
     // Counters to control the frequency of messages
     private var counter = 0
-
-    // Quality of the remote video stream being played
-    private val highQuality = true
-    private val baseEventHandler: IRtcEngineEventHandler
-
-    init {
-        baseEventHandler = super.iRtcEngineEventHandler
-    }
+    private val baseEventHandler: IRtcEngineEventHandler = super.iRtcEngineEventHandler
 
     fun startProbeTest() {
         if (agoraEngine == null) setupAgoraEngine()
@@ -62,20 +46,20 @@ class CallQualityManager(context: Context?) : AuthenticationManager(context) {
             config.mLogConfig = logConfig
             agoraEngine = RtcEngine.create(config)
             // By default, the video module is disabled, call enableVideo to enable it.
-            agoraEngine.enableVideo()
+            agoraEngine!!.enableVideo()
         } catch (e: Exception) {
             sendMessage(e.toString())
             return false
         }
 
         // Enable the dual stream mode
-        agoraEngine.setDualStreamMode(Constants.SimulcastStreamMode.ENABLE_SIMULCAST_STREAM)
+        agoraEngine!!.setDualStreamMode(Constants.SimulcastStreamMode.ENABLE_SIMULCAST_STREAM)
         // If you se the mode to AUTO_SIMULCAST_STREAM: the low-quality video
         // steam is not sent; the SDK automatically switches to low-quality after
         // // it receives a request to subscribe to a low-quality video stream.
 
         // Set audio profile and audio scenario.
-        agoraEngine.setAudioProfile(
+        agoraEngine!!.setAudioProfile(
             Constants.AUDIO_PROFILE_DEFAULT,
             Constants.AUDIO_SCENARIO_GAME_STREAMING
         )
@@ -100,14 +84,14 @@ class CallQualityManager(context: Context?) : AuthenticationManager(context) {
         videoConfig.advanceOptions.compressionPreference =
             VideoEncoderConfiguration.COMPRESSION_PREFERENCE.PREFER_LOW_LATENCY
         // Apply the configuration
-        agoraEngine.setVideoEncoderConfiguration(videoConfig)
+        agoraEngine!!.setVideoEncoderConfiguration(videoConfig)
         return true
     }
 
     // The result object contains the detailed test results that help you
     // manage call quality, for example, the downlink bandwidth.
     override val iRtcEngineEventHandler: IRtcEngineEventHandler
-        protected get() = object : IRtcEngineEventHandler() {
+        get() = object : IRtcEngineEventHandler() {
             override fun onConnectionStateChanged(state: Int, reason: Int) {
                 sendMessage(
                     """Connection state changed
@@ -141,7 +125,7 @@ class CallQualityManager(context: Context?) : AuthenticationManager(context) {
                     msg = "Packet loss rate: " + rtcStats.rxPacketLossRate
                     counter = 0
                 }
-                if (msg.length > 0) sendMessage(msg)
+                if (msg.isNotEmpty()) sendMessage(msg)
             }
 
             override fun onRemoteVideoStateChanged(

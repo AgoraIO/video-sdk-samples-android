@@ -3,11 +3,7 @@ package io.agora.agora_manager
 import android.Manifest
 import android.app.Activity
 import android.content.Context
-import io.agora.agora_manager.AgoraManager.AgoraManagerListener
 import org.json.JSONObject
-import io.agora.agora_manager.AgoraManager.ProductName
-import io.agora.agora_manager.AgoraManager
-import io.agora.agora_manager.R
 import org.json.JSONException
 import android.view.SurfaceView
 import io.agora.rtc2.video.VideoCanvas
@@ -23,7 +19,7 @@ import java.util.HashSet
 
 open class AgoraManager(context: Context) {
     // The reference to the Android activity you use for video calling
-    protected val activity: Activity
+    private val activity: Activity
     protected val mContext: Context
 
     // The RTCEngine instance
@@ -50,6 +46,7 @@ open class AgoraManager(context: Context) {
     // Status of the video call
     var isJoined = false
         private set
+
     var isBroadcaster = true
 
     // The Agora product to test. Choose the product depending on your application
@@ -78,7 +75,7 @@ open class AgoraManager(context: Context) {
         this.mListener = mListener
     }
 
-    fun readConfig(context: Context): JSONObject? {
+    private fun readConfig(context: Context): JSONObject? {
         try {
             val inputStream = context.resources.openRawResource(R.raw.config)
             val size = inputStream.available()
@@ -139,7 +136,7 @@ open class AgoraManager(context: Context) {
             // Create an RtcEngine instance
             agoraEngine = RtcEngine.create(config)
             // By default, the video module is disabled, call enableVideo to enable it.
-            agoraEngine.enableVideo()
+            agoraEngine!!.enableVideo()
         } catch (e: Exception) {
             sendMessage(e.toString())
             return false
@@ -218,7 +215,7 @@ open class AgoraManager(context: Context) {
 // Set the remote video view for the new user.// Remote video does not need to be rendered// Save the uid of the remote user.
     // Listen for a remote user joining the channel.
     protected open val iRtcEngineEventHandler: IRtcEngineEventHandler?
-        protected get() = object : IRtcEngineEventHandler() {
+        get() = object : IRtcEngineEventHandler() {
             // Listen for a remote user joining the channel.
             override fun onUserJoined(uid: Int, elapsed: Int) {
                 sendMessage("Remote user joined $uid")
@@ -258,7 +255,7 @@ open class AgoraManager(context: Context) {
             }
         }
 
-    protected fun checkSelfPermission(): Boolean {
+    private fun checkSelfPermission(): Boolean {
         return ContextCompat.checkSelfPermission(
             mContext,
             REQUESTED_PERMISSIONS[0]

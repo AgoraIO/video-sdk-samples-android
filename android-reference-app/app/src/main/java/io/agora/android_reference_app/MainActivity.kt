@@ -10,10 +10,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.agora.agora_manager.AgoraManager.ProductName
+import io.agora.agora_manager.AgoraManager
 
 class MainActivity : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
-    private var selectedProduct = ProductName.VIDEO_CALLING // Set default selection
+    private var selectedProduct = AgoraManager.ProductName.VIDEO_CALLING // Set default selection
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -1,25 +1,11 @@
 package io.agora.authentication_manager
 
 import android.content.Context
-import io.agora.agora_manager.AgoraManager.iRtcEngineEventHandler
-import io.agora.agora_manager.AgoraManager.sendMessage
-import okhttp3.Request.Builder.url
-import okhttp3.Request.Builder.header
-import okhttp3.Request.Builder.get
-import okhttp3.Request.Builder.build
-import okhttp3.OkHttpClient.newCall
-import okhttp3.Call.enqueue
-import okhttp3.Response.isSuccessful
-import okhttp3.Response.body
-import okhttp3.ResponseBody.string
-import io.agora.agora_manager.AgoraManager.setupAgoraEngine
-import io.agora.agora_manager.AgoraManager.joinChannel
+import okhttp3.Request.*
 import io.agora.agora_manager.AgoraManager
 import io.agora.rtc2.IRtcEngineEventHandler
-import io.agora.authentication_manager.AuthenticationManager.TokenCallback
 import org.json.JSONObject
 import org.json.JSONException
-import io.agora.authentication_manager.AuthenticationManager
 import okhttp3.*
 import java.io.IOException
 import java.net.MalformedURLException
@@ -49,7 +35,7 @@ open class AuthenticationManager(context: Context?) : AgoraManager(
 
     // Listen for the event that the token is about to expire
     override val iRtcEngineEventHandler: IRtcEngineEventHandler
-        protected get() = object : IRtcEngineEventHandler() {
+        get() = object : IRtcEngineEventHandler() {
             // Listen for the event that the token is about to expire
             override fun onTokenPrivilegeWillExpire(token: String) {
                 sendMessage("Token is about to expire")
@@ -90,13 +76,13 @@ open class AuthenticationManager(context: Context?) : AgoraManager(
     fun fetchToken(channelName: String, uid: Int, callback: TokenCallback) {
         val tokenRole = if (isBroadcaster) 1 else 2
         // Prepare the Url
-        val URLString = (serverUrl + "/rtc/" + channelName + "/" + tokenRole + "/"
+        val urlLString = (serverUrl + "/rtc/" + channelName + "/" + tokenRole + "/"
                 + "uid" + "/" + uid + "/?expiry=" + tokenExpiryTime)
         val client = OkHttpClient()
 
         // Create a request
         val request: Request = Builder()
-            .url(URLString)
+            .url(urlLString)
             .header("Content-Type", "application/json; charset=UTF-8")
             .get()
             .build()
@@ -131,7 +117,7 @@ open class AuthenticationManager(context: Context?) : AgoraManager(
     }
 
     @JvmOverloads
-    fun joinChannelWithToken(channelName: String = channelName): Int {
+    fun joinChannelWithToken(channelName: String = ""): Int {
         if (agoraEngine == null) setupAgoraEngine()
         return if (isValidURL(serverUrl)) { // A valid server url is available
             // Fetch a token from the server for channelName
