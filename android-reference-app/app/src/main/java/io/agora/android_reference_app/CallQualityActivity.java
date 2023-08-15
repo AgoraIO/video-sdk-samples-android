@@ -74,7 +74,7 @@ public class CallQualityActivity extends BasicImplementationActivity {
             @Override
             public void onRemoteVideoStats(IRtcEngineEventHandler.RemoteVideoStats stats) {
                 int selectedUserId = (int) mainFrame.getTag();
-                if (selectedUserId == agoraManager.localUid) {
+                if (selectedUserId == agoraManager.getLocalUid()) {
                     runOnUiThread(() -> overlayText.setText(""));
                     return;
                 }
@@ -117,7 +117,7 @@ public class CallQualityActivity extends BasicImplementationActivity {
 
     @Override
     protected void join() {
-        int result = callQualityManager.joinChannelWithToken();
+        callQualityManager.joinChannelWithToken();
     }
 
     @Override
@@ -164,12 +164,12 @@ public class CallQualityActivity extends BasicImplementationActivity {
         // Switch to high-quality for the remote video going into the main frame
         FrameLayout smallFrame = findViewById(frameId);
         int smallFrameUid = (int) smallFrame.getTag();
-        if (smallFrameUid != agoraManager.localUid)
+        if (smallFrameUid != agoraManager.getLocalUid())
             callQualityManager.setStreamQuality(smallFrameUid, true);
 
         // Switch to low-quality for the remote video going into the small frame
         int mainFrameUid = (int) mainFrame.getTag();
-        if (mainFrameUid != agoraManager.localUid)
+        if (mainFrameUid != agoraManager.getLocalUid())
             callQualityManager.setStreamQuality(mainFrameUid, false);
 
         // Swap the videos

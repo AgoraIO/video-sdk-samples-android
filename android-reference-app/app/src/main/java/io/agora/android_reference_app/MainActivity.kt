@@ -1,5 +1,7 @@
 package io.agora.android_reference_app
 
+import io.agora.agora_manager.AgoraManager
+
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -9,8 +11,6 @@ import android.widget.Spinner
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import io.agora.agora_manager.AgoraManager.ProductName
-import io.agora.agora_manager.AgoraManager
 
 class MainActivity : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
@@ -32,7 +32,7 @@ class MainActivity : AppCompatActivity() {
         val adapter = ArrayAdapter<String>(this, android.R.layout.simple_spinner_item)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 
-        for (productName in ProductName.values()) {
+        for (productName in AgoraManager.ProductName.values()) {
             val displayName = getDisplayName(productName)
             adapter.add(displayName)
         }
@@ -42,7 +42,7 @@ class MainActivity : AppCompatActivity() {
 
         productSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                selectedProduct = ProductName.values()[position]
+                selectedProduct = AgoraManager.ProductName.values()[position]
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -51,12 +51,13 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun getDisplayName(productName: ProductName): String {
+    private fun getDisplayName(productName: AgoraManager.ProductName): String {
         return when (productName) {
-            ProductName.VIDEO_CALLING -> "Video Calling"
-            ProductName.VOICE_CALLING -> "Voice Calling"
-            ProductName.INTERACTIVE_LIVE_STREAMING -> "Interactive Live Streaming"
-            ProductName.BROADCAST_STREAMING -> "Broadcast Streaming"
+            AgoraManager.ProductName.VIDEO_CALLING -> "Video Calling"
+            AgoraManager.ProductName.VOICE_CALLING -> "Voice Calling"
+            AgoraManager.ProductName.INTERACTIVE_LIVE_STREAMING -> "Interactive Live Streaming"
+            AgoraManager.ProductName.BROADCAST_STREAMING -> "Broadcast Streaming"
+            else -> "Unknown Product"
         }
     }
 

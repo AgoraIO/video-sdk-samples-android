@@ -1,6 +1,5 @@
 package io.agora.android_reference_app;
 
-import io.agora.agora_manager.AgoraManager;
 import io.agora.authentication_manager.AuthenticationManager;
 
 import android.os.Bundle;
@@ -21,10 +20,10 @@ public class AuthenticationActivity extends BasicImplementationActivity {
         super.onCreate(savedInstanceState);
 
         editChannelName = findViewById(R.id.editChannelName);
-        editChannelName.setText(agoraManager.channelName);
+        editChannelName.setText(agoraManager.getChannelName());
 
         editServerUrl = findViewById(R.id.editServerUrl);
-        editServerUrl.setText(authenticationManager.serverUrl);
+        editServerUrl.setText(authenticationManager.getServerUrl());
     }
 
     @Override
@@ -41,7 +40,7 @@ public class AuthenticationActivity extends BasicImplementationActivity {
         // Read the channel name
         String channelName = editChannelName.getText().toString();
         // Read the authentication server URL
-        authenticationManager.serverUrl = editServerUrl.getText().toString();
+        authenticationManager.setServerUrl(editServerUrl.getText().toString());
 
         // Fetch a token from the server using an async call
         authenticationManager.fetchToken(channelName, new AuthenticationManager.TokenCallback() {
