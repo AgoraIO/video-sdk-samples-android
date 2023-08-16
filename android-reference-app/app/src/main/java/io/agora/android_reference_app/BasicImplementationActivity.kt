@@ -12,7 +12,6 @@ import java.util.HashMap
 
 open class BasicImplementationActivity : AppCompatActivity() {
     protected var agoraManager: AgoraManager? = null
-    private var baseLayout: LinearLayout? = null
     protected var btnJoinLeave: Button? = null
     protected var mainFrame: FrameLayout? = null
     protected var containerLayout: LinearLayout? = null
@@ -26,7 +25,7 @@ open class BasicImplementationActivity : AppCompatActivity() {
         agoraManager!!.setListener(agoraManagerListener)
     }
 
-    // Default layout resource ID for base activity
+    // The layout resource for this activity
     protected open val layoutResourceId: Int
         get() = R.layout.activity_basic_implementation // Default layout resource ID for base activity
 
@@ -34,16 +33,13 @@ open class BasicImplementationActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(layoutResourceId)
 
-        // Find the root view of the included layout
-        baseLayout = findViewById(R.id.base_layout)
-        // Find the widgets inside the included layout using the root view
-        btnJoinLeave = baseLayout!!.findViewById(R.id.btnJoinLeave)
-        // Find the main video frame
-        mainFrame = findViewById(R.id.main_video_container)
-        // Find the multi video container layout
-        containerLayout = findViewById(R.id.containerLayout)
-        // Find the radio group for role
-        radioGroup = findViewById(R.id.radioGroup)
+        // Set up access to the UI elements
+        btnJoinLeave = findViewById(R.id.btnJoinLeave) // The join/leave button
+        mainFrame = findViewById(R.id.main_video_container) // The main video frame
+        containerLayout = findViewById(R.id.containerLayout) // The multi-video container layout
+        radioGroup = findViewById(R.id.radioGroup) // Radio group for setting the role
+
+        // Initialize a HashMap to keep track of videos and their current frames
         videoFrameMap = HashMap()
 
         // Create an instance of the AgoraManager class
@@ -52,10 +48,12 @@ open class BasicImplementationActivity : AppCompatActivity() {
         // Set the Agora product
         val intent = intent
         if (intent != null) {
+            // Retrieve the selected Agora product
             val intValue = intent.getIntExtra("selectedProduct", 0)
             val selectedProduct = ProductName.values()[intValue]
             agoraManager!!.currentProduct = selectedProduct
         }
+        // Set up the UI based on the selected product
         if (agoraManager!!.currentProduct === ProductName.INTERACTIVE_LIVE_STREAMING
             || agoraManager!!.currentProduct === ProductName.BROADCAST_STREAMING
         ) {
@@ -73,19 +71,19 @@ open class BasicImplementationActivity : AppCompatActivity() {
     }
 
     protected open fun join() {
+        // Join a channel
         agoraManager!!.joinChannel()
     }
 
     protected fun showLocalVideo() {
         if (agoraManager!!.isBroadcaster) {
             runOnUiThread {
-
                 // Get the SurfaceView for the local video
                 val localVideoSurfaceView = agoraManager!!.localVideo
                 // Add te SurfaceView to a FrameLayout
                 mainFrame!!.addView(localVideoSurfaceView)
                 surfaceViewMain = localVideoSurfaceView
-                // Associate the FrameLayout
+                // Associate the FrameLayout with the user Id for later retrieval
                 videoFrameMap!![agoraManager!!.localUid] = mainFrame
                 mainFrame!!.tag = agoraManager!!.localUid
             }
@@ -93,7 +91,9 @@ open class BasicImplementationActivity : AppCompatActivity() {
     }
 
     protected open fun leave() {
+        // Leave the channel
         agoraManager!!.leaveChannel()
+        // Update the UI
         btnJoinLeave!!.text = getString(R.string.join)
         if (radioGroup!!.visibility != View.GONE) radioGroup!!.visibility = View.VISIBLE
 
@@ -104,6 +104,7 @@ open class BasicImplementationActivity : AppCompatActivity() {
     }
 
     fun joinLeave(view: View) {
+        // Join/Leave button clicked
         if (!agoraManager!!.isJoined) {
             join()
         } else {
@@ -113,16 +114,8 @@ open class BasicImplementationActivity : AppCompatActivity() {
 
     protected fun showMessage(message: String?) {
         runOnUiThread { Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show() }
-    }// Remove the FrameLayout from the LinearLayout// Get the FrameLayout in which the video was displayed
+    }
 
-    // If the video was in the main frame swap it with the local frame
-// Use the main frame
-
-    // Add the SurfaceView to the FrameLayout
-    // Associate the remoteUid with the FrameLayout for use in swapping
-    // Create a new FrameLayout
-    // Set an onclick listener for video swapping
-    // Set the layout parameters for the new FrameLayout
     protected val agoraManagerListener: AgoraManagerListener
         get() = object : AgoraManagerListener {
             override fun onMessageReceived(message: String?) {
@@ -165,7 +158,6 @@ open class BasicImplementationActivity : AppCompatActivity() {
 
             override fun onRemoteUserLeft(remoteUid: Int) {
                 runOnUiThread {
-
                     // Get the FrameLayout in which the video was displayed
                     val frameLayoutOfUser = videoFrameMap!![remoteUid]
 
@@ -187,7 +179,9 @@ open class BasicImplementationActivity : AppCompatActivity() {
             override fun onJoinChannelSuccess(channel: String?, uid: Int, elapsed: Int) {
                 runOnUiThread {
                     btnJoinLeave!!.text = getString(R.string.leave)
+                    // Start showing the local video
                     showLocalVideo()
+                    // Hide radio buttons
                     if (radioGroup!!.visibility != View.GONE) radioGroup!!.visibility =
                         View.INVISIBLE
                 }
@@ -204,11 +198,8 @@ open class BasicImplementationActivity : AppCompatActivity() {
     protected open fun swapVideo(frameId: Int) {
         // Swap the  video in the small frame with the main frame
         runOnUiThread {
-
-            // Swap the videos in the small frame and the main frame
-            val smallFrame = findViewById<FrameLayout>(frameId)
-
             // Get the SurfaceView in the small frame
+            val smallFrame = findViewById<FrameLayout>(frameId)
             val surfaceViewSmall = smallFrame.getChildAt(0) as SurfaceView
 
             // Swap the SurfaceViews
