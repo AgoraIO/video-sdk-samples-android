@@ -18,4 +18,3 @@ include ':app', ':agora-manager', 'authentication-workflow', 'ensure-channel-qua
 project(':agora-manager').projectDir = new File(rootProject.projectDir, '../agora-manager')
 project(':authentication-workflow').projectDir = new File(rootProject.projectDir, '../authentication-workflow')
 project(':ensure-channel-quality').projectDir = new File(rootProject.projectDir, '../ensure-channel-quality')
-include ':mylibrary'
