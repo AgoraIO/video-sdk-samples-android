@@ -1,20 +1,9 @@
 package io.agora.android_reference_app
 
-import io.agora.agora_manager.AgoraManager.setListener
-import io.agora.agora_manager.AgoraManager.currentProduct
-import io.agora.agora_manager.AgoraManager.setBroadcasterRole
-import io.agora.agora_manager.AgoraManager.joinChannel
-import io.agora.agora_manager.AgoraManager.isBroadcaster
-import io.agora.agora_manager.AgoraManager.localVideo
-import io.agora.agora_manager.AgoraManager.localUid
-import io.agora.agora_manager.AgoraManager.leaveChannel
-import io.agora.agora_manager.AgoraManager.isJoined
 import androidx.appcompat.app.AppCompatActivity
 import io.agora.agora_manager.AgoraManager
 import android.view.SurfaceView
-import io.agora.android_reference_app.R
 import android.os.Bundle
-import android.content.Intent
 import android.view.View
 import android.widget.*
 import io.agora.agora_manager.AgoraManager.ProductName
@@ -23,23 +12,23 @@ import java.util.HashMap
 
 open class BasicImplementationActivity : AppCompatActivity() {
     protected var agoraManager: AgoraManager? = null
-    protected var baseLayout: LinearLayout? = null
+    private var baseLayout: LinearLayout? = null
     protected var btnJoinLeave: Button? = null
     protected var mainFrame: FrameLayout? = null
     protected var containerLayout: LinearLayout? = null
     protected var radioGroup: RadioGroup? = null
     protected var videoFrameMap: MutableMap<Int, FrameLayout?>? = null
     protected var surfaceViewMain: SurfaceView? = null
+
     protected open fun initializeAgoraManager() {
         agoraManager = AgoraManager(this)
-
         // Set up a listener for updating the UI
         agoraManager!!.setListener(agoraManagerListener)
     }
 
     // Default layout resource ID for base activity
     protected open val layoutResourceId: Int
-        protected get() = R.layout.activity_basic_implementation // Default layout resource ID for base activity
+        get() = R.layout.activity_basic_implementation // Default layout resource ID for base activity
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,7 +37,7 @@ open class BasicImplementationActivity : AppCompatActivity() {
         // Find the root view of the included layout
         baseLayout = findViewById(R.id.base_layout)
         // Find the widgets inside the included layout using the root view
-        btnJoinLeave = baseLayout.findViewById(R.id.btnJoinLeave)
+        btnJoinLeave = baseLayout!!.findViewById(R.id.btnJoinLeave)
         // Find the main video frame
         mainFrame = findViewById(R.id.main_video_container)
         // Find the multi video container layout
@@ -70,17 +59,17 @@ open class BasicImplementationActivity : AppCompatActivity() {
         if (agoraManager!!.currentProduct === ProductName.INTERACTIVE_LIVE_STREAMING
             || agoraManager!!.currentProduct === ProductName.BROADCAST_STREAMING
         ) {
-            radioGroup.setVisibility(View.VISIBLE)
+            radioGroup!!.visibility = View.VISIBLE
             // Hide the horizontal scrolling video view
             findViewById<View>(R.id.smallVideosView).visibility = View.GONE
         } else {
-            radioGroup.setVisibility(View.GONE)
+            radioGroup!!.visibility = View.GONE
         }
-        radioGroup.setOnCheckedChangeListener(RadioGroup.OnCheckedChangeListener { group: RadioGroup?, checkedId: Int ->
+        radioGroup!!.setOnCheckedChangeListener { _: RadioGroup?, checkedId: Int ->
             agoraManager!!.setBroadcasterRole(
                 checkedId == R.id.radioButtonBroadcaster
             )
-        })
+        }
     }
 
     protected open fun join() {
@@ -105,7 +94,7 @@ open class BasicImplementationActivity : AppCompatActivity() {
 
     protected open fun leave() {
         agoraManager!!.leaveChannel()
-        btnJoinLeave!!.text = "Join"
+        btnJoinLeave!!.text = getString(R.string.join)
         if (radioGroup!!.visibility != View.GONE) radioGroup!!.visibility = View.VISIBLE
 
         // Clear the video containers
@@ -114,7 +103,7 @@ open class BasicImplementationActivity : AppCompatActivity() {
         videoFrameMap!!.clear()
     }
 
-    fun joinLeave(view: View?) {
+    fun joinLeave(view: View) {
         if (!agoraManager!!.isJoined) {
             join()
         } else {
@@ -135,7 +124,7 @@ open class BasicImplementationActivity : AppCompatActivity() {
     // Set an onclick listener for video swapping
     // Set the layout parameters for the new FrameLayout
     protected val agoraManagerListener: AgoraManagerListener
-        protected get() = object : AgoraManagerListener {
+        get() = object : AgoraManagerListener {
             override fun onMessageReceived(message: String?) {
                 showMessage(message)
             }
@@ -197,7 +186,7 @@ open class BasicImplementationActivity : AppCompatActivity() {
 
             override fun onJoinChannelSuccess(channel: String?, uid: Int, elapsed: Int) {
                 runOnUiThread {
-                    btnJoinLeave!!.text = "Leave"
+                    btnJoinLeave!!.text = getString(R.string.leave)
                     showLocalVideo()
                     if (radioGroup!!.visibility != View.GONE) radioGroup!!.visibility =
                         View.INVISIBLE
@@ -207,7 +196,7 @@ open class BasicImplementationActivity : AppCompatActivity() {
 
     // A small video frame was clicked
     protected val videoClickListener: View.OnClickListener
-        protected get() = View.OnClickListener { v: View ->
+        get() = View.OnClickListener { v: View ->
             // A small video frame was clicked
             swapVideo(v.id)
         }
@@ -240,14 +229,12 @@ open class BasicImplementationActivity : AppCompatActivity() {
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-    }
-
+    @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         if (agoraManager!!.isJoined) {
             leave()
         }
-        super.onBackPressed()
+        onBackPressedDispatcher.onBackPressed()
     }
+
 }

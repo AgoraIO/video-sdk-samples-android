@@ -1,26 +1,8 @@
 package io.agora.android_reference_app
 
 import android.graphics.Color
-import io.agora.android_reference_app.BasicImplementationActivity.agoraManagerListener
-import io.agora.android_reference_app.BasicImplementationActivity.onCreate
-import io.agora.call_quality_manager.CallQualityManager.startProbeTest
-import io.agora.agora_manager.AgoraManager.setListener
-import io.agora.agora_manager.AgoraManager.localUid
-import io.agora.agora_manager.AgoraManager.AgoraManagerListener.onMessageReceived
-import io.agora.agora_manager.AgoraManager.AgoraManagerListener.onRemoteUserJoined
-import io.agora.call_quality_manager.CallQualityManager.setStreamQuality
-import io.agora.agora_manager.AgoraManager.AgoraManagerListener.onRemoteUserLeft
-import io.agora.agora_manager.AgoraManager.AgoraManagerListener.onJoinChannelSuccess
-import io.agora.authentication_manager.AuthenticationManager.joinChannelWithToken
-import io.agora.android_reference_app.BasicImplementationActivity.leave
-import io.agora.call_quality_manager.CallQualityManager.startEchoTest
-import io.agora.call_quality_manager.CallQualityManager.stopEchoTest
-import io.agora.android_reference_app.BasicImplementationActivity.swapVideo
-import io.agora.android_reference_app.BasicImplementationActivity
 import io.agora.call_quality_manager.CallQualityManager
 import android.widget.TextView
-import io.agora.agora_manager.AgoraManager.AgoraManagerListener
-import io.agora.android_reference_app.R
 import android.os.Bundle
 import io.agora.call_quality_manager.CallQualityManager.CallQualityManagerListener
 import io.agora.rtc2.IRtcEngineEventHandler.RemoteVideoStats
@@ -39,16 +21,17 @@ class CallQualityActivity : BasicImplementationActivity() {
     private val baseListener = agoraManagerListener
     private var overlayText: TextView? = null
     private fun updateNetworkStatus(quality: Int) {
-        if (quality > 0 && quality < 3) networkStatus!!.setBackgroundColor(Color.GREEN) else if (quality <= 4) networkStatus!!.setBackgroundColor(
-            Color.YELLOW
-        ) else if (quality <= 6) networkStatus!!.setBackgroundColor(Color.RED) else networkStatus!!.setBackgroundColor(
-            Color.WHITE
-        )
-        networkStatus!!.text = Integer.toString(quality)
+        when (quality) {
+            in 1..2 -> networkStatus?.setBackgroundColor(Color.GREEN)
+            in 3..4 -> networkStatus?.setBackgroundColor(Color.YELLOW)
+            in 5..6 -> networkStatus?.setBackgroundColor(Color.RED)
+            else -> networkStatus?.setBackgroundColor(Color.WHITE)
+        }
+        networkStatus!!.text = quality.toString()
     }
 
     override val layoutResourceId: Int
-        protected get() = R.layout.activity_call_quality
+        get() = R.layout.activity_call_quality
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -128,7 +111,7 @@ class CallQualityActivity : BasicImplementationActivity() {
         overlayText = null
     }
 
-    fun echoTest(view: View?) {
+    fun echoTest(view: View) {
         if (!isEchoTestRunning) {
             btnEchoTest!!.setText(R.string.stop_echo_test)
             surfaceViewMain = callQualityManager!!.startEchoTest()

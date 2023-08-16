@@ -1,16 +1,7 @@
 package io.agora.android_reference_app
 
-import io.agora.android_reference_app.BasicImplementationActivity.onCreate
-import io.agora.agora_manager.AgoraManager.channelName
-import io.agora.authentication_manager.AuthenticationManager.serverUrl
-import io.agora.agora_manager.AgoraManager.setListener
-import io.agora.android_reference_app.BasicImplementationActivity.agoraManagerListener
-import io.agora.authentication_manager.AuthenticationManager.fetchToken
-import io.agora.agora_manager.AgoraManager.joinChannel
-import io.agora.android_reference_app.BasicImplementationActivity
 import io.agora.authentication_manager.AuthenticationManager
 import android.widget.EditText
-import io.agora.android_reference_app.R
 import android.os.Bundle
 import io.agora.authentication_manager.AuthenticationManager.TokenCallback
 
@@ -21,14 +12,14 @@ class AuthenticationActivity : BasicImplementationActivity() {
     private var editServerUrl // To read the server Url from the UI.
             : EditText? = null
     override val layoutResourceId: Int
-        protected get() = R.layout.activity_authentication
+        get() = R.layout.activity_authentication
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         editChannelName = findViewById(R.id.editChannelName)
-        editChannelName.setText(agoraManager!!.channelName)
+        editChannelName!!.setText(agoraManager!!.channelName)
         editServerUrl = findViewById(R.id.editServerUrl)
-        editServerUrl.setText(authenticationManager!!.serverUrl)
+        editServerUrl!!.setText(authenticationManager!!.serverUrl)
     }
 
     override fun initializeAgoraManager() {
