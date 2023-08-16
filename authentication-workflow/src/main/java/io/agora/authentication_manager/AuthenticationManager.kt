@@ -116,8 +116,11 @@ open class AuthenticationManager(context: Context?) : AgoraManager(
         })
     }
 
-    @JvmOverloads
-    fun joinChannelWithToken(channelName: String = ""): Int {
+    fun joinChannelWithToken(): Int {
+        return joinChannelWithToken(channelName)
+    }
+
+    fun joinChannelWithToken(channelName: String): Int {
         if (agoraEngine == null) setupAgoraEngine()
         return if (isValidURL(serverUrl)) { // A valid server url is available
             // Fetch a token from the server for channelName
