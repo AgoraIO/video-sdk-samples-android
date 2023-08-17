@@ -1,11 +1,12 @@
 package io.agora.android_reference_app
 
-import android.graphics.Color
+import io.agora.rtc2.IRtcEngineEventHandler.RemoteVideoStats
 import io.agora.call_quality_manager.CallQualityManager
+import io.agora.call_quality_manager.CallQualityManager.CallQualityManagerListener
+
+import android.graphics.Color
 import android.widget.TextView
 import android.os.Bundle
-import io.agora.call_quality_manager.CallQualityManager.CallQualityManagerListener
-import io.agora.rtc2.IRtcEngineEventHandler.RemoteVideoStats
 import android.view.SurfaceView
 import android.widget.FrameLayout
 import android.view.Gravity
@@ -13,41 +14,36 @@ import android.view.View
 import android.widget.Button
 
 class CallQualityActivity : BasicImplementationActivity() {
-    private var callQualityManager: CallQualityManager? = null
-    private var networkStatus // For updating the network status
-            : TextView? = null
-    private var isEchoTestRunning = false // Keeps track of the echo test
+    private lateinit var callQualityManager: CallQualityManager
     private var btnEchoTest: Button? = null
-    private val baseListener = agoraManagerListener
+    private var networkStatus: TextView? = null // For updating the network status
     private var overlayText: TextView? = null
-    private fun updateNetworkStatus(quality: Int) {
-        when (quality) {
-            in 1..2 -> networkStatus?.setBackgroundColor(Color.GREEN)
-            in 3..4 -> networkStatus?.setBackgroundColor(Color.YELLOW)
-            in 5..6 -> networkStatus?.setBackgroundColor(Color.RED)
-            else -> networkStatus?.setBackgroundColor(Color.WHITE)
-        }
-        networkStatus!!.text = quality.toString()
-    }
+    private var isEchoTestRunning = false // Keeps track of the echo test
+    private val baseListener = agoraManagerListener
 
+
+    // Override the UI layout
     override val layoutResourceId: Int
         get() = R.layout.activity_call_quality
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Set up access to the UI elements
         networkStatus = findViewById(R.id.networkStatus)
         btnEchoTest = findViewById(R.id.btnEchoTest)
 
         // Start the probe test
-        callQualityManager!!.startProbeTest()
+        callQualityManager.startProbeTest()
     }
 
     override fun initializeAgoraManager() {
+        // Instantiate an object of the callQualityManager class, which is an extension of the AgoraManager
         callQualityManager = CallQualityManager(this)
         agoraManager = callQualityManager
 
         // Set up a listener for updating the UI
-        agoraManager!!.setListener(object : CallQualityManagerListener {
+        agoraManager.setListener(object : CallQualityManagerListener {
             override fun onNetworkQuality(uid: Int, txQuality: Int, rxQuality: Int) {
                 // Use down-link network quality to update the network status
                 runOnUiThread { updateNetworkStatus(rxQuality) }
@@ -62,8 +58,9 @@ class CallQualityActivity : BasicImplementationActivity() {
             }
 
             override fun onRemoteVideoStats(stats: RemoteVideoStats?) {
-                val selectedUserId = mainFrame!!.tag as Int
-                if (selectedUserId == agoraManager!!.localUid) {
+                // Show remote video stats for the video in the main frame
+                val selectedUserId = mainFrame.tag as Int
+                if (selectedUserId == agoraManager.localUid) {
                     runOnUiThread { overlayText!!.text = "" }
                     return
                 }
@@ -86,23 +83,25 @@ class CallQualityActivity : BasicImplementationActivity() {
             override fun onRemoteUserJoined(remoteUid: Int, surfaceView: SurfaceView?) {
                 baseListener.onRemoteUserJoined(remoteUid, surfaceView)
                 // Choose low quality when the video plays in a small frame
-                callQualityManager!!.setStreamQuality(remoteUid, false)
+                callQualityManager.setStreamQuality(remoteUid, false)
             }
 
             override fun onRemoteUserLeft(remoteUid: Int) {
+                // Hide the overlay text
                 runOnUiThread { overlayText!!.text = "" }
                 baseListener.onRemoteUserLeft(remoteUid)
             }
 
             override fun onJoinChannelSuccess(channel: String?, uid: Int, elapsed: Int) {
                 baseListener.onJoinChannelSuccess(channel, uid, elapsed)
+                // Disable the echo test button
                 btnEchoTest!!.isEnabled = false
             }
         })
     }
 
     override fun join() {
-        callQualityManager!!.joinChannelWithToken()
+        callQualityManager.joinChannelWithToken()
     }
 
     override fun leave() {
@@ -114,16 +113,16 @@ class CallQualityActivity : BasicImplementationActivity() {
     fun echoTest(view: View) {
         if (!isEchoTestRunning) {
             btnEchoTest!!.setText(R.string.stop_echo_test)
-            surfaceViewMain = callQualityManager!!.startEchoTest()
-            mainFrame!!.addView(surfaceViewMain)
+            surfaceViewMain = callQualityManager.startEchoTest()
+            mainFrame.addView(surfaceViewMain)
             isEchoTestRunning = true
         } else {
-            callQualityManager!!.stopEchoTest()
+            callQualityManager.stopEchoTest()
             btnEchoTest!!.setText(R.string.start_echo_test)
-            mainFrame!!.removeView(surfaceViewMain)
+            mainFrame.removeView(surfaceViewMain)
             isEchoTestRunning = false
         }
-        btnJoinLeave!!.isEnabled = !isEchoTestRunning
+        btnJoinLeave.isEnabled = !isEchoTestRunning
     }
 
     fun setupOverlayText() {
@@ -139,26 +138,37 @@ class CallQualityActivity : BasicImplementationActivity() {
         overlayText!!.setTextColor(Color.WHITE)
         overlayText!!.setPadding(10, 0, 0, 0)
         // Add the TextView to the FrameLayout
-        runOnUiThread { mainFrame!!.addView(overlayText) }
+        runOnUiThread { mainFrame.addView(overlayText) }
     }
 
     override fun swapVideo(frameId: Int) {
         // Switch to high-quality for the remote video going into the main frame
         val smallFrame = findViewById<FrameLayout>(frameId)
         val smallFrameUid = smallFrame.tag as Int
-        if (smallFrameUid != agoraManager!!.localUid) callQualityManager!!.setStreamQuality(
+        if (smallFrameUid != agoraManager.localUid) callQualityManager.setStreamQuality(
             smallFrameUid,
             true
         )
 
         // Switch to low-quality for the remote video going into the small frame
-        val mainFrameUid = mainFrame!!.tag as Int
-        if (mainFrameUid != agoraManager!!.localUid) callQualityManager!!.setStreamQuality(
+        val mainFrameUid = mainFrame.tag as Int
+        if (mainFrameUid != agoraManager.localUid) callQualityManager.setStreamQuality(
             mainFrameUid,
             false
         )
 
         // Swap the videos
         super.swapVideo(frameId)
+    }
+
+    private fun updateNetworkStatus(quality: Int) {
+        // Update the UI to indicate the network status
+        when (quality) {
+            in 1..2 -> networkStatus?.setBackgroundColor(Color.GREEN)
+            in 3..4 -> networkStatus?.setBackgroundColor(Color.YELLOW)
+            in 5..6 -> networkStatus?.setBackgroundColor(Color.RED)
+            else -> networkStatus?.setBackgroundColor(Color.WHITE)
+        }
+        networkStatus!!.text = quality.toString()
     }
 }

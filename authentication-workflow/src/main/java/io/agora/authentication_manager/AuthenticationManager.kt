@@ -147,7 +147,7 @@ open class AuthenticationManager(context: Context?) : AgoraManager(
             return try {
                 // Attempt to create a URL object from the given string
                 val url = URL(urlString)
-                // Check if the URL's protocol and host are not empty
+                // Check if the protocol and host in the URL are not empty
                 url.protocol != null && url.host != null
             } catch (e: MalformedURLException) {
                 // The given string is not a valid URL

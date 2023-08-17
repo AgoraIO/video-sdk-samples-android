@@ -1,31 +1,26 @@
 package io.agora.android_reference_app
 
-import androidx.appcompat.app.AppCompatActivity
 import io.agora.agora_manager.AgoraManager
+import io.agora.agora_manager.AgoraManager.ProductName
+import io.agora.agora_manager.AgoraManager.AgoraManagerListener
+
+import androidx.appcompat.app.AppCompatActivity
 import android.view.SurfaceView
 import android.os.Bundle
 import android.view.View
 import android.widget.*
-import io.agora.agora_manager.AgoraManager.ProductName
-import io.agora.agora_manager.AgoraManager.AgoraManagerListener
 import java.util.HashMap
 
 open class BasicImplementationActivity : AppCompatActivity() {
-    protected var agoraManager: AgoraManager? = null
-    protected var btnJoinLeave: Button? = null
-    protected var mainFrame: FrameLayout? = null
-    protected var containerLayout: LinearLayout? = null
-    protected var radioGroup: RadioGroup? = null
-    protected var videoFrameMap: MutableMap<Int, FrameLayout?>? = null
+    protected lateinit var agoraManager: AgoraManager
+    protected lateinit var btnJoinLeave: Button
+    protected lateinit var mainFrame: FrameLayout
+    protected lateinit var containerLayout: LinearLayout
+    protected lateinit var radioGroup: RadioGroup
+    protected lateinit var videoFrameMap: MutableMap<Int, FrameLayout?>
     protected var surfaceViewMain: SurfaceView? = null
 
-    protected open fun initializeAgoraManager() {
-        agoraManager = AgoraManager(this)
-        // Set up a listener for updating the UI
-        agoraManager!!.setListener(agoraManagerListener)
-    }
-
-    // The layout resource for this activity
+    // The overridable UI layout for this activity
     protected open val layoutResourceId: Int
         get() = R.layout.activity_basic_implementation // Default layout resource ID for base activity
 
@@ -51,61 +46,68 @@ open class BasicImplementationActivity : AppCompatActivity() {
             // Retrieve the selected Agora product
             val intValue = intent.getIntExtra("selectedProduct", 0)
             val selectedProduct = ProductName.values()[intValue]
-            agoraManager!!.currentProduct = selectedProduct
+            agoraManager.currentProduct = selectedProduct
         }
         // Set up the UI based on the selected product
-        if (agoraManager!!.currentProduct === ProductName.INTERACTIVE_LIVE_STREAMING
-            || agoraManager!!.currentProduct === ProductName.BROADCAST_STREAMING
+        if (agoraManager.currentProduct === ProductName.INTERACTIVE_LIVE_STREAMING
+            || agoraManager.currentProduct === ProductName.BROADCAST_STREAMING
         ) {
-            radioGroup!!.visibility = View.VISIBLE
+            radioGroup.visibility = View.VISIBLE
             // Hide the horizontal scrolling video view
             findViewById<View>(R.id.smallVideosView).visibility = View.GONE
         } else {
-            radioGroup!!.visibility = View.GONE
+            radioGroup.visibility = View.GONE
         }
-        radioGroup!!.setOnCheckedChangeListener { _: RadioGroup?, checkedId: Int ->
-            agoraManager!!.setBroadcasterRole(
+        radioGroup.setOnCheckedChangeListener { _: RadioGroup?, checkedId: Int ->
+            agoraManager.setBroadcasterRole(
                 checkedId == R.id.radioButtonBroadcaster
             )
         }
     }
 
+    protected open fun initializeAgoraManager() {
+        agoraManager = AgoraManager(this)
+
+        // Set up a listener for updating the UI
+        agoraManager.setListener(agoraManagerListener)
+    }
+
     protected open fun join() {
         // Join a channel
-        agoraManager!!.joinChannel()
+        agoraManager.joinChannel()
     }
 
     protected fun showLocalVideo() {
-        if (agoraManager!!.isBroadcaster) {
+        if (agoraManager.isBroadcaster) {
             runOnUiThread {
                 // Get the SurfaceView for the local video
-                val localVideoSurfaceView = agoraManager!!.localVideo
+                val localVideoSurfaceView = agoraManager.localVideo
                 // Add te SurfaceView to a FrameLayout
-                mainFrame!!.addView(localVideoSurfaceView)
+                mainFrame.addView(localVideoSurfaceView)
                 surfaceViewMain = localVideoSurfaceView
                 // Associate the FrameLayout with the user Id for later retrieval
-                videoFrameMap!![agoraManager!!.localUid] = mainFrame
-                mainFrame!!.tag = agoraManager!!.localUid
+                videoFrameMap[agoraManager.localUid] = mainFrame
+                mainFrame.tag = agoraManager.localUid
             }
         }
     }
 
     protected open fun leave() {
         // Leave the channel
-        agoraManager!!.leaveChannel()
+        agoraManager.leaveChannel()
         // Update the UI
-        btnJoinLeave!!.text = getString(R.string.join)
-        if (radioGroup!!.visibility != View.GONE) radioGroup!!.visibility = View.VISIBLE
+        btnJoinLeave.text = getString(R.string.join)
+        if (radioGroup.visibility != View.GONE) radioGroup.visibility = View.VISIBLE
 
         // Clear the video containers
-        containerLayout!!.removeAllViews()
-        mainFrame!!.removeAllViews()
-        videoFrameMap!!.clear()
+        containerLayout.removeAllViews()
+        mainFrame.removeAllViews()
+        videoFrameMap.clear()
     }
 
     fun joinLeave(view: View) {
         // Join/Leave button clicked
-        if (!agoraManager!!.isJoined) {
+        if (!agoraManager.isJoined) {
             join()
         } else {
             leave()
@@ -125,7 +127,7 @@ open class BasicImplementationActivity : AppCompatActivity() {
             override fun onRemoteUserJoined(remoteUid: Int, surfaceView: SurfaceView?) {
                 runOnUiThread {
                     val targetLayout: FrameLayout?
-                    if (agoraManager!!.currentProduct === ProductName.VIDEO_CALLING) {
+                    if (agoraManager.currentProduct === ProductName.VIDEO_CALLING) {
                         // Create a new FrameLayout
                         targetLayout = FrameLayout(applicationContext)
                         // Set an onclick listener for video swapping
@@ -139,8 +141,8 @@ open class BasicImplementationActivity : AppCompatActivity() {
                         // Set the id for the new FrameLayout
                         targetLayout.id = View.generateViewId()
                         // Add the new FrameLayout to the parent LinearLayout
-                        containerLayout!!.addView(targetLayout, layoutParams)
-                    } else if (!agoraManager!!.isBroadcaster) {
+                        containerLayout.addView(targetLayout, layoutParams)
+                    } else if (!agoraManager.isBroadcaster) {
                         // Use the main frame
                         targetLayout = mainFrame
                         surfaceViewMain = surfaceView
@@ -149,40 +151,40 @@ open class BasicImplementationActivity : AppCompatActivity() {
                     }
 
                     // Add the SurfaceView to the FrameLayout
-                    targetLayout!!.addView(surfaceView)
+                    targetLayout.addView(surfaceView)
                     // Associate the remoteUid with the FrameLayout for use in swapping
                     targetLayout.tag = remoteUid
-                    videoFrameMap!![remoteUid] = targetLayout
+                    videoFrameMap[remoteUid] = targetLayout
                 }
             }
 
             override fun onRemoteUserLeft(remoteUid: Int) {
                 runOnUiThread {
                     // Get the FrameLayout in which the video was displayed
-                    val frameLayoutOfUser = videoFrameMap!![remoteUid]
+                    val frameLayoutOfUser = videoFrameMap[remoteUid]
 
                     // If the video was in the main frame swap it with the local frame
-                    if (frameLayoutOfUser!!.id == mainFrame!!.id) {
-                        if (agoraManager!!.currentProduct === ProductName.VIDEO_CALLING) {
-                            swapVideo(videoFrameMap!![agoraManager!!.localUid]!!.id)
+                    if (frameLayoutOfUser!!.id == mainFrame.id) {
+                        if (agoraManager.currentProduct === ProductName.VIDEO_CALLING) {
+                            swapVideo(videoFrameMap[agoraManager.localUid]!!.id)
                             // Remove the FrameLayout from the LinearLayout
-                            val frameLayoutToDelete = videoFrameMap!![remoteUid]
-                            containerLayout!!.removeView(frameLayoutToDelete)
+                            val frameLayoutToDelete = videoFrameMap[remoteUid]
+                            containerLayout.removeView(frameLayoutToDelete)
                         } else {
-                            mainFrame!!.removeView(surfaceViewMain)
+                            mainFrame.removeView(surfaceViewMain)
                         }
                     }
-                    videoFrameMap!!.remove(remoteUid)
+                    videoFrameMap.remove(remoteUid)
                 }
             }
 
             override fun onJoinChannelSuccess(channel: String?, uid: Int, elapsed: Int) {
                 runOnUiThread {
-                    btnJoinLeave!!.text = getString(R.string.leave)
+                    btnJoinLeave.text = getString(R.string.leave)
                     // Start showing the local video
                     showLocalVideo()
                     // Hide radio buttons
-                    if (radioGroup!!.visibility != View.GONE) radioGroup!!.visibility =
+                    if (radioGroup.visibility != View.GONE) radioGroup.visibility =
                         View.INVISIBLE
                 }
             }
@@ -203,26 +205,26 @@ open class BasicImplementationActivity : AppCompatActivity() {
             val surfaceViewSmall = smallFrame.getChildAt(0) as SurfaceView
 
             // Swap the SurfaceViews
-            mainFrame!!.removeView(surfaceViewMain)
+            mainFrame.removeView(surfaceViewMain)
             smallFrame.removeView(surfaceViewSmall)
-            mainFrame!!.addView(surfaceViewSmall, 0)
+            mainFrame.addView(surfaceViewSmall, 0)
             smallFrame.addView(surfaceViewMain)
             surfaceViewMain = surfaceViewSmall
 
             // Swap the FrameLayout tags
-            val tag = mainFrame!!.tag as Int
-            mainFrame!!.tag = smallFrame.tag
+            val tag = mainFrame.tag as Int
+            mainFrame.tag = smallFrame.tag
             smallFrame.tag = tag
 
             // Update the videoFrameMap to keep track of videos
-            videoFrameMap!![smallFrame.tag as Int] = smallFrame
-            videoFrameMap!![mainFrame!!.tag as Int] = mainFrame
+            videoFrameMap[smallFrame.tag as Int] = smallFrame
+            videoFrameMap[mainFrame.tag as Int] = mainFrame
         }
     }
 
     @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
-        if (agoraManager!!.isJoined) {
+        if (agoraManager.isJoined) {
             leave()
         }
         onBackPressedDispatcher.onBackPressed()
