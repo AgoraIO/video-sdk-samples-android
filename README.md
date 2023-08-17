@@ -63,13 +63,6 @@ This demo app includes several examples that illustrate the functionality and fe
 - [Geofencing](geofencing)
 
 
-## Screenshots
-
-| Landing page | Call quality best practice | Custom video and audio sources | Screen share, volume control and mute |
-|:-:|:-:|:-:|:-:|
-| ![Landing page of the application](Example-App/Docs-Examples/Documentation.docc/Resources/media/landing-page.png) | ![Two streams and quality details in the top left of each stream](Example-App/Docs-Examples/Documentation.docc/Resources/media/ensure-channel-quality.png) | ![Custom camera using the ultra wide iPhone capture](Example-App/Docs-Examples/Documentation.docc/Resources/media/custom-video-and-audio.png) | ![Local and remote olume control + screen sharing option](Example-App/Docs-Examples/Documentation.docc/Resources/media/product-workflow.png) |
-
 ## Contact
 
 If you have any questions, issues, or suggestions, please file an issue in our [GitHub Issue Tracker](https://github.com/AgoraIO/video-sdk-samples-android/issues).
-
