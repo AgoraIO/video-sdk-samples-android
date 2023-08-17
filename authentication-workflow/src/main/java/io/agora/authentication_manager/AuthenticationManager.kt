@@ -1,12 +1,13 @@
 package io.agora.authentication_manager
 
-import android.content.Context
-import okhttp3.Request.*
-import io.agora.agora_manager.AgoraManager
 import io.agora.rtc2.IRtcEngineEventHandler
+
+import io.agora.agora_manager.AgoraManager
+import okhttp3.*
+import okhttp3.Request.*
 import org.json.JSONObject
 import org.json.JSONException
-import okhttp3.*
+import android.content.Context
 import java.io.IOException
 import java.net.MalformedURLException
 import java.net.URL
@@ -14,11 +15,9 @@ import java.net.URL
 open class AuthenticationManager(context: Context?) : AgoraManager(
     context!!
 ) {
-    var serverUrl // The base URL to your token server
-            : String
-    private val tokenExpiryTime // Time in seconds after which the token will expire.
-            : Int
-    private val baseEventHandler: IRtcEngineEventHandler?
+    var serverUrl : String // The base URL to your token server
+    private val tokenExpiryTime : Int // Time in seconds after which the token will expire.
+    private val baseEventHandler: IRtcEngineEventHandler? // To extend the event handler from the base class
 
     // Callback interface to receive the http response from an async token request
     interface TokenCallback {
@@ -31,9 +30,9 @@ open class AuthenticationManager(context: Context?) : AgoraManager(
         serverUrl = config!!.optString("serverUrl")
         tokenExpiryTime = config!!.optInt("tokenExpiryTime", 600)
         baseEventHandler = super.iRtcEngineEventHandler
-    }// Listen for a remote user joining the channel.// Handle the error// Use the token to renew// Get a new token
+    }
 
-    // Listen for the event that the token is about to expire
+    // Listen for the event that a token is about to expire
     override val iRtcEngineEventHandler: IRtcEngineEventHandler
         get() = object : IRtcEngineEventHandler() {
             // Listen for the event that the token is about to expire
@@ -55,7 +54,7 @@ open class AuthenticationManager(context: Context?) : AgoraManager(
                 super.onTokenPrivilegeWillExpire(token)
             }
 
-            // Listen for a remote user joining the channel.
+            // Reuse events handlers from the base class
             override fun onUserJoined(uid: Int, elapsed: Int) {
                 baseEventHandler!!.onUserJoined(uid, elapsed)
             }
@@ -70,6 +69,7 @@ open class AuthenticationManager(context: Context?) : AgoraManager(
         }
 
     fun fetchToken(channelName: String, callback: TokenCallback) {
+        // Use the uid from the config file if not specified
         fetchToken(channelName, config!!.optInt("uid"), callback)
     }
 
@@ -117,6 +117,7 @@ open class AuthenticationManager(context: Context?) : AgoraManager(
     }
 
     fun joinChannelWithToken(): Int {
+        // Use the default channel name if one is not specified
         return joinChannelWithToken(channelName)
     }
 
@@ -143,6 +144,7 @@ open class AuthenticationManager(context: Context?) : AgoraManager(
     }
 
     companion object {
+        // A helper function to check that the URL is in the correct form
         fun isValidURL(urlString: String?): Boolean {
             return try {
                 // Attempt to create a URL object from the given string

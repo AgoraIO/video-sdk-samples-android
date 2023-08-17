@@ -1,33 +1,32 @@
 package io.agora.call_quality_manager
 
-import android.content.Context
-import io.agora.authentication_manager.AuthenticationManager
+import io.agora.rtc2.video.VideoCanvas
+import io.agora.rtc2.*
 import io.agora.rtc2.internal.LastmileProbeConfig
 import io.agora.rtc2.video.VideoEncoderConfiguration
 import io.agora.rtc2.IRtcEngineEventHandler.RemoteVideoStats
+
+import io.agora.authentication_manager.AuthenticationManager
+import android.content.Context
 import android.view.SurfaceView
 import android.view.View
-import io.agora.rtc2.video.VideoCanvas
-import io.agora.rtc2.*
 import java.lang.Exception
 
 class CallQualityManager(context: Context?) : AuthenticationManager(context) {
-    // Counters to control the frequency of messages
-    private var counter = 0
-    private val baseEventHandler: IRtcEngineEventHandler = super.iRtcEngineEventHandler
+    private val baseEventHandler: IRtcEngineEventHandler = super.iRtcEngineEventHandler // Reuse the base class event handler
+    private var counter = 0 // To control the frequency of messages
 
     fun startProbeTest() {
         if (agoraEngine == null) setupAgoraEngine()
-
         // Configure a LastmileProbeConfig instance.
         val config = LastmileProbeConfig()
         // Probe the uplink network quality.
         config.probeUplink = true
-        // Probe the downlink network quality.
+        // Probe the down link network quality.
         config.probeDownlink = true
         // The expected uplink bitrate (bps). The value range is [100000,5000000].
         config.expectedUplinkBitrate = 100000
-        // The expected downlink bitrate (bps). The value range is [100000,5000000].
+        // The expected down link bitrate (bps). The value range is [100000,5000000].
         config.expectedDownlinkBitrate = 100000
         agoraEngine!!.startLastmileProbeTest(config)
         sendMessage("Running the last mile probe test ...")
@@ -54,9 +53,9 @@ class CallQualityManager(context: Context?) : AuthenticationManager(context) {
 
         // Enable the dual stream mode
         agoraEngine!!.setDualStreamMode(Constants.SimulcastStreamMode.ENABLE_SIMULCAST_STREAM)
-        // If you se the mode to AUTO_SIMULCAST_STREAM: the low-quality video
-        // steam is not sent; the SDK automatically switches to low-quality after
-        // // it receives a request to subscribe to a low-quality video stream.
+        // If you set the dual stream mode to AUTO_SIMULCAST_STREAM, the low-quality video
+        // steam is not sent by default; the SDK automatically switches to low-quality after
+        // it receives a request to subscribe to a low-quality video stream.
 
         // Set audio profile and audio scenario.
         agoraEngine!!.setAudioProfile(
@@ -88,36 +87,39 @@ class CallQualityManager(context: Context?) : AuthenticationManager(context) {
         return true
     }
 
-    // The result object contains the detailed test results that help you
-    // manage call quality, for example, the downlink bandwidth.
     override val iRtcEngineEventHandler: IRtcEngineEventHandler
         get() = object : IRtcEngineEventHandler() {
             override fun onConnectionStateChanged(state: Int, reason: Int) {
+                // Occurs when the network connection state changes
                 sendMessage(
-                    """Connection state changed
- New state: $state
- Reason: $reason"""
+                    "Connection state changed\n" +
+                            "New state: $state\n" +
+                            "Reason: $reason"
                 )
             }
 
             override fun onLastmileQuality(quality: Int) {
+                // Reports the last-mile network quality of the local user
                 (mListener as CallQualityManagerListener).onLastMileQuality(quality)
             }
 
             override fun onLastmileProbeResult(result: LastmileProbeResult) {
+                // Reports the last mile network probe result
                 agoraEngine!!.stopLastmileProbeTest()
                 // The result object contains the detailed test results that help you
-                // manage call quality, for example, the downlink bandwidth.
-                sendMessage("Available downlink bandwidth: " + result.downlinkReport.availableBandwidth)
+                // manage call quality, for example, the down link bandwidth.
+                sendMessage("Available down link bandwidth: " + result.downlinkReport.availableBandwidth)
             }
 
             override fun onNetworkQuality(uid: Int, txQuality: Int, rxQuality: Int) {
+                // Reports the last mile network quality of each user in the channel
                 (mListener as CallQualityManagerListener).onNetworkQuality(
                     uid, txQuality, rxQuality
                 )
             }
 
             override fun onRtcStats(rtcStats: RtcStats) {
+                // Reports the statistics of the current session
                 counter += 1
                 var msg = ""
                 if (counter == 5) msg =
@@ -128,21 +130,18 @@ class CallQualityManager(context: Context?) : AuthenticationManager(context) {
                 if (msg.isNotEmpty()) sendMessage(msg)
             }
 
-            override fun onRemoteVideoStateChanged(
-                uid: Int,
-                state: Int,
-                reason: Int,
-                elapsed: Int
-            ) {
-                val msg = """Remote video state changed: 
- Uid =$uid 
- NewState =$state 
- reason =$reason 
- elapsed =$elapsed"""
+            override fun onRemoteVideoStateChanged(uid: Int, state: Int, reason: Int, elapsed: Int) {
+                // Occurs when the remote video stream state changes
+                val msg = "Remote video state changed:\n" +
+                        "Uid = $uid\n" +
+                        "NewState = $state\n" +
+                        "Reason = $reason\n" +
+                        "Elapsed = $elapsed"
                 sendMessage(msg)
             }
 
             override fun onRemoteVideoStats(stats: RemoteVideoStats) {
+                // Reports the statistics of the video stream sent by each remote user
                 (mListener as CallQualityManagerListener).onRemoteVideoStats(
                     stats
                 )
@@ -175,7 +174,7 @@ class CallQualityManager(context: Context?) : AuthenticationManager(context) {
         echoConfig.enableAudio = true
         echoConfig.enableVideo = true
         echoConfig.channelId = channelName
-        echoConfig.intervalInSeconds = 2
+        echoConfig.intervalInSeconds = 2 // Interval  between recording and playback
         // Set up a SurfaceView
         val localSurfaceView = SurfaceView(mContext)
         localSurfaceView.visibility = View.VISIBLE
@@ -192,10 +191,9 @@ class CallQualityManager(context: Context?) : AuthenticationManager(context) {
         // Get a token from the server or from the config file
         if (serverUrl.contains("http")) { // A valid server url is available
             // Fetch a token from the server for channelName
-            // Uses the uid from the config.json file
             fetchToken(channelName, 0, object : TokenCallback {
                 override fun onTokenReceived(rtcToken: String?) {
-                    // Handle the received rtcToken
+                    // Set the token in the config
                     echoConfig.token = rtcToken
                     // Start the echo test
                     agoraEngine!!.startEchoTest(echoConfig)
@@ -216,11 +214,11 @@ class CallQualityManager(context: Context?) : AuthenticationManager(context) {
 
     fun stopEchoTest() {
         agoraEngine!!.stopEchoTest()
-        //activity.runOnUiThread(() -> localSurfaceView.setVisibility(View.GONE));
         destroyAgoraEngine()
     }
 
     fun setStreamQuality(remoteUid: Int, highQuality: Boolean) {
+        // Set the stream type of the remote video
         if (highQuality) {
             agoraEngine!!.setRemoteVideoStreamType(remoteUid, Constants.VIDEO_STREAM_HIGH)
         } else {

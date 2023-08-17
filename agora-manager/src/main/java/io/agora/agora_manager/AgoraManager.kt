@@ -1,17 +1,18 @@
 package io.agora.agora_manager
 
+import io.agora.rtc2.video.VideoCanvas
+import io.agora.rtc2.*
+
 import android.Manifest
 import android.app.Activity
 import android.content.Context
 import org.json.JSONObject
 import org.json.JSONException
 import android.view.SurfaceView
-import io.agora.rtc2.video.VideoCanvas
 import android.content.pm.PackageManager
 import android.view.View
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import io.agora.rtc2.*
 import java.io.IOException
 import java.lang.Exception
 import java.nio.charset.StandardCharsets
@@ -22,41 +23,26 @@ open class AgoraManager(context: Context) {
     private val activity: Activity
     protected val mContext: Context
 
-    // The RTCEngine instance
-    protected var agoraEngine: RtcEngine? = null
-
-    // The event handler for agoraEngine events
-    protected var mListener: AgoraManagerListener? = null
-
-    // Configuration parameters from the config.json file
-    protected var config: JSONObject?
-
-    // Your App ID from Agora console
-    protected val appId: String
-
-    // The name of the channel to join
-    var channelName: String
-
-    // UID of the local user
-    var localUid: Int
-
-    // An object to store uids of remote users
-    var remoteUids = HashSet<Int>()
-
-    // Status of the video call
-    var isJoined = false
+    protected var agoraEngine: RtcEngine? = null // The RTCEngine instance
+    protected var mListener: AgoraManagerListener? = null // The event handler for AgoraEngine events
+    protected var config: JSONObject? // Configuration parameters from the config.json file
+    protected val appId: String // Your App ID from Agora console
+    var currentProduct = ProductName.VIDEO_CALLING // The Agora product to test
+    var channelName: String // The name of the channel to join
+    var localUid: Int // UID of the local user
+    var remoteUids = HashSet<Int>() // An object to store uids of remote users
+    var isJoined = false // Status of the video call
         private set
-
-    var isBroadcaster = true
-
-    // The Agora product to test. Choose the product depending on your application
-    var currentProduct = ProductName.VIDEO_CALLING
+    var isBroadcaster = true // Local user role
     fun setBroadcasterRole(isBroadcaster: Boolean) {
         this.isBroadcaster = isBroadcaster
     }
 
     enum class ProductName {
-        VIDEO_CALLING, VOICE_CALLING, INTERACTIVE_LIVE_STREAMING, BROADCAST_STREAMING
+        VIDEO_CALLING,
+        VOICE_CALLING,
+        INTERACTIVE_LIVE_STREAMING,
+        BROADCAST_STREAMING
     }
 
     init {
@@ -76,6 +62,7 @@ open class AgoraManager(context: Context) {
     }
 
     private fun readConfig(context: Context): JSONObject? {
+        // Read parameters from the config.json file
         try {
             val inputStream = context.resources.openRawResource(R.raw.config)
             val size = inputStream.available()
@@ -92,10 +79,9 @@ open class AgoraManager(context: Context) {
         return null
     }
 
-    // Create a SurfaceView object
     val localVideo: SurfaceView
         get() {
-            // Create a SurfaceView object
+            // Create a SurfaceView object for the local video
             val localSurfaceView = SurfaceView(mContext)
             localSurfaceView.visibility = View.VISIBLE
             // Call setupLocalVideo with a VideoCanvas having uid set to 0.
@@ -113,7 +99,7 @@ open class AgoraManager(context: Context) {
         // Create a new SurfaceView
         val remoteSurfaceView = SurfaceView(mContext)
         remoteSurfaceView.setZOrderMediaOverlay(true)
-        // Create and set up a VideoCanvas
+        // Create a VideoCanvas using the remoteSurfaceView
         val videoCanvas = VideoCanvas(
             remoteSurfaceView,
             VideoCanvas.RENDER_MODE_FIT, remoteUid
@@ -151,7 +137,7 @@ open class AgoraManager(context: Context) {
     }
 
     fun joinChannel(channelName: String, token: String?): Int {
-        // Check that necessary permissions have been granted
+        // Ensure that necessary Android permissions have been granted
         if (!checkSelfPermission()) {
             sendMessage("Permissions were not granted")
             return -1
@@ -161,8 +147,8 @@ open class AgoraManager(context: Context) {
         // Create an RTCEngine instance
         if (agoraEngine == null) setupAgoraEngine()
         val options = ChannelMediaOptions()
-        if (currentProduct == ProductName.VIDEO_CALLING) {
-            // For a Video call, set the channel profile as COMMUNICATION.
+        if (currentProduct == ProductName.VIDEO_CALLING || currentProduct == ProductName.VOICE_CALLING) {
+            // For a Video/Voice call, set the channel profile as COMMUNICATION.
             options.channelProfile = Constants.CHANNEL_PROFILE_COMMUNICATION
             isBroadcaster = true
         } else {
@@ -209,11 +195,8 @@ open class AgoraManager(context: Context) {
         // Release the RtcEngine instance to free up resources
         RtcEngine.destroy()
         agoraEngine = null
-    }// Set joined status to true.
+    }
 
-    // Save the uid of the local user.
-// Set the remote video view for the new user.// Remote video does not need to be rendered// Save the uid of the remote user.
-    // Listen for a remote user joining the channel.
     protected open val iRtcEngineEventHandler: IRtcEngineEventHandler?
         get() = object : IRtcEngineEventHandler() {
             // Listen for a remote user joining the channel.
@@ -226,13 +209,13 @@ open class AgoraManager(context: Context) {
                 ) {
                     // Remote video does not need to be rendered
                 } else {
-                    // Set the remote video view for the new user.
+                    // Set up and return a SurfaceView for the new user
                     setupRemoteVideo(uid)
                 }
             }
 
             override fun onJoinChannelSuccess(channel: String, uid: Int, elapsed: Int) {
-                // Set joined status to true.
+                // Set the joined status to true.
                 isJoined = true
                 sendMessage("Joined Channel $channel")
                 // Save the uid of the local user.
@@ -242,7 +225,9 @@ open class AgoraManager(context: Context) {
 
             override fun onUserOffline(uid: Int, reason: Int) {
                 sendMessage("Remote user offline $uid $reason")
+                // Update the list of remote Uids
                 remoteUids.remove(uid)
+                // Notify the UI
                 mListener!!.onRemoteUserLeft(uid)
             }
 
@@ -266,6 +251,14 @@ open class AgoraManager(context: Context) {
                 ) == PackageManager.PERMISSION_GRANTED
     }
 
+    companion object {
+        protected const val PERMISSION_REQ_ID = 22
+        protected val REQUESTED_PERMISSIONS = arrayOf(
+            Manifest.permission.RECORD_AUDIO,
+            Manifest.permission.CAMERA
+        )
+    }
+
     interface AgoraManagerListener {
         fun onMessageReceived(message: String?)
         fun onRemoteUserJoined(remoteUid: Int, surfaceView: SurfaceView?)
@@ -277,11 +270,4 @@ open class AgoraManager(context: Context) {
         mListener!!.onMessageReceived(message)
     }
 
-    companion object {
-        protected const val PERMISSION_REQ_ID = 22
-        protected val REQUESTED_PERMISSIONS = arrayOf(
-            Manifest.permission.RECORD_AUDIO,
-            Manifest.permission.CAMERA
-        )
-    }
 }
