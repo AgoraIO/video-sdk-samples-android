@@ -14,20 +14,20 @@ class ItemListAdapter(private val itemList: List<ListItem>, private val itemClic
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
-        // Check the view type and inflate the corresponding layout
         val layoutResId = when (viewType) {
-            "header".hashCode() -> R.layout.item_header_layout
+            ListItem.ExampleId.HEADER.ordinal -> R.layout.item_header_layout
             else -> R.layout.item_layout // You can have a default layout for other types
         }
         val itemView = LayoutInflater.from(parent.context).inflate(layoutResId, parent, false)
         return ItemViewHolder(itemView)
     }
 
+
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         val currentItem = itemList[position]
         holder.titleTextView.text = currentItem.title
 
-        if (currentItem.type != "header") {
+        if (currentItem.id != ListItem.ExampleId.HEADER) {
             // Set click listener for the item
             holder.itemView.setOnClickListener {
                 itemClickListener.onItemClick(currentItem)
@@ -36,10 +36,9 @@ class ItemListAdapter(private val itemList: List<ListItem>, private val itemClic
     }
 
     override fun getItemViewType(position: Int): Int {
-        // Use a unique identifier for each type of item.
-        // Here, we can use the hash code of the type string as the identifier.
-        return itemList[position].type.hashCode()
+        return itemList[position].id.ordinal
     }
+
 
     override fun getItemCount(): Int {
         return itemList.size

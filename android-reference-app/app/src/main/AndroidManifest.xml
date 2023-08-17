@@ -28,15 +28,15 @@
         </activity>
 
         <activity android:name=".BasicImplementationActivity"
-            android:label="Basic implementation">
+            android:label="SDK Quickstart">
         </activity>
 
         <activity android:name=".AuthenticationActivity"
-            android:label="Authentication workflow">
+            android:label="Secure authentication with tokens">
         </activity>
 
         <activity android:name=".CallQualityActivity"
-            android:label="Ensure channel quality">
+            android:label="Call quality best practice">
         </activity>
     </application>
 

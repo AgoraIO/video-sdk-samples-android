@@ -65,21 +65,22 @@ class MainActivity : AppCompatActivity() {
     private fun setupRecyclerView() {
         // Sample list of items
         val itemList = listOf(
-            ListItem("GET STARTED", "header"),
-            ListItem("Basic Implementation"),
+            ListItem("GET STARTED", ListItem.ExampleId.HEADER),
+            ListItem("SDK quickstart", ListItem.ExampleId.SDK_QUICKSTART),
+            ListItem("Secure authentication with tokens", ListItem.ExampleId.AUTHENTICATION_WORKFLOW),
 
-            ListItem("DEVELOP", "header"),
-            ListItem("Source Authentication"),
-            ListItem("Call Quality"),
+            ListItem("DEVELOP", ListItem.ExampleId.HEADER),
+            ListItem("Call quality best practice", ListItem.ExampleId.CALL_QUALITY),
         )
 
         // Set up the adapter with the list of items and click listener
         val adapter = ItemListAdapter(itemList, object : ItemListAdapter.ItemClickListener {
             override fun onItemClick(item: ListItem) {
-                when (item.title) {
-                    "Basic Implementation" -> launchActivity(BasicImplementationActivity::class.java)
-                    "Source Authentication" -> launchActivity(AuthenticationActivity::class.java)
-                    "Call Quality" -> launchActivity(CallQualityActivity::class.java)
+                when (item.id) {
+                    ListItem.ExampleId.SDK_QUICKSTART -> launchActivity(BasicImplementationActivity::class.java)
+                    ListItem.ExampleId.AUTHENTICATION_WORKFLOW -> launchActivity(AuthenticationActivity::class.java)
+                    ListItem.ExampleId.CALL_QUALITY -> launchActivity(CallQualityActivity::class.java)
+                    else -> {}
                 }
             }
         })

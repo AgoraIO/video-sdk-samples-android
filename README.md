@@ -42,7 +42,6 @@ Before getting started with this example app, please ensure you have the followi
 
     - `rtcToken`: Generate a temporary token from [Agora Console](https://console.agora.io) and add it here.
     - `tokenUrl`: Add the URL to your token server if you have one; there are a few one-click deployment options available [here](https://github.com/AgoraIO-Community/agora-token-service).
-    `
 
 1. Build and run the project
 
@@ -52,10 +51,9 @@ Before getting started with this example app, please ensure you have the followi
 
 This demo app includes several examples that illustrate the functionality and features of Agora Video/Voice SDK. Each example is self-contained and the relevant code can be found in its own folder in the root directory. For more information about each example, see the README file within the directory.
 
-- [SDK quickstart](get-started-sdk)
+- [SDK quickstart](agora-manager)
 - [Secure authentication with tokens](authentication-workflow)
 - [Call quality best practice](ensure-channel-quality)
-
 - [Connect through restricted networks with Cloud Proxy](cloud-proxy)
 - [Stream media to a channel](play-media)
 - [Secure channel encryption](media-stream-encryption)
@@ -63,6 +61,7 @@ This demo app includes several examples that illustrate the functionality and fe
 - [Custom video and audio sources](custom-video-and-audio)
 - [Raw video and audio processing](stream-raw-audio-and-video)
 - [Geofencing](geofencing)
+
 
 ## Screenshots
 
