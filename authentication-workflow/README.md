@@ -17,6 +17,8 @@ For context on this implementation, and a full explanation of the essential code
 * [Interactive Live Streaming](https://docs.agora.io/en/video-calling/get-started/authentication-workflow?platform=android)
 * [Broadcast Streaming](https://docs.agora.io/en/video-calling/get-started/authentication-workflow?platform=android)
 
+For the UI implementation of this example, refer to [`AuthenticationActivity.kt`](../android-reference-app/app/src/main/java/io/agora/android_reference_app/AuthenticationActivity.kt).
+
 ## How to run this project
 
 To see how to run this project, refer to [README](../README.md) in the root folder or one of the complete product guides.

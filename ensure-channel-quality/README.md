@@ -27,6 +27,8 @@ For context on this sample, and a full explanation of the essential code snippet
 * [Interactive live Streaming](https://docs.agora.io/en/interactive-live-streaming/develop/ensure-channel-quality?platform=android)
 * [Broadcast streaming](https://docs.agora.io/en/broadcast-streaming/develop/ensure-channel-quality?platform=android)
 
+For the UI implementation of this example, refer to [`CallQualityActivity.kt`](../android-reference-app/app/src/main/java/io/agora/android_reference_app/CallQualityActivity.kt).
+
 ## How to run this project
 
 To see how to run this project, refer to [README](../README.md) in the root folder or one of the complete product guides.

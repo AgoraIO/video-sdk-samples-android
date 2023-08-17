@@ -32,14 +32,16 @@ Before getting started with this example app, please ensure you have the followi
 
 1. Modify `config.json`
 
-    The file [config.json](agora-manager/res/raw/config.json) is located in the `agora-manager/res/raw/' directory. Open the file and update the following:
+   The app loads connection parameters from the [`config.json`](./src/main/res/raw/config.json) file. Ensure that the file is populated with the required parameter values before running the application.
 
-    - `appId`: Update the value to your Agora Project ID from [Agora Console](https://console.agora.io)
+    - `uid`: The user ID associated with the application.
+    - `appId`: (Required) The unique ID for the application obtained from https://console.agora.io. 
+    - `channelName`: The name of the channel to join.
+    - `rtcToken`: An RTC (Real-Time Communication) token generated for the `channelName`.
+    - `serverUrl`: The URL for the token generator.
+    - `tokenExpiryTime`: The time in seconds after which a token expires.
 
-        You may also need to modify these parameters:
-
-    - `rtcToken`: Generate a temporary token from [Agora Console](https://console.agora.io) and add it here.
-    - `tokenUrl`: Add the URL to your token server if you have one; there are a few one-click deployment options available [here](https://github.com/AgoraIO-Community/agora-token-service).
+    If a valid `serverUrl` is provided, all examples use the token server to obtain a token except the *SDK quickstart* project that uses the `rtcToken`. If a `serverUrl` is not provided, all examples use the `rtcToken`.
 
 1. Build and run the project
 
