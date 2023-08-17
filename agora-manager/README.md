@@ -2,13 +2,13 @@
 
 Agora’s Video SDK makes it easy to embed real-time video or voice chat into web, mobile and native apps. It enables one-to-one or group video/voice chat connections with smooth, jitter-free streaming. Thanks to Agora’s intelligent and global Software Defined Real-time Network (Agora SD-RTN™), you can rely on the highest available video and audio quality.
 
-This example shows the minimum code you need to integrate high-quality, low-latency communication features into your app using Agora Video SDK.
+This example shows the minimum code you need to integrate high-quality, low-latency communication features into your Android app using Agora Video SDK.
 
 ## Understand the code
 
-Most of the business logic for the Agora quickstart guide can be found in the `AgoraManager` class. The `AgoraManager` class encapsulates the basic logic to set up Agora Video SDK, join, and leave a channel. All projects in this repository extend this class to functionality specific for that project.
+The business logic for the Agora quickstart guide can be found in the [`AgoraManager`](src/main/java/io/agora/agora_manager/AgoraManager.kt) class. This class encapsulates the code to set up Agora Video SDK, join, and leave a channel. All projects in this repository extend this class to add functionality specific for that project.
 
-To view the UI implementation, refer to the [`BasicImplementationActivity.kt`](android-reference-app/app/src/main/java/io/agora/android_reference_app/BasicImplementationActivity.kt).
+For the UI implementation of this example, refer to [`BasicImplementationActivity.kt`](../android-reference-app/app/src/main/java/io/agora/android_reference_app/BasicImplementationActivity.kt).
 
 ## The `config.json` file
 

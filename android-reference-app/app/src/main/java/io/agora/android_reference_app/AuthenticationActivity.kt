@@ -41,6 +41,10 @@ class AuthenticationActivity : BasicImplementationActivity() {
         val channelName = editChannelName!!.text.toString()
         // Read the authentication server URL
         authenticationManager.serverUrl = editServerUrl!!.text.toString()
+        if (authenticationManager.serverUrl == "") {
+            showMessage("You must specify an token server URL")
+            return
+        }
 
         // Fetch a token from the server using an async call
         authenticationManager.fetchToken(channelName, object : TokenCallback {
