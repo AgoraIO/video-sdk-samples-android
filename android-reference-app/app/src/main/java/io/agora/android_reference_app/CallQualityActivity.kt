@@ -20,8 +20,7 @@ class CallQualityActivity : BasicImplementationActivity() {
     private var overlayText: TextView? = null
     private var isEchoTestRunning = false // Keeps track of the echo test
     private val baseListener = agoraManagerListener
-
-
+    
     // Override the UI layout
     override val layoutResourceId: Int
         get() = R.layout.activity_call_quality
