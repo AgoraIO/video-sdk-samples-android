@@ -28,11 +28,9 @@ Before getting started with this example app, please ensure you have the followi
 
 1. Open the project
 
-    Launch Android Studio. From the File menu, select **Open...** and navigate to the [android-reference-app](android-reference-app) folder.
+    Launch Android Studio. From the File menu, select **Open...** and navigate to the [android-reference-app](android-reference-app) folder. All project dependencies are automatically installed when you perform a Gradle sync.
 
-    > All dependencies are installed when you perform a Gradle sync.
-
-1. Modify config.json
+1. Modify `config.json`
 
     The file [config.json](agora-manager/res/raw/config.json) is located in the `agora-manager/res/raw/' directory. Open the file and update the following:
 
@@ -62,6 +60,7 @@ This demo app includes several examples that illustrate the functionality and fe
 - [Raw video and audio processing](stream-raw-audio-and-video)
 - [Geofencing](geofencing)
 
+To view the UI implementation, open the relevant Activity Class file [here]( android-reference-app/app/src/main/java/io/agora/android_reference_app).
 
 ## Contact
 

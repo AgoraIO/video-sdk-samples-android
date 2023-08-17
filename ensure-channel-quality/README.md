@@ -20,12 +20,12 @@ This sample project shows you how to use Video SDK features to account for these
 
 ## Understand the code
 
-For context on this sample, and a full explanation of the essential code snippets used in this project, read the following guides:
+For context on this sample, and a full explanation of the essential code snippets used in this project, read the **Call quality best practice** document for your product of interest:
 
-* [Call quality best practice for Video calling](https://docs.agora.io/en/video-calling/develop/ensure-channel-quality?platform=android)
-* [Call quality best practice for Voice calling](https://docs.agora.io/en/voice-calling/develop/ensure-channel-quality?platform=android)
-* [Call quality best practice for Interactive live Streaming](https://docs.agora.io/en/interactive-live-streaming/develop/ensure-channel-quality?platform=android)
-* [Call quality best practice for Broadcast streaming](https://docs.agora.io/en/broadcast-streaming/develop/ensure-channel-quality?platform=android)
+* [Video calling](https://docs.agora.io/en/video-calling/develop/ensure-channel-quality?platform=android)
+* [Voice calling](https://docs.agora.io/en/voice-calling/develop/ensure-channel-quality?platform=android)
+* [Interactive live Streaming](https://docs.agora.io/en/interactive-live-streaming/develop/ensure-channel-quality?platform=android)
+* [Broadcast streaming](https://docs.agora.io/en/broadcast-streaming/develop/ensure-channel-quality?platform=android)
 
 ## How to run this project
 
