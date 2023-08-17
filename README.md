@@ -1,31 +1,75 @@
-# Agora Video SDK for Android sample projects
+# Video SDK reference app (Android)
 
-This repository holds the code examples used for the [Agora Video SDK for Android ](https://docs.agora.io/en/video-calling/get-started/get-started-sdk?platform=android) documentation. Clone the repo, run and test the samples, use the code in your own project. Enjoy.
+This app demonstrates using Agora's Video SDK for real-time communication in an Android app.
 
-## Sample projects
+This example app is a robust and comprehensive documentation reference app for Android, designed to enhance your productivity and understanding. It's built to be flexible, easily extensible, and beginner-friendly.
 
-The runnable code examples are:
+To understand the contents better, you can go to [Agora's Documentation](https://docs.agora.io), which explains each example in more detail.
 
-- [SDK quickstart](./sdk_quickstart/) - The minimum code you need to integrate high-quality, low-latency Video. 
-- [Authentication workflow](./authentication_workflow/) - Connect securely to a channel using an authentication token obtained from a token server. 
-  Calling features into your app using Video SDK.
-- [Call quality best practice](./call_quality/) - How to use Video SDK features to ensure optimal audio and video quality in your app. 
+## Prerequisites
 
+Before getting started with this example app, please ensure you have the following set up:
 
-## Run a sample project
+- Android Studio 4.1 or higher
+- Android SDK API Level 24 or higher
+- A mobile device that runs Android 4.1 or higher
+- An Agora account and project
+- A computer with Internet access. Ensure that no firewall is blocking your network communication.
 
-To run a sample project in this repository, take the following steps:
+## Run the App
 
-1. Clone this Git repository by executing the following command in a terminal window:
+1. Clone the repository
 
-    ```bash
-    git clone https://github.com/AgoraIO/video-sdk-samples-android
+    To clone the repository to your local machine, open Terminal and navigate to the directory where you want to clone the repository. Then, use the following command:
+
+    ```sh
+    git clone https://github.com/AgoraIO/video-sdk-samples-android.git
     ```
 
-1. Launch Android Studio. From the **File** menu, select **Open...** then choose the folder for the sample project you want to run. Wait for Gradle sync to complete.
+1. Open the project
 
-1. Refer to the README file in the selected project folder and follow the link to view complete project documentation for your product of interest.
+    Launch Android Studio. From the File menu, select **Open...** and navigate to the [android-reference-app](android-reference-app) folder.
 
-1. Connect an Android device to your development machine.
+    > All dependencies are installed when you perform a Gradle sync.
 
-1. In Android Studio, click **Run app**. A moment later, you see the project installed on your device.
+1. Modify config.json
+
+    The file [config.json](agora-manager/res/raw/config.json) is located in the `agora-manager/res/raw/' directory. Open the file and update the following:
+
+    - `appId`: Update the value to your Agora Project ID from [Agora Console](https://console.agora.io)
+
+        You may also need to modify these parameters:
+
+    - `rtcToken`: Generate a temporary token from [Agora Console](https://console.agora.io) and add it here.
+    - `tokenUrl`: Add the URL to your token server if you have one; there are a few one-click deployment options available [here](https://github.com/AgoraIO-Community/agora-token-service).
+
+1. Build and run the project
+
+    To build and run the project, select your connected Android device or emulator and press the **Run** button in Android Studio.
+
+## Examples
+
+This demo app includes several examples that illustrate the functionality and features of Agora Video/Voice SDK. Each example is self-contained and the relevant code can be found in its own folder in the root directory. For more information about each example, see the README file within the directory.
+
+- [SDK quickstart](agora-manager)
+- [Secure authentication with tokens](authentication-workflow)
+- [Call quality best practice](ensure-channel-quality)
+- [Connect through restricted networks with Cloud Proxy](cloud-proxy)
+- [Stream media to a channel](play-media)
+- [Secure channel encryption](media-stream-encryption)
+- [Screen share, volume control and mute](product-workflow)
+- [Custom video and audio sources](custom-video-and-audio)
+- [Raw video and audio processing](stream-raw-audio-and-video)
+- [Geofencing](geofencing)
+
+
+## Screenshots
+
+| Landing page | Call quality best practice | Custom video and audio sources | Screen share, volume control and mute |
+|:-:|:-:|:-:|:-:|
+| ![Landing page of the application](Example-App/Docs-Examples/Documentation.docc/Resources/media/landing-page.png) | ![Two streams and quality details in the top left of each stream](Example-App/Docs-Examples/Documentation.docc/Resources/media/ensure-channel-quality.png) | ![Custom camera using the ultra wide iPhone capture](Example-App/Docs-Examples/Documentation.docc/Resources/media/custom-video-and-audio.png) | ![Local and remote olume control + screen sharing option](Example-App/Docs-Examples/Documentation.docc/Resources/media/product-workflow.png) |
+
+## Contact
+
+If you have any questions, issues, or suggestions, please file an issue in our [GitHub Issue Tracker](https://github.com/AgoraIO/video-sdk-samples-android/issues).
+
