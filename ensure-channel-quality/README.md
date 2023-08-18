@@ -1,6 +1,6 @@
 # Call quality best practice
 
-Customer satisfaction for your Video SDK integrated app depends on the quality of video and audio it provides. Quality of audiovisual communication through your app is affected by the following factors:
+Customer satisfaction for your Agora Video SDK integrated app depends on the quality of video and audio it provides. Quality of audiovisual communication through your app is affected by the following factors:
 
 - Bandwidth of network connection: Bandwidth is the volume of information that an Internet connection can handle per unit of time. When the available bandwidth is not sufficient to transmit the amount of data necessary to provide the desired video quality, your users see jerky or frozen video along with audio that cuts in and out.
 
@@ -29,7 +29,7 @@ For context on this sample, and a full explanation of the essential code snippet
 
 For the UI implementation of this example, refer to [`CallQualityActivity.kt`](../android-reference-app/app/src/main/java/io/agora/android_reference_app/CallQualityActivity.kt).
 
-## How to run this project
+## How to run this example
 
-To see how to run this project, refer to [README](../README.md) in the root folder or one of the complete product guides.
+To see how to run this example, refer to the [README](../README.md) in the root folder or one of the complete product guides.
 

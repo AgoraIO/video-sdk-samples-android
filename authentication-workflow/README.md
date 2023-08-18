@@ -1,6 +1,6 @@
 # Secure authentication with tokens
 
-Authentication is the act of validating the identity of each user before they access a system. Agora uses digital tokens to authenticate users and their privileges before they access Agora SD-RTN™ to join Video Calling. Each token is valid for a limited period and works only for a specific channel. For example, you cannot use the token generated for a channel called *AgoraChannel* to join the *AppTest* channel.
+Authentication is the act of validating the identity of each user before they access a system. Agora uses digital tokens to authenticate users and their privileges before they access Agora SD-RTN™ to join a channel. Each token is valid for a limited period and works only for a specific channel. For example, you cannot use the token generated for a channel called *AgoraChannel* to join the *AppTest* channel.
 
 This example shows you how to retrieve a token from an authentication server, and use it to connect securely to a specific Video SDK channel. 
 
@@ -14,11 +14,11 @@ For context on this implementation, and a full explanation of the essential code
 
 * [Video Calling](https://docs.agora.io/en/video-calling/get-started/authentication-workflow?platform=android)
 * [Voice Calling](https://docs.agora.io/en/voice-calling/get-started/authentication-workflow?platform=android)
-* [Interactive Live Streaming](https://docs.agora.io/en/video-calling/get-started/authentication-workflow?platform=android)
-* [Broadcast Streaming](https://docs.agora.io/en/video-calling/get-started/authentication-workflow?platform=android)
+* [Interactive Live Streaming](https://docs.agora.io/en/interactive-live-streaming/get-started/authentication-workflow?platform=android)
+* [Broadcast Streaming](https://docs.agora.io/en/broadcast-streaming/get-started/authentication-workflow?platform=android)
 
 For the UI implementation of this example, refer to [`AuthenticationActivity.kt`](../android-reference-app/app/src/main/java/io/agora/android_reference_app/AuthenticationActivity.kt).
 
-## How to run this project
+## How to run this example
 
-To see how to run this project, refer to [README](../README.md) in the root folder or one of the complete product guides.
+To see how to run this example, refer to the [README](../README.md) in the root folder or one of the complete product guides.

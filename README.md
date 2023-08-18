@@ -1,10 +1,6 @@
 # Video SDK reference app (Android)
 
-This app demonstrates using Agora's Video SDK for real-time communication in an Android app.
-
-This example app is a robust and comprehensive documentation reference app for Android, designed to enhance your productivity and understanding. It's built to be flexible, easily extensible, and beginner-friendly.
-
-To understand the contents better, you can go to [Agora's Documentation](https://docs.agora.io), which explains each example in more detail.
+This app demonstrates use of Agora's Video SDK for real-time audio and video communication. It is a robust and comprehensive documentation reference app for Android, designed to enhance your productivity and understanding. It's built to be flexible, easily extensible, and beginner-friendly.
 
 ## Prerequisites
 
@@ -28,24 +24,26 @@ Before getting started with this example app, please ensure you have the followi
 
 1. Open the project
 
-    Launch Android Studio. From the File menu, select **Open...** and navigate to the [android-reference-app](android-reference-app) folder. All project dependencies are automatically installed when you perform a Gradle sync.
+    Launch Android Studio. From the **File** menu, select **Open...** and navigate to the [android-reference-app](android-reference-app) folder. Start Gradle sync to automatically install all project dependencies.
 
 1. Modify `config.json`
 
-   The app loads connection parameters from the [`config.json`](./src/main/res/raw/config.json) file. Ensure that the file is populated with the required parameter values before running the application.
+   The app loads connection parameters from the [`config.json`](./agora-manager/src/main/res/raw/config.json) file. Ensure that the file is populated with the required parameter values before running the application.
 
     - `uid`: The user ID associated with the application.
-    - `appId`: (Required) The unique ID for the application obtained from https://console.agora.io. 
-    - `channelName`: The name of the channel to join.
-    - `rtcToken`: An RTC (Real-Time Communication) token generated for the `channelName`.
-    - `serverUrl`: The URL for the token generator.
+    - `appId`: (Required) The unique ID for the application obtained from [Agora Console](https://console.agora.io). 
+    - `channelName`: The default name of the channel to join.
+    - `rtcToken`: An RTC (Real-Time Communication) token generated for the `channelName`. You can generate a temporary token using Agora Console.
+    - `serverUrl`: The URL for the token generator. See [Secure authentication with tokens](authentication-workflow) fpr information on how to set up a token server.
     - `tokenExpiryTime`: The time in seconds after which a token expires.
 
-    If a valid `serverUrl` is provided, all examples use the token server to obtain a token except the *SDK quickstart* project that uses the `rtcToken`. If a `serverUrl` is not provided, all examples use the `rtcToken`.
+    If a valid `serverUrl` is provided, all examples use the token server to obtain a token except the **SDK quickstart** project that uses the `rtcToken`. If a `serverUrl` is not specified, all examples except **Secure authentication with tokens** use the `rtcToken` from `config.json`.
 
 1. Build and run the project
 
     To build and run the project, select your connected Android device or emulator and press the **Run** button in Android Studio.
+
+1. From the main app screen, choose and launch an example.
 
 ## Examples
 
