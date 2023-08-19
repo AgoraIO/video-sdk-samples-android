@@ -21,7 +21,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/base_layout"
-            android:hint="@string/Authentication_server_hint"
+            android:hint="@string/authentication_server_hint"
             android:inputType="textUri"
             android:text="" />
 

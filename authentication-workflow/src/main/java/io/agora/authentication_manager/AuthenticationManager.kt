@@ -1,6 +1,6 @@
 package io.agora.authentication_manager
 
-import io.agora.rtc2.IRtcEngineEventHandler
+import io.agora.rtc2.*
 
 import io.agora.agora_manager.AgoraManager
 import okhttp3.*
@@ -76,8 +76,8 @@ open class AuthenticationManager(context: Context?) : AgoraManager(
     fun fetchToken(channelName: String, uid: Int, callback: TokenCallback) {
         val tokenRole = if (isBroadcaster) 1 else 2
         // Prepare the Url
-        val urlLString = (serverUrl + "/rtc/" + channelName + "/" + tokenRole + "/"
-                + "uid" + "/" + uid + "/?expiry=" + tokenExpiryTime)
+        val urlLString = "$serverUrl/rtc/$channelName/$tokenRole/uid/$uid/?expiry=$tokenExpiryTime"
+
         val client = OkHttpClient()
 
         // Create a request
@@ -99,7 +99,7 @@ open class AuthenticationManager(context: Context?) : AgoraManager(
                         val responseBody = response.body!!.string()
                         val jsonObject = JSONObject(responseBody)
                         val rtcToken = jsonObject.getString("rtcToken")
-                        // Return the token to the code that called fetchToken
+                        // Return the token
                         callback.onTokenReceived(rtcToken)
                     } catch (e: JSONException) {
                         e.printStackTrace()

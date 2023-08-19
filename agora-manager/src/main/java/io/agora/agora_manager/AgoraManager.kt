@@ -155,10 +155,13 @@ open class AgoraManager(context: Context) {
             // For Live Streaming and Broadcast streaming,
             // set the channel profile as LIVE_BROADCASTING.
             options.channelProfile = Constants.CHANNEL_PROFILE_LIVE_BROADCASTING
-            if (currentProduct == ProductName.BROADCAST_STREAMING) {
+            if (!isBroadcaster && currentProduct == ProductName.BROADCAST_STREAMING) {
                 // Set Low latency for Broadcast streaming
-                if (!isBroadcaster) options.audienceLatencyLevel =
+                options.audienceLatencyLevel =
                     Constants.AUDIENCE_LATENCY_LEVEL_LOW_LATENCY
+            } else if (!isBroadcaster && currentProduct == ProductName.INTERACTIVE_LIVE_STREAMING) {
+                options.audienceLatencyLevel =
+                    Constants.AUDIENCE_LATENCY_LEVEL_ULTRA_LOW_LATENCY
             }
         }
 

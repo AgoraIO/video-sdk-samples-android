@@ -3,11 +3,12 @@
     <string name="main_title">Agora Video SDK Samples</string>
     <string name="leave">Leave</string>
     <string name="join">Join</string>
-    <string name="Authentication_server_hint">Token server URL</string>
+    <string name="authentication_server_hint">Token server URL</string>
     <string name="network_status">Network Status:</string>
     <string name="channel_name_hint">Channel name here</string>
-    <string name="broadcaster">Broadcaster</string>
+    <string name="broadcaster">Host</string>
     <string name="audience">Audience</string>
     <string name="start_echo_test">Start Echo Test</string>
     <string name="stop_echo_test">Stop Echo Test</string>
+    <string name="product">Product:</string>
 </resources>

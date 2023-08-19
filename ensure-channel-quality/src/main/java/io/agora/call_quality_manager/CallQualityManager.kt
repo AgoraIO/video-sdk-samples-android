@@ -1,7 +1,7 @@
 package io.agora.call_quality_manager
 
-import io.agora.rtc2.video.VideoCanvas
 import io.agora.rtc2.*
+import io.agora.rtc2.video.VideoCanvas
 import io.agora.rtc2.internal.LastmileProbeConfig
 import io.agora.rtc2.video.VideoEncoderConfiguration
 import io.agora.rtc2.IRtcEngineEventHandler.RemoteVideoStats
@@ -44,7 +44,7 @@ class CallQualityManager(context: Context?) : AuthenticationManager(context) {
             logConfig.level = Constants.LogLevel.getValue(Constants.LogLevel.LOG_LEVEL_WARN)
             config.mLogConfig = logConfig
             agoraEngine = RtcEngine.create(config)
-            // By default, the video module is disabled, call enableVideo to enable it.
+            /// Enable video mode
             agoraEngine!!.enableVideo()
         } catch (e: Exception) {
             sendMessage(e.toString())
@@ -57,7 +57,7 @@ class CallQualityManager(context: Context?) : AuthenticationManager(context) {
         // steam is not sent by default; the SDK automatically switches to low-quality after
         // it receives a request to subscribe to a low-quality video stream.
 
-        // Set audio profile and audio scenario.
+        // Set an audio profile and an audio scenario.
         agoraEngine!!.setAudioProfile(
             Constants.AUDIO_PROFILE_DEFAULT,
             Constants.AUDIO_SCENARIO_GAME_STREAMING
