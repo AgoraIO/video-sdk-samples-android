@@ -62,6 +62,10 @@ This demo app includes several examples that illustrate the functionality and fe
 
 To view the UI implementation, open the relevant Activity Class file [here]( android-reference-app/app/src/main/java/io/agora/android_reference_app).
 
+
+https://github.com/AgoraIO/video-sdk-samples-android/assets/65331551/65de543d-2977-46f9-92b5-37a05413845b
+
+
 ## Contact
 
 If you have any questions, issues, or suggestions, please file an issue in our [GitHub Issue Tracker](https://github.com/AgoraIO/video-sdk-samples-android/issues).
