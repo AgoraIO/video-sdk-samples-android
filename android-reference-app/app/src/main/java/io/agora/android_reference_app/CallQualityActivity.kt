@@ -31,9 +31,6 @@ class CallQualityActivity : BasicImplementationActivity() {
         // Set up access to the UI elements
         networkStatus = findViewById(R.id.networkStatus)
         btnEchoTest = findViewById(R.id.btnEchoTest)
-
-        // Start the probe test
-        callQualityManager.startProbeTest()
     }
 
     override fun initializeAgoraManager() {

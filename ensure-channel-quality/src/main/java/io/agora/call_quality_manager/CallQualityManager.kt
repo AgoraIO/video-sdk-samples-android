@@ -30,6 +30,7 @@ class CallQualityManager(context: Context?) : AuthenticationManager(context) {
         config.expectedDownlinkBitrate = 100000
         agoraEngine!!.startLastmileProbeTest(config)
         sendMessage("Running the last mile probe test ...")
+        // Test results are reported through the onLastmileProbeResult callback
     }
 
     override fun setupAgoraEngine(): Boolean {
@@ -84,6 +85,9 @@ class CallQualityManager(context: Context?) : AuthenticationManager(context) {
             VideoEncoderConfiguration.COMPRESSION_PREFERENCE.PREFER_LOW_LATENCY
         // Apply the configuration
         agoraEngine!!.setVideoEncoderConfiguration(videoConfig)
+
+        // Start the probe test
+        startProbeTest()
         return true
     }
 
