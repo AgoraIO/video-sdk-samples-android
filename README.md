@@ -60,6 +60,8 @@ This demo app includes several examples that illustrate the functionality and fe
 - [Raw video and audio processing](stream-raw-audio-and-video)
 - [Geofencing](geofencing)
 
+[Video](./media/android-demo.mp4)
+
 To view the UI implementation, open the relevant Activity Class file [here]( android-reference-app/app/src/main/java/io/agora/android_reference_app).
 
 ## Contact
