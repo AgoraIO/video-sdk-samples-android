@@ -6,7 +6,7 @@ This example shows the minimum code you need to integrate high-quality, low-late
 
 ## Understand the code
 
-The business logic for the Agora quickstart example can be found in the [`AgoraManager`](src/main/java/io/agora/agora_manager/AgoraManager.kt) class. This class encapsulates the code to set up an instance of `RTCEngine`, join, and leave a channel. All examples in this repository extend the `AgoraManager` class to add functionality specific for that application.
+You find the business logic for this quickstart sample in the [`AgoraManager`](src/main/java/io/agora/agora_manager/AgoraManager.kt) class. This class encapsulates the code to set up an instance of `RTCEngine`, join, and leave a channel. All examples in this repository extend the `AgoraManager` class to add functionality specific for that application.
 
 For context on this implementation, and a full explanation of the essential code snippets used in this example, read the **SDK quickstart** document for your product of interest:
 
