@@ -1,79 +1,14 @@
-package io.agora.call_quality_manager
+package io.agora.play_media_manager
 
 import io.agora.rtc2.*
-import io.agora.rtc2.video.VideoCanvas
-import io.agora.rtc2.internal.LastmileProbeConfig
-import io.agora.rtc2.video.VideoEncoderConfiguration
 import io.agora.rtc2.IRtcEngineEventHandler.RemoteVideoStats
 
 import io.agora.authentication_manager.AuthenticationManager
 import android.content.Context
-import android.view.SurfaceView
-import android.view.View
-import java.lang.Exception
 
 class PlayMediaManager(context: Context?) : AuthenticationManager(context) {
     private val baseEventHandler: IRtcEngineEventHandler = super.iRtcEngineEventHandler // Reuse the base class event handler
     private var counter = 0 // To control the frequency of messages
-
-   
-    override fun setupAgoraEngine(): Boolean {
-        try {
-            val config = RtcEngineConfig()
-            config.mContext = mContext
-            config.mAppId = appId
-            config.mEventHandler = iRtcEngineEventHandler
-            // Configure the log file
-            val logConfig = RtcEngineConfig.LogConfig()
-            logConfig.fileSizeInKB = 256 // Range 128-1024 Kb
-            logConfig.level = Constants.LogLevel.getValue(Constants.LogLevel.LOG_LEVEL_WARN)
-            config.mLogConfig = logConfig
-            agoraEngine = RtcEngine.create(config)
-            /// Enable video mode
-            agoraEngine!!.enableVideo()
-        } catch (e: Exception) {
-            sendMessage(e.toString())
-            return false
-        }
-
-        // Enable the dual stream mode
-        agoraEngine!!.setDualStreamMode(Constants.SimulcastStreamMode.ENABLE_SIMULCAST_STREAM)
-        // If you set the dual stream mode to AUTO_SIMULCAST_STREAM, the low-quality video
-        // steam is not sent by default; the SDK automatically switches to low-quality after
-        // it receives a request to subscribe to a low-quality video stream.
-
-        // Set an audio profile and an audio scenario.
-        agoraEngine!!.setAudioProfile(
-            Constants.AUDIO_PROFILE_DEFAULT,
-            Constants.AUDIO_SCENARIO_GAME_STREAMING
-        )
-
-        // Set the video profile
-        val videoConfig = VideoEncoderConfiguration()
-        // Set mirror mode
-        videoConfig.mirrorMode = VideoEncoderConfiguration.MIRROR_MODE_TYPE.MIRROR_MODE_AUTO
-        // Set frameRate
-        videoConfig.frameRate = VideoEncoderConfiguration.FRAME_RATE.FRAME_RATE_FPS_10.value
-        // Set bitrate
-        videoConfig.bitrate = VideoEncoderConfiguration.STANDARD_BITRATE
-        // Set dimensions
-        videoConfig.dimensions = VideoEncoderConfiguration.VD_640x360
-        // Set orientation mode
-        videoConfig.orientationMode =
-            VideoEncoderConfiguration.ORIENTATION_MODE.ORIENTATION_MODE_ADAPTIVE
-        // Set degradation preference
-        videoConfig.degradationPrefer =
-            VideoEncoderConfiguration.DEGRADATION_PREFERENCE.MAINTAIN_BALANCED
-        // Set compression preference: low latency or quality
-        videoConfig.advanceOptions.compressionPreference =
-            VideoEncoderConfiguration.COMPRESSION_PREFERENCE.PREFER_LOW_LATENCY
-        // Apply the configuration
-        agoraEngine!!.setVideoEncoderConfiguration(videoConfig)
-
-        // Start the probe test
-        startProbeTest()
-        return true
-    }
 
     override val iRtcEngineEventHandler: IRtcEngineEventHandler
         get() = object : IRtcEngineEventHandler() {

@@ -1,18 +1,7 @@
 package io.agora.android_reference_app
 
-import io.agora.rtc2.IRtcEngineEventHandler.RemoteVideoStats
-import io.agora.call_quality_manager.CallQualityManager
 import io.agora.play_media_manager.PlayMediaManager
-import io.agora.call_quality_manager.CallQualityManager.CallQualityManagerListener
-
-import android.graphics.Color
-import android.widget.TextView
 import android.os.Bundle
-import android.view.SurfaceView
-import android.widget.FrameLayout
-import android.view.Gravity
-import android.view.View
-import android.widget.Button
 
 class PlayMediaActivity : BasicImplementationActivity() {
     private lateinit var playMediaManager: PlayMediaManager
@@ -36,7 +25,7 @@ class PlayMediaActivity : BasicImplementationActivity() {
     }
 
     override fun join() {
-        callQualityManager.joinChannelWithToken()
+        playMediaManager.joinChannelWithToken()
     }
 
     override fun leave() {
