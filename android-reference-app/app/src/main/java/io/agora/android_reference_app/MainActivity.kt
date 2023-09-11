@@ -96,4 +96,5 @@ class MainActivity : AppCompatActivity() {
         intent.putExtra("selectedProduct", selectedProduct.ordinal)
         startActivity(intent)
     }
+
 }

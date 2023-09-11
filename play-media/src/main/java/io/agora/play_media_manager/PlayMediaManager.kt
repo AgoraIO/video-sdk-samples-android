@@ -1,80 +1,89 @@
 package io.agora.play_media_manager
 
-import io.agora.rtc2.*
-import io.agora.rtc2.IRtcEngineEventHandler.RemoteVideoStats
-
-import io.agora.authentication_manager.AuthenticationManager
 import android.content.Context
+import io.agora.authentication_manager.AuthenticationManager
+import io.agora.mediaplayer.Constants.*
+import io.agora.mediaplayer.IMediaPlayer
+import io.agora.mediaplayer.IMediaPlayerObserver
+import io.agora.mediaplayer.data.PlayerUpdatedInfo
+import io.agora.mediaplayer.data.SrcInfo
+import io.agora.rtc2.IRtcEngineEventHandler
+
 
 class PlayMediaManager(context: Context?) : AuthenticationManager(context) {
     private val baseEventHandler: IRtcEngineEventHandler = super.iRtcEngineEventHandler // Reuse the base class event handler
-    private var counter = 0 // To control the frequency of messages
+    private var mediaPlayer: IMediaPlayer? = null // Instance of the media player
+    var isMediaPlaying = false
+    private var mediaDuration: Long = 0
+    private lateinit var mediaPlayerListener: MediaPlayerListener
+
+    fun setupMediaPlayer(listener: MediaPlayerListener){
+        if (mediaPlayer == null) {
+            // Create an instance of the media player
+            mediaPlayer = agoraEngine!!.createMediaPlayer()
+            // Set the mediaPlayerObserver to receive callbacks
+            mediaPlayer!!.registerPlayerObserver(mediaPlayerObserver)
+
+            mediaPlayerListener = listener
+            sendMessage("Opening media file...")
+            return
+        }
+    }
+
+    fun openMediaFile(mediaLocation: String) {
+        if (mediaPlayer != null) {
+            // Open the media file
+            mediaPlayer!!.open(mediaLocation, 0)
+            return
+        }
+    }
+
+    fun pauseMediaPlayer() {
+        // Set up the local video container to handle the media player output
+        // or the camera stream, alternately.
+
+        isMediaPlaying = !isMediaPlaying
+        // Set the stream publishing options
+
+//        updateChannelPublishOptions(isMediaPlaying)
+        // Display the stream locally
+        // Display the stream locally
+//        setupLocalVideo(isMediaPlaying)
+
+        val state = mediaPlayer!!.state
+        if (isMediaPlaying) { // Start or resume playing media
+            if (state == MediaPlayerState.PLAYER_STATE_OPEN_COMPLETED) {
+                mediaPlayer!!.play()
+            } else if (state == MediaPlayerState.PLAYER_STATE_PAUSED) {
+                mediaPlayer!!.resume()
+            }
+            //mediaButton.setText("Pause Playing Media")
+        } else {
+            if (state == MediaPlayerState.PLAYER_STATE_PLAYING) {
+                // Pause media file
+                mediaPlayer!!.pause()
+              //  mediaButton.setText("Resume Playing Media")
+            }
+        }
+    }
+
+    fun destroyMediaPlayer(){
+        // Destroy the media player
+        if (mediaPlayer == null) return
+        mediaPlayer!!.stop()
+        mediaPlayer!!.unRegisterPlayerObserver(mediaPlayerObserver)
+        mediaPlayer!!.destroy()
+    }
 
     override val iRtcEngineEventHandler: IRtcEngineEventHandler
         get() = object : IRtcEngineEventHandler() {
             override fun onConnectionStateChanged(state: Int, reason: Int) {
                 // Occurs when the network connection state changes
-                sendMessage(
-                    "Connection state changed\n" +
-                            "New state: $state\n" +
-                            "Reason: $reason"
-                )
-            }
-
-            override fun onLastmileQuality(quality: Int) {
-                // Reports the last-mile network quality of the local user
-                (mListener as CallQualityManagerListener).onLastMileQuality(quality)
-            }
-
-            override fun onLastmileProbeResult(result: LastmileProbeResult) {
-                // Reports the last mile network probe result
-                agoraEngine!!.stopLastmileProbeTest()
-                // The result object contains the detailed test results that help you
-                // manage call quality, for example, the down link bandwidth.
-                sendMessage("Available down link bandwidth: " + result.downlinkReport.availableBandwidth)
-            }
-
-            override fun onNetworkQuality(uid: Int, txQuality: Int, rxQuality: Int) {
-                // Reports the last mile network quality of each user in the channel
-                (mListener as CallQualityManagerListener).onNetworkQuality(
-                    uid, txQuality, rxQuality
-                )
-            }
-
-            override fun onRtcStats(rtcStats: RtcStats) {
-                // Reports the statistics of the current session
-                counter += 1
-                var msg = ""
-                if (counter == 5) msg =
-                    rtcStats.users.toString() + " user(s)" else if (counter == 10) {
-                    msg = "Packet loss rate: " + rtcStats.rxPacketLossRate
-                    counter = 0
-                }
-                if (msg.isNotEmpty()) sendMessage(msg)
-            }
-
-            override fun onRemoteVideoStateChanged(uid: Int, state: Int, reason: Int, elapsed: Int) {
-                // Occurs when the remote video stream state changes
-                val msg = "Remote video state changed:\n" +
-                        "Uid = $uid\n" +
-                        "NewState = $state\n" +
-                        "Reason = $reason\n" +
-                        "Elapsed = $elapsed"
-                sendMessage(msg)
-            }
-
-            override fun onRemoteVideoStats(stats: RemoteVideoStats) {
-                // Reports the statistics of the video stream sent by each remote user
-                (mListener as CallQualityManagerListener).onRemoteVideoStats(
-                    stats
-                )
+                baseEventHandler.onConnectionStateChanged(state, reason)
             }
 
             override fun onUserJoined(uid: Int, elapsed: Int) {
                 baseEventHandler.onUserJoined(uid, elapsed)
-                (mListener as CallQualityManagerListener).onUserJoined(
-                    uid
-                )
             }
 
             override fun onJoinChannelSuccess(channel: String, uid: Int, elapsed: Int) {
@@ -89,12 +98,84 @@ class PlayMediaManager(context: Context?) : AuthenticationManager(context) {
                 baseEventHandler.onTokenPrivilegeWillExpire(token)
             }
         }
-      
-    interface CallQualityManagerListener : AgoraManagerListener {
-        override fun onMessageReceived(message: String?)
-        fun onNetworkQuality(uid: Int, txQuality: Int, rxQuality: Int)
-        fun onLastMileQuality(quality: Int)
-        fun onUserJoined(uid: Int)
-        fun onRemoteVideoStats(stats: RemoteVideoStats?)
+
+
+    private val mediaPlayerObserver: IMediaPlayerObserver = object : IMediaPlayerObserver {
+        override fun onPlayerStateChanged(state: MediaPlayerState, error: MediaPlayerError) {
+            sendMessage(state.toString())
+            if (state == MediaPlayerState.PLAYER_STATE_OPEN_COMPLETED) {
+                // Media file opened successfully
+                mediaDuration = mediaPlayer!!.duration
+                // Update the UI
+             /*   UiThreadStatement.runOnUiThread(Runnable {
+                    mediaButton.setText("Play Media File")
+                    mediaButton.setEnabled(true)
+                    mediaProgressBar.setProgress(0)
+                } ) */
+            } else if (state == MediaPlayerState.PLAYER_STATE_PLAYBACK_ALL_LOOPS_COMPLETED) {
+                isMediaPlaying = false
+                // Media file finished playing
+              /*  UiThreadStatement.runOnUiThread(Runnable {
+                    mediaButton.setText("Load Media File")
+                    // Restore camera and microphone streams
+                    setupLocalVideo(false)
+                    updateChannelPublishOptions(false)
+                }) */
+                // Clean up
+                mediaPlayer!!.destroy()
+                mediaPlayer = null
+            }
+        }
+
+        override fun onPositionChanged(position: Long) {
+            if (mediaDuration > 0) {
+                val result = (position.toFloat() / mediaDuration.toFloat() * 100).toInt()
+             /*   UiThreadStatement.runOnUiThread(Runnable {
+                    // Update the ProgressBar
+                    mediaProgressBar.setProgress(java.lang.Long.valueOf(result.toLong()).toInt())
+                }) */
+            }
+        }
+
+        override fun onPlayerEvent(
+            eventCode: MediaPlayerEvent,
+            elapsedTime: Long,
+            message: String
+        ) {
+            // Required to implement IMediaPlayerObserver
+        }
+
+        override fun onMetaData(type: MediaPlayerMetadataType, data: ByteArray) {
+            // Required to implement IMediaPlayerObserver
+        }
+
+        override fun onPlayBufferUpdated(playCachedBuffer: Long) {
+            // Required to implement IMediaPlayerObserver
+        }
+
+        override fun onPreloadEvent(src: String, event: MediaPlayerPreloadEvent) {
+            // Required to implement IMediaPlayerObserver
+        }
+
+        override fun onAgoraCDNTokenWillExpire() {
+            // Required to implement IMediaPlayerObserver
+        }
+
+        override fun onPlayerSrcInfoChanged(from: SrcInfo, to: SrcInfo) {
+            // Required to implement IMediaPlayerObserver
+        }
+
+        override fun onPlayerInfoUpdated(info: PlayerUpdatedInfo) {
+            // Required to implement IMediaPlayerObserver
+        }
+
+        override fun onAudioVolumeIndication(volume: Int) {
+            // Required to implement IMediaPlayerObserver
+        }
+    }
+
+    interface MediaPlayerListener {
+        fun onPlayerStateChanged(state: MediaPlayerState, error: MediaPlayerError)
+        fun onPositionChanged(position: Long)
     }
 }
