@@ -4,5 +4,5 @@
   "channelName": "demo",
   "rtcToken": "",
   "serverUrl": "https://agora-token-service-production-b619.up.railway.app",
-  "tokenExpiryTime": "70"
+  "tokenExpiryTime": "600"
 }

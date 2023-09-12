@@ -8,10 +8,10 @@ import io.agora.mediaplayer.IMediaPlayer
 import io.agora.mediaplayer.IMediaPlayerObserver
 import io.agora.mediaplayer.data.PlayerUpdatedInfo
 import io.agora.mediaplayer.data.SrcInfo
+import io.agora.rtc2.ChannelMediaOptions
 import io.agora.rtc2.Constants
 import io.agora.rtc2.IRtcEngineEventHandler
 import io.agora.rtc2.video.VideoCanvas
-
 
 class PlayMediaManager(context: Context?) : AuthenticationManager(context) {
     private val baseEventHandler: IRtcEngineEventHandler = super.iRtcEngineEventHandler // Reuse the base class event handler
@@ -78,10 +78,19 @@ class PlayMediaManager(context: Context?) : AuthenticationManager(context) {
     }
 
     fun playMedia() {
+        updateChannelPublishOptions(true)
         mediaPlayer?.play()
     }
 
-
+    private fun updateChannelPublishOptions(publishMediaPlayer: Boolean) {
+        val channelOptions = ChannelMediaOptions()
+        channelOptions.publishMediaPlayerAudioTrack = publishMediaPlayer
+        channelOptions.publishMediaPlayerVideoTrack = publishMediaPlayer
+        channelOptions.publishMicrophoneTrack = !publishMediaPlayer
+        channelOptions.publishCameraTrack = !publishMediaPlayer
+        if (publishMediaPlayer) channelOptions.publishMediaPlayerId = mediaPlayer!!.mediaPlayerId
+        agoraEngine?.updateChannelMediaOptions(channelOptions)
+    }
 
     override val iRtcEngineEventHandler: IRtcEngineEventHandler
         get() = object : IRtcEngineEventHandler() {
@@ -107,46 +116,30 @@ class PlayMediaManager(context: Context?) : AuthenticationManager(context) {
             }
         }
 
+    fun videoSurfaceView(): SurfaceView {
+        var videoSurfaceView = SurfaceView(mContext)
+        val videoCanvas =  VideoCanvas(
+            videoSurfaceView,
+            Constants.RENDER_MODE_HIDDEN,
+            0
+        )
+        videoCanvas.mediaPlayerId = mediaPlayer?.mediaPlayerId ?: 0
+        videoCanvas.sourceType = Constants.VIDEO_SOURCE_MEDIA_PLAYER
+        agoraEngine?.setupLocalVideo(videoCanvas)
+        return videoSurfaceView
+    }
 
     private val mediaPlayerObserver: IMediaPlayerObserver = object : IMediaPlayerObserver {
         override fun onPlayerStateChanged(state: MediaPlayerState, error: MediaPlayerError) {
-            sendMessage(state.toString())
+            // Notify the UI
+            mediaPlayerListener.onPlayerStateChanged(state, error)
+
             if (state == MediaPlayerState.PLAYER_STATE_OPEN_COMPLETED) {
                 // Media file opened successfully
                 mediaDuration = mediaPlayer!!.duration
-                mediaPlayerListener.onPlayerStateChanged(state, error)
-                // Update the UI
-             /*   UiThreadStatement.runOnUiThread(Runnable {
-                    mediaButton.setText("Play Media File")
-                    mediaButton.setEnabled(true)
-                    mediaProgressBar.setProgress(0)
-                } ) */
             } else if (state == MediaPlayerState.PLAYER_STATE_PLAYBACK_ALL_LOOPS_COMPLETED) {
                 isMediaPlaying = false
-                // Media file finished playing
-              /*  UiThreadStatement.runOnUiThread(Runnable {
-                    mediaButton.setText("Load Media File")
-                    // Restore camera and microphone streams
-                    setupLocalVideo(false)
-                    updateChannelPublishOptions(false)
-                }) */
-                // Clean up
-                mediaPlayer!!.destroy()
-                mediaPlayer = null
             }
-        }
-
-        fun videoSurfaceView(): SurfaceView {
-            var videoSurfaceView = SurfaceView(context)
-            val videoCanvas =  VideoCanvas(
-                videoSurfaceView,
-                Constants.RENDER_MODE_HIDDEN,
-                0
-            )
-            videoCanvas.mediaPlayerId = mediaPlayer?.mediaPlayerId ?: 0
-            videoCanvas.sourceType = Constants.VIDEO_SOURCE_MEDIA_PLAYER
-            agoraEngine?.setupLocalVideo(videoCanvas)
-            return videoSurfaceView
         }
 
         override fun onPositionChanged(position: Long) {

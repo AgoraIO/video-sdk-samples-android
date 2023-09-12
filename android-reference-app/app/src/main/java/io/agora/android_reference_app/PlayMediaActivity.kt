@@ -25,12 +25,34 @@ class PlayMediaActivity : BasicImplementationActivity() {
                 state: Constants.MediaPlayerState,
                 error: Constants.MediaPlayerError
             ) {
-                if (state == Constants.MediaPlayerState.PLAYER_STATE_OPEN_COMPLETED) {
-                    isMediaFileOpened = true
-                    runOnUiThread {
-                        mediaButton?.setText(R.string.play_media_file)
-                        mediaButton?.isEnabled = true
-                        mediaProgressBar?.progress = 0
+                when (state) {
+                    Constants.MediaPlayerState.PLAYER_STATE_OPEN_COMPLETED -> {
+                        isMediaFileOpened = true
+                        runOnUiThread {
+                            mediaButton?.setText(R.string.play_media_file)
+                            mediaButton?.isEnabled = true
+                            mediaProgressBar?.progress = 0
+                        }
+                    }
+                    Constants.MediaPlayerState.PLAYER_STATE_PLAYBACK_ALL_LOOPS_COMPLETED -> {
+                        isMediaFileOpened = false
+                        playMediaManager.destroyMediaPlayer()
+                        runOnUiThread {
+                            mediaButton?.setText(R.string.open_media_file)
+                            mediaButton?.isEnabled = true
+                            mediaProgressBar?.progress = 0
+                        }
+                    }
+                    Constants.MediaPlayerState.PLAYER_STATE_FAILED -> {
+                        runOnUiThread {
+                            mediaButton?.setText(R.string.open_media_file)
+                            mediaButton?.isEnabled = true
+                            mediaProgressBar?.progress = 0
+                        }
+                    }
+                    // Add more cases if needed
+                    else -> {
+
                     }
                 }
             }
@@ -72,11 +94,12 @@ class PlayMediaActivity : BasicImplementationActivity() {
             playMediaManager.setupMediaPlayer(mediaPlayerListener)
             playMediaManager.openMediaFile(mediaLocation)
             mediaButton?.isEnabled = false
-            mediaButton?.setEnabled(false);
-            mediaButton?.setText("Opening Media File...");
+            mediaButton?.text = getString(R.string.opening_media_file)
         } else {
+            val videoFrame = videoFrameMap[agoraManager.localUid]
+            videoFrame?.removeAllViews()
+            videoFrame?.addView(playMediaManager.videoSurfaceView())
             playMediaManager.playMedia()
-            mainFrame.addView(playMediaManager.videoSurfaceView())
         }
     }
 }

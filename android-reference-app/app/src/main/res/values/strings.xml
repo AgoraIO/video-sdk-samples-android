@@ -13,4 +13,5 @@
     <string name="product">Product:</string>
     <string name="open_media_file">Open Media File</string>
     <string name="play_media_file">" Play Media File"</string>
+    <string name="opening_media_file">Opening Media File...</string>
 </resources>
