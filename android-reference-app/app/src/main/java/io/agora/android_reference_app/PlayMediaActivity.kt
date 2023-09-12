@@ -7,17 +7,17 @@ import android.widget.ProgressBar
 import io.agora.mediaplayer.Constants
 import io.agora.play_media_manager.PlayMediaManager
 
-
 class PlayMediaActivity : BasicImplementationActivity() {
     private lateinit var playMediaManager: PlayMediaManager
     private var mediaButton: Button? = null
     private var mediaProgressBar: ProgressBar? = null
+    private var isMediaFileOpened = false
 
     // In a real world app, you declare the media location variable with an empty string
     // and update it when a user chooses a media file from a local or remote source.
     private val mediaLocation = "https://www.appsloveworld.com/wp-content/uploads/2018/10/640.mp4"
 
-    private val baseListener = agoraManagerListener
+    //private val baseListener = agoraManagerListener
 
     private val mediaPlayerListener: PlayMediaManager.MediaPlayerListener
         get() = object : PlayMediaManager.MediaPlayerListener {
@@ -25,14 +25,21 @@ class PlayMediaActivity : BasicImplementationActivity() {
                 state: Constants.MediaPlayerState,
                 error: Constants.MediaPlayerError
             ) {
-                TODO("Not yet implemented")
+                if (state == Constants.MediaPlayerState.PLAYER_STATE_OPEN_COMPLETED) {
+                    isMediaFileOpened = true
+                    runOnUiThread {
+                        mediaButton?.setText(R.string.play_media_file)
+                        mediaButton?.isEnabled = true
+                        mediaProgressBar?.progress = 0
+                    }
+                }
             }
 
-            override fun onPositionChanged(position: Long) {
-                TODO("Not yet implemented")
+            override fun onProgress(percent: Int) {
+                    // Update the ProgressBar
+                    mediaProgressBar?.progress = percent
             }
         }
-
 
     // Override the UI layout
     override val layoutResourceId: Int
@@ -61,10 +68,15 @@ class PlayMediaActivity : BasicImplementationActivity() {
     }
 
     fun playMedia(view: View) {
-        if (!playMediaManager.isMediaPlaying) {
+        if (!isMediaFileOpened) {
+            playMediaManager.setupMediaPlayer(mediaPlayerListener)
             playMediaManager.openMediaFile(mediaLocation)
+            mediaButton?.isEnabled = false
+            mediaButton?.setEnabled(false);
+            mediaButton?.setText("Opening Media File...");
         } else {
-           // playMediaManager.pauseMediaPlayer()
+            playMediaManager.playMedia()
+            mainFrame.addView(playMediaManager.videoSurfaceView())
         }
     }
 }

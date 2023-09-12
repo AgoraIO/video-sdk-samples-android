@@ -11,4 +11,6 @@
     <string name="start_echo_test">Start Echo Test</string>
     <string name="stop_echo_test">Stop Echo Test</string>
     <string name="product">Product:</string>
+    <string name="open_media_file">Open Media File</string>
+    <string name="play_media_file">" Play Media File"</string>
 </resources>

@@ -1,13 +1,16 @@
 package io.agora.play_media_manager
 
 import android.content.Context
+import android.view.SurfaceView
 import io.agora.authentication_manager.AuthenticationManager
 import io.agora.mediaplayer.Constants.*
 import io.agora.mediaplayer.IMediaPlayer
 import io.agora.mediaplayer.IMediaPlayerObserver
 import io.agora.mediaplayer.data.PlayerUpdatedInfo
 import io.agora.mediaplayer.data.SrcInfo
+import io.agora.rtc2.Constants
 import io.agora.rtc2.IRtcEngineEventHandler
+import io.agora.rtc2.video.VideoCanvas
 
 
 class PlayMediaManager(context: Context?) : AuthenticationManager(context) {
@@ -33,8 +36,7 @@ class PlayMediaManager(context: Context?) : AuthenticationManager(context) {
     fun openMediaFile(mediaLocation: String) {
         if (mediaPlayer != null) {
             // Open the media file
-            mediaPlayer!!.open(mediaLocation, 0)
-            return
+            mediaPlayer?.open(mediaLocation, 0)
         }
     }
 
@@ -50,18 +52,18 @@ class PlayMediaManager(context: Context?) : AuthenticationManager(context) {
         // Display the stream locally
 //        setupLocalVideo(isMediaPlaying)
 
-        val state = mediaPlayer!!.state
+        val state = mediaPlayer?.state
         if (isMediaPlaying) { // Start or resume playing media
             if (state == MediaPlayerState.PLAYER_STATE_OPEN_COMPLETED) {
-                mediaPlayer!!.play()
+                mediaPlayer?.play()
             } else if (state == MediaPlayerState.PLAYER_STATE_PAUSED) {
-                mediaPlayer!!.resume()
+                mediaPlayer?.resume()
             }
             //mediaButton.setText("Pause Playing Media")
         } else {
             if (state == MediaPlayerState.PLAYER_STATE_PLAYING) {
                 // Pause media file
-                mediaPlayer!!.pause()
+                mediaPlayer?.pause()
               //  mediaButton.setText("Resume Playing Media")
             }
         }
@@ -74,6 +76,12 @@ class PlayMediaManager(context: Context?) : AuthenticationManager(context) {
         mediaPlayer!!.unRegisterPlayerObserver(mediaPlayerObserver)
         mediaPlayer!!.destroy()
     }
+
+    fun playMedia() {
+        mediaPlayer?.play()
+    }
+
+
 
     override val iRtcEngineEventHandler: IRtcEngineEventHandler
         get() = object : IRtcEngineEventHandler() {
@@ -106,6 +114,7 @@ class PlayMediaManager(context: Context?) : AuthenticationManager(context) {
             if (state == MediaPlayerState.PLAYER_STATE_OPEN_COMPLETED) {
                 // Media file opened successfully
                 mediaDuration = mediaPlayer!!.duration
+                mediaPlayerListener.onPlayerStateChanged(state, error)
                 // Update the UI
              /*   UiThreadStatement.runOnUiThread(Runnable {
                     mediaButton.setText("Play Media File")
@@ -127,13 +136,23 @@ class PlayMediaManager(context: Context?) : AuthenticationManager(context) {
             }
         }
 
+        fun videoSurfaceView(): SurfaceView {
+            var videoSurfaceView = SurfaceView(context)
+            val videoCanvas =  VideoCanvas(
+                videoSurfaceView,
+                Constants.RENDER_MODE_HIDDEN,
+                0
+            )
+            videoCanvas.mediaPlayerId = mediaPlayer?.mediaPlayerId ?: 0
+            videoCanvas.sourceType = Constants.VIDEO_SOURCE_MEDIA_PLAYER
+            agoraEngine?.setupLocalVideo(videoCanvas)
+            return videoSurfaceView
+        }
+
         override fun onPositionChanged(position: Long) {
             if (mediaDuration > 0) {
                 val result = (position.toFloat() / mediaDuration.toFloat() * 100).toInt()
-             /*   UiThreadStatement.runOnUiThread(Runnable {
-                    // Update the ProgressBar
-                    mediaProgressBar.setProgress(java.lang.Long.valueOf(result.toLong()).toInt())
-                }) */
+                mediaPlayerListener.onProgress(result)
             }
         }
 
@@ -176,6 +195,6 @@ class PlayMediaManager(context: Context?) : AuthenticationManager(context) {
 
     interface MediaPlayerListener {
         fun onPlayerStateChanged(state: MediaPlayerState, error: MediaPlayerError)
-        fun onPositionChanged(position: Long)
+        fun onProgress(percent: Int)
     }
 }
