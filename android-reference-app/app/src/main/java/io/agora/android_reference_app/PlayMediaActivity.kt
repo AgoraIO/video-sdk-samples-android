@@ -38,6 +38,10 @@ class PlayMediaActivity : BasicImplementationActivity() {
                         isMediaFileOpened = false
                         playMediaManager.destroyMediaPlayer()
                         runOnUiThread {
+                            // Restore local video
+                            val videoFrame = videoFrameMap[agoraManager.localUid]
+                            videoFrame?.removeAllViews()
+                            videoFrame?.addView(playMediaManager.localVideo)
                             mediaButton?.setText(R.string.open_media_file)
                             mediaButton?.isEnabled = true
                             mediaProgressBar?.progress = 0
@@ -50,7 +54,12 @@ class PlayMediaActivity : BasicImplementationActivity() {
                             mediaProgressBar?.progress = 0
                         }
                     }
-                    // Add more cases if needed
+                    Constants.MediaPlayerState.PLAYER_STATE_PLAYING -> {
+                        runOnUiThread {
+                            mediaButton?.setText(R.string.pause)
+                            mediaButton?.isEnabled = true
+                        }
+                    }
                     else -> {
 
                     }
@@ -90,16 +99,28 @@ class PlayMediaActivity : BasicImplementationActivity() {
     }
 
     fun playMedia(view: View) {
-        if (!isMediaFileOpened) {
-            playMediaManager.setupMediaPlayer(mediaPlayerListener)
-            playMediaManager.openMediaFile(mediaLocation)
-            mediaButton?.isEnabled = false
-            mediaButton?.text = getString(R.string.opening_media_file)
-        } else {
-            val videoFrame = videoFrameMap[agoraManager.localUid]
-            videoFrame?.removeAllViews()
-            videoFrame?.addView(playMediaManager.videoSurfaceView())
-            playMediaManager.playMedia()
+        when (playMediaManager.mediaPlayerState()) {
+                Constants.MediaPlayerState.PLAYER_STATE_PLAYING -> {
+                playMediaManager.pauseMedia()
+                mediaButton?.setText(R.string.resume)
+            }
+                Constants.MediaPlayerState.PLAYER_STATE_PAUSED -> {
+                playMediaManager.resumeMedia()
+                mediaButton?.setText(R.string.pause)
+            }
+                Constants.MediaPlayerState.PLAYER_STATE_OPEN_COMPLETED -> {
+                val videoFrame = videoFrameMap[agoraManager.localUid]
+                videoFrame?.removeAllViews()
+                videoFrame?.addView(playMediaManager.mediaPlayerSurfaceView())
+                playMediaManager.playMedia()
+                mediaButton?.setText(R.string.pause)
+            }
+            else -> {
+                playMediaManager.setupMediaPlayer(mediaPlayerListener)
+                playMediaManager.openMediaFile(mediaLocation)
+                mediaButton?.isEnabled = false
+                mediaButton?.text = getString(R.string.opening_media_file)
+            }
         }
     }
 }

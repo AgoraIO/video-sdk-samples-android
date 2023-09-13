@@ -10,11 +10,9 @@ import io.agora.mediaplayer.data.PlayerUpdatedInfo
 import io.agora.mediaplayer.data.SrcInfo
 import io.agora.rtc2.ChannelMediaOptions
 import io.agora.rtc2.Constants
-import io.agora.rtc2.IRtcEngineEventHandler
 import io.agora.rtc2.video.VideoCanvas
 
 class PlayMediaManager(context: Context?) : AuthenticationManager(context) {
-    private val baseEventHandler: IRtcEngineEventHandler = super.iRtcEngineEventHandler // Reuse the base class event handler
     private var mediaPlayer: IMediaPlayer? = null // Instance of the media player
     var isMediaPlaying = false
     private var mediaDuration: Long = 0
@@ -23,14 +21,19 @@ class PlayMediaManager(context: Context?) : AuthenticationManager(context) {
     fun setupMediaPlayer(listener: MediaPlayerListener){
         if (mediaPlayer == null) {
             // Create an instance of the media player
-            mediaPlayer = agoraEngine!!.createMediaPlayer()
+            mediaPlayer = agoraEngine?.createMediaPlayer()
             // Set the mediaPlayerObserver to receive callbacks
-            mediaPlayer!!.registerPlayerObserver(mediaPlayerObserver)
+            mediaPlayer?.registerPlayerObserver(mediaPlayerObserver)
 
             mediaPlayerListener = listener
             sendMessage("Opening media file...")
             return
         }
+    }
+
+    fun mediaPlayerState(): MediaPlayerState? {
+        // Check the current state of the media player
+        return mediaPlayer?.state
     }
 
     fun openMediaFile(mediaLocation: String) {
@@ -40,46 +43,27 @@ class PlayMediaManager(context: Context?) : AuthenticationManager(context) {
         }
     }
 
-    fun pauseMediaPlayer() {
-        // Set up the local video container to handle the media player output
-        // or the camera stream, alternately.
-
-        isMediaPlaying = !isMediaPlaying
-        // Set the stream publishing options
-
-//        updateChannelPublishOptions(isMediaPlaying)
-        // Display the stream locally
-        // Display the stream locally
-//        setupLocalVideo(isMediaPlaying)
-
-        val state = mediaPlayer?.state
-        if (isMediaPlaying) { // Start or resume playing media
-            if (state == MediaPlayerState.PLAYER_STATE_OPEN_COMPLETED) {
-                mediaPlayer?.play()
-            } else if (state == MediaPlayerState.PLAYER_STATE_PAUSED) {
-                mediaPlayer?.resume()
-            }
-            //mediaButton.setText("Pause Playing Media")
-        } else {
-            if (state == MediaPlayerState.PLAYER_STATE_PLAYING) {
-                // Pause media file
-                mediaPlayer?.pause()
-              //  mediaButton.setText("Resume Playing Media")
-            }
-        }
-    }
-
     fun destroyMediaPlayer(){
-        // Destroy the media player
-        if (mediaPlayer == null) return
-        mediaPlayer!!.stop()
-        mediaPlayer!!.unRegisterPlayerObserver(mediaPlayerObserver)
-        mediaPlayer!!.destroy()
+        // Destroy and clean up
+        if (mediaPlayer != null) {
+            mediaPlayer?.stop()
+            mediaPlayer?.unRegisterPlayerObserver(mediaPlayerObserver)
+            mediaPlayer?.destroy()
+            mediaPlayer = null
+        }
     }
 
     fun playMedia() {
         updateChannelPublishOptions(true)
         mediaPlayer?.play()
+    }
+
+    fun pauseMedia() {
+        mediaPlayer?.pause()
+    }
+
+    fun resumeMedia() {
+        mediaPlayer?.resume()
     }
 
     private fun updateChannelPublishOptions(publishMediaPlayer: Boolean) {
@@ -88,36 +72,13 @@ class PlayMediaManager(context: Context?) : AuthenticationManager(context) {
         channelOptions.publishMediaPlayerVideoTrack = publishMediaPlayer
         channelOptions.publishMicrophoneTrack = !publishMediaPlayer
         channelOptions.publishCameraTrack = !publishMediaPlayer
-        if (publishMediaPlayer) channelOptions.publishMediaPlayerId = mediaPlayer!!.mediaPlayerId
+        if (publishMediaPlayer) channelOptions.publishMediaPlayerId = mediaPlayer?.mediaPlayerId
         agoraEngine?.updateChannelMediaOptions(channelOptions)
     }
 
-    override val iRtcEngineEventHandler: IRtcEngineEventHandler
-        get() = object : IRtcEngineEventHandler() {
-            override fun onConnectionStateChanged(state: Int, reason: Int) {
-                // Occurs when the network connection state changes
-                baseEventHandler.onConnectionStateChanged(state, reason)
-            }
-
-            override fun onUserJoined(uid: Int, elapsed: Int) {
-                baseEventHandler.onUserJoined(uid, elapsed)
-            }
-
-            override fun onJoinChannelSuccess(channel: String, uid: Int, elapsed: Int) {
-                baseEventHandler.onJoinChannelSuccess(channel, uid, elapsed)
-            }
-
-            override fun onUserOffline(uid: Int, reason: Int) {
-                baseEventHandler.onUserOffline(uid, reason)
-            }
-
-            override fun onTokenPrivilegeWillExpire(token: String) {
-                baseEventHandler.onTokenPrivilegeWillExpire(token)
-            }
-        }
-
-    fun videoSurfaceView(): SurfaceView {
-        var videoSurfaceView = SurfaceView(mContext)
+    fun mediaPlayerSurfaceView(): SurfaceView {
+        val videoSurfaceView = SurfaceView(mContext)
+        // Setup the SurfaceView to display media player output
         val videoCanvas =  VideoCanvas(
             videoSurfaceView,
             Constants.RENDER_MODE_HIDDEN,
@@ -136,9 +97,11 @@ class PlayMediaManager(context: Context?) : AuthenticationManager(context) {
 
             if (state == MediaPlayerState.PLAYER_STATE_OPEN_COMPLETED) {
                 // Media file opened successfully
-                mediaDuration = mediaPlayer!!.duration
+                mediaDuration = mediaPlayer?.duration ?: 0
             } else if (state == MediaPlayerState.PLAYER_STATE_PLAYBACK_ALL_LOOPS_COMPLETED) {
                 isMediaPlaying = false
+                // Stop publishing media player output and restore local video publishing
+                updateChannelPublishOptions(false)
             }
         }
 
@@ -186,6 +149,7 @@ class PlayMediaManager(context: Context?) : AuthenticationManager(context) {
         }
     }
 
+    // Interface to forward media player events to the UI
     interface MediaPlayerListener {
         fun onPlayerStateChanged(state: MediaPlayerState, error: MediaPlayerError)
         fun onProgress(percent: Int)
