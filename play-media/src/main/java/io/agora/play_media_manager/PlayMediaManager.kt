@@ -107,14 +107,14 @@ class PlayMediaManager(context: Context?) : AuthenticationManager(context) {
 
     private val mediaPlayerObserver: IMediaPlayerObserver = object : IMediaPlayerObserver {
         override fun onPlayerStateChanged(state: MediaPlayerState, error: MediaPlayerError) {
-            // Reports the changes of playback state
-            // Notify the UI
-            mediaPlayerListener.onPlayerStateChanged(state, error)
-
+            // Reports changes in playback state
             if (state == MediaPlayerState.PLAYER_STATE_OPEN_COMPLETED) {
                 // Read media duration for updating play progress
                 mediaDuration = mediaPlayer?.duration ?: 0
             }
+
+            // Notify the UI
+            mediaPlayerListener.onPlayerStateChanged(state, error)
         }
 
         override fun onPositionChanged(position: Long) {
