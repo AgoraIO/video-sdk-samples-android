@@ -71,9 +71,9 @@ class MainActivity : AppCompatActivity() {
 
             ListItem("DEVELOP", ListItem.ExampleId.HEADER),
             ListItem("Call quality best practice", ListItem.ExampleId.CALL_QUALITY),
-            ListItem("Stream media to a channel", ListItem.ExampleId.PLAY_MEDIA)
+            ListItem("Stream media to a channel", ListItem.ExampleId.PLAY_MEDIA),
+            ListItem("Screen share, volume control and mute", ListItem.ExampleId.PRODUCT_WORKFLOW)
         )
-
         // Set up the adapter with the list of items and click listener
         val adapter = ItemListAdapter(itemList, object : ItemListAdapter.ItemClickListener {
             override fun onItemClick(item: ListItem) {
@@ -82,6 +82,7 @@ class MainActivity : AppCompatActivity() {
                     ListItem.ExampleId.AUTHENTICATION_WORKFLOW -> launchActivity(AuthenticationActivity::class.java)
                     ListItem.ExampleId.CALL_QUALITY -> launchActivity(CallQualityActivity::class.java)
                     ListItem.ExampleId.PLAY_MEDIA -> launchActivity(PlayMediaActivity::class.java)
+                    ListItem.ExampleId.PRODUCT_WORKFLOW -> launchActivity(ProductWorkflowActivity::class.java)
                     else -> {}
                 }
             }

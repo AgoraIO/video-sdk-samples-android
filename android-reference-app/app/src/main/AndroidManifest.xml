@@ -42,6 +42,11 @@
         <activity android:name=".PlayMediaActivity"
             android:label="Stream media to a channel">
         </activity>
+
+        <activity android:name=".ProductWorkflowActivity"
+            android:label="Screen share, volume control and mute">
+        </activity>
+
     </application>
 
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>

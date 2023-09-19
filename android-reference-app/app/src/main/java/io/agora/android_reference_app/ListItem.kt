@@ -6,7 +6,8 @@ data class ListItem(val title: String, val id: ExampleId) {
         SDK_QUICKSTART,
         AUTHENTICATION_WORKFLOW,
         CALL_QUALITY,
-        PLAY_MEDIA
+        PLAY_MEDIA,
+        PRODUCT_WORKFLOW
     }
 }
 
