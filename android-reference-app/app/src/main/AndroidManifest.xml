@@ -38,6 +38,10 @@
         <activity android:name=".CallQualityActivity"
             android:label="Call quality best practice">
         </activity>
+
+        <activity android:name=".PlayMediaActivity"
+            android:label="Stream media to a channel">
+        </activity>
     </application>
 
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>

@@ -71,6 +71,7 @@ class MainActivity : AppCompatActivity() {
 
             ListItem("DEVELOP", ListItem.ExampleId.HEADER),
             ListItem("Call quality best practice", ListItem.ExampleId.CALL_QUALITY),
+            ListItem("Stream media to a channel", ListItem.ExampleId.PLAY_MEDIA)
         )
 
         // Set up the adapter with the list of items and click listener
@@ -80,6 +81,7 @@ class MainActivity : AppCompatActivity() {
                     ListItem.ExampleId.SDK_QUICKSTART -> launchActivity(BasicImplementationActivity::class.java)
                     ListItem.ExampleId.AUTHENTICATION_WORKFLOW -> launchActivity(AuthenticationActivity::class.java)
                     ListItem.ExampleId.CALL_QUALITY -> launchActivity(CallQualityActivity::class.java)
+                    ListItem.ExampleId.PLAY_MEDIA -> launchActivity(PlayMediaActivity::class.java)
                     else -> {}
                 }
             }
@@ -94,4 +96,5 @@ class MainActivity : AppCompatActivity() {
         intent.putExtra("selectedProduct", selectedProduct.ordinal)
         startActivity(intent)
     }
+
 }
