@@ -17,20 +17,25 @@
             layout="@layout/base_layout" />
 
         <Button
-            android:id="@+id/ShareScreenButton"
-            android:layout_width="wrap_content"
+            android:id="@+id/shareScreenButton"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/base_layout"
-            android:layout_alignEnd="@id/base_layout"
-            android:layout_alignStart="@id/base_layout"
             android:onClick="shareScreen"
             android:text="@string/start_screen_sharing" />
+
+        <Spinner
+            android:id="@+id/volumeSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/shareScreenButton"
+            android:layout_marginVertical="10dp" />
 
         <CheckBox
             android:id="@+id/muteCheckBox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/ShareScreenButton"
+            android:layout_below="@id/volumeSpinner"
             android:checked="false"
             android:layout_alignStart="@id/base_layout"
             android:text="@string/mute" />
@@ -39,7 +44,7 @@
             android:id="@+id/volumeSeekBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/ShareScreenButton"
+            android:layout_below="@id/volumeSpinner"
             android:layout_toEndOf="@id/muteCheckBox"
             android:layout_marginStart="10dp"
             android:layout_alignEnd="@id/base_layout"

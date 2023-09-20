@@ -39,8 +39,5 @@ class ProductWorkflowManager(context: Context?) : AuthenticationManager(context)
         agoraEngine?.setupLocalVideo(videoCanvas)
 
         return videoSurfaceView
-    }
-
-  
-
+    } 
 }
