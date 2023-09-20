@@ -6,6 +6,7 @@ import io.agora.authentication_manager.AuthenticationManager
 import io.agora.rtc2.ChannelMediaOptions
 import io.agora.rtc2.Constants
 import io.agora.rtc2.video.VideoCanvas
+import io.agora.rtc2.ScreenCaptureParameters
 
 class ProductWorkflowManager(context: Context?) : AuthenticationManager(context) {
 

@@ -33,7 +33,7 @@
             android:layout_below="@id/ShareScreenButton"
             android:checked="false"
             android:layout_alignStart="@id/base_layout"
-            android:text="Mute" />
+            android:text="@string/mute" />
 
         <SeekBar
             android:id="@+id/volumeSeekBar"
@@ -45,7 +45,6 @@
             android:layout_alignEnd="@id/base_layout"
             android:layout_alignBottom="@id/muteCheckBox"
             android:max="100"
-            android:min="0"
             android:progress="50" />
 
     </RelativeLayout>
