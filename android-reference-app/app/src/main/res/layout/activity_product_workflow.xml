@@ -24,12 +24,21 @@
             android:onClick="shareScreen"
             android:text="@string/start_screen_sharing" />
 
+        <TextView
+            android:id="@+id/volumeLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/shareScreenButton"
+            android:layout_alignStart="@id/volumeSpinner"
+            android:layout_marginVertical="10dp"
+            android:text="@string/volume_type" />
+
         <Spinner
             android:id="@+id/volumeSpinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/shareScreenButton"
-            android:layout_marginVertical="10dp" />
+            android:layout_below="@id/volumeLabel"
+            android:layout_marginBottom="10dp" />
 
         <CheckBox
             android:id="@+id/muteCheckBox"

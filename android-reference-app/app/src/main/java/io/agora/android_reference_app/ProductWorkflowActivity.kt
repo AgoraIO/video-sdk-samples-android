@@ -1,16 +1,22 @@
 package io.agora.android_reference_app
 
+import android.content.Intent
+import android.os.Build
 import android.os.Bundle
-import android.view.SurfaceView
+import android.util.DisplayMetrics
+
 import android.view.View
 import android.widget.*
+import androidx.core.content.ContextCompat
 
-import io.agora.mediaplayer.Constants
 import io.agora.product_workflow_manager.ProductWorkflowManager
+import io.agora.rtc2.Constants
+import io.agora.rtc2.video.VideoCanvas
 
 class ProductWorkflowActivity : BasicImplementationActivity() {
     private lateinit var productWorkflowManager: ProductWorkflowManager
     var selectedVolumeType = ProductWorkflowManager.VolumeTypes.PLAYBACK_SIGNAL_VOLUME
+    var isSharingScreen = false
 
     // Override the UI layout
     override val layoutResourceId: Int
@@ -22,6 +28,14 @@ class ProductWorkflowActivity : BasicImplementationActivity() {
         // Set up the UI elements
         setupVolumeSpinner()
         setupVolumeSeekbar()
+        setupMuteCheckbox()
+    }
+
+    private fun setupMuteCheckbox() {
+        val muteCheckBox = findViewById<CheckBox>(R.id.muteCheckBox)
+        muteCheckBox.setOnCheckedChangeListener { _, isChecked ->
+                productWorkflowManager.mute(isChecked)
+        }
     }
 
     private fun setupVolumeSeekbar() {
@@ -29,8 +43,7 @@ class ProductWorkflowActivity : BasicImplementationActivity() {
 
         seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-                // Handle the SeekBar value change here
-
+                // SeekBar value changed
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar) {
@@ -85,12 +98,26 @@ class ProductWorkflowActivity : BasicImplementationActivity() {
     }
 
     fun shareScreen(view: View) {
+        isSharingScreen = !isSharingScreen
 
-    }
+        if (isSharingScreen) {
+            // Ensure that your build version is Lollipop or higher.
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    val fgServiceIntent = Intent(this, BasicImplementationActivity::class.java)
+                    ContextCompat.startForegroundService(this, fgServiceIntent)
+                }
+                // Get the screen metrics
+                val metrics = DisplayMetrics()
+                windowManager.getDefaultDisplay().getMetrics(metrics)
+                productWorkflowManager.shareScreen(true, metrics)
+                startScreenSharePreview()
+            }
 
-    override fun leave() {
-
-        super.leave()
+        } else {
+            //productWorkflowManager.shareScreen(isSharingScreen)
+            //setupLocalVideo()
+        }
     }
 
 }

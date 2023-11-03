@@ -1,16 +1,21 @@
 package io.agora.product_workflow_manager
 
 import android.content.Context
+import android.os.Build
+import android.util.DisplayMetrics
 import android.view.SurfaceView
+import android.view.ViewGroup
+import android.widget.FrameLayout
 import io.agora.authentication_manager.AuthenticationManager
 import io.agora.rtc2.ChannelMediaOptions
 import io.agora.rtc2.Constants
-import io.agora.rtc2.video.VideoCanvas
 import io.agora.rtc2.ScreenCaptureParameters
+import io.agora.rtc2.video.VideoCanvas
+
 
 class ProductWorkflowManager(context: Context?) : AuthenticationManager(context) {
 
-    public enum class VolumeTypes(val description: String, val intValue: Int) {
+    enum class VolumeTypes(val description: String, val intValue: Int) {
         PLAYBACK_SIGNAL_VOLUME("Playback signal volume", 1),
         RECORDING_SIGNAL_VOLUME("Recording signal volume", 2),
         USER_PLAYBACK_SIGNAL_VOLUME("User playback signal volume", 3),
@@ -55,34 +60,71 @@ class ProductWorkflowManager(context: Context?) : AuthenticationManager(context)
         }
     }
 
-    fun updateChannelPublishOptions(publishMediaPlayer: Boolean) {
-        val channelOptions = ChannelMediaOptions()
-        // Start or stop publishing the media player tracks
-        //channelOptions.publishMediaPlayerAudioTrack = publishMediaPlayer
-        //channelOptions.publishMediaPlayerVideoTrack = publishMediaPlayer
-        // Stop or start publishing the microphone and camera tracks
-        channelOptions.publishMicrophoneTrack = !publishMediaPlayer
-        channelOptions.publishCameraTrack = !publishMediaPlayer
-
-
-        // Implement the settings
-        agoraEngine?.updateChannelMediaOptions(channelOptions)
+    fun mute(muted: Boolean) {
+        // Stop or resume publishing the local video stream
+        agoraEngine?.muteLocalAudioStream(muted)
+        // Stop or resume subscribing to the video streams of all remote users
+        agoraEngine?.muteAllRemoteAudioStreams(muted)
+        // Stop or resume subscribing to the audio stream of a specified user
+        // agoraEngine?.muteRemoteAudioStream(remoteUid, muted)
     }
 
-    fun screenSharingSurfaceView(): SurfaceView {
-        // Sets up and returns a SurfaceView to display the screen sharing output
-        // Instantiate a SurfaceView
-        val videoSurfaceView = SurfaceView(mContext)
-        // Create a VideoCanvas using the SurfaceView
-        val videoCanvas =  VideoCanvas(
-            videoSurfaceView,
-            Constants.RENDER_MODE_HIDDEN,
-            0
-        )
-        
-        // Setup the SurfaceView
-        agoraEngine?.setupLocalVideo(videoCanvas)
+    fun shareScreen(shareScreen: Boolean, metrics: DisplayMetrics) {
+        if (shareScreen) { // Start sharing
+            // Set screen capture parameters
+            val screenCaptureParameters = ScreenCaptureParameters()
+            screenCaptureParameters.captureVideo = true
+            screenCaptureParameters.videoCaptureParameters.width = metrics.widthPixels
+            screenCaptureParameters.videoCaptureParameters.height = metrics.heightPixels
+            screenCaptureParameters.videoCaptureParameters.framerate = 10
+            screenCaptureParameters.captureAudio = true
+            screenCaptureParameters.audioCaptureParameters.captureSignalVolume = 50
 
-        return videoSurfaceView
-    } 
+            // Start screen sharing
+            agoraEngine!!.startScreenCapture(screenCaptureParameters)
+            // Update channel media options to publish the screen sharing video stream
+            updateMediaPublishOptions(true)
+
+
+        } else { // Stop sharing
+            agoraEngine!!.stopScreenCapture()
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                if (fgServiceIntent != null) stopService(fgServiceIntent)
+            }
+
+            // Restore camera and microphone publishing
+            updateMediaPublishOptions(false)
+        }
+    }
+
+    fun screenSharePreview(frameLayout: FrameLayout): FrameLayout {
+        // Create render view by RtcEngine
+        val surfaceView = SurfaceView(mContext)
+        if (frameLayout.childCount > 0) {
+            frameLayout.removeAllViews()
+        }
+        // Add SurfaceView to the local FrameLayout
+        frameLayout.addView(
+            surfaceView,
+            FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
+            )
+        )
+
+        // Setup local video to render your local camera preview
+        agoraEngine?.setupLocalVideo(VideoCanvas(surfaceView, Constants.RENDER_MODE_FIT, 0))
+        agoraEngine?.startPreview(Constants.VideoSourceType.VIDEO_SOURCE_SCREEN_PRIMARY)
+        return frameLayout
+    }
+
+    fun updateMediaPublishOptions(publishScreen: Boolean) {
+        val mediaOptions = ChannelMediaOptions()
+        mediaOptions.publishCameraTrack = !publishScreen
+        mediaOptions.publishMicrophoneTrack = !publishScreen
+        mediaOptions.publishScreenCaptureVideo = publishScreen
+        mediaOptions.publishScreenCaptureAudio = publishScreen
+        agoraEngine!!.updateChannelMediaOptions(mediaOptions)
+    }
+
 }
