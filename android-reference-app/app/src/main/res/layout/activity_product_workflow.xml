@@ -49,8 +49,8 @@
             android:layout_marginStart="10dp"
             android:layout_alignEnd="@id/base_layout"
             android:layout_alignBottom="@id/muteCheckBox"
-            android:max="100"
-            android:progress="50" />
+            android:max="400"
+            android:progress="100" />
 
     </RelativeLayout>
 
