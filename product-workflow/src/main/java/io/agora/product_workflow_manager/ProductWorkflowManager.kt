@@ -1,11 +1,10 @@
 package io.agora.product_workflow_manager
 
 import android.content.Context
-import android.os.Build
 import android.util.DisplayMetrics
 import android.view.SurfaceView
-import android.view.ViewGroup
-import android.widget.FrameLayout
+import androidx.activity.result.contract.ActivityResultContracts
+
 import io.agora.authentication_manager.AuthenticationManager
 import io.agora.rtc2.ChannelMediaOptions
 import io.agora.rtc2.Constants
@@ -56,7 +55,6 @@ class ProductWorkflowManager(context: Context?) : AuthenticationManager(context)
                 val trackId = 0 // use the id of your custom audio track
                 agoraEngine?.adjustCustomAudioPublishVolume(trackId, volume)
             }
-            else -> {}
         }
     }
 
@@ -69,56 +67,38 @@ class ProductWorkflowManager(context: Context?) : AuthenticationManager(context)
         // agoraEngine?.muteRemoteAudioStream(remoteUid, muted)
     }
 
-    fun shareScreen(shareScreen: Boolean, metrics: DisplayMetrics) {
-        if (shareScreen) { // Start sharing
-            // Set screen capture parameters
-            val screenCaptureParameters = ScreenCaptureParameters()
-            screenCaptureParameters.captureVideo = true
-            screenCaptureParameters.videoCaptureParameters.width = metrics.widthPixels
-            screenCaptureParameters.videoCaptureParameters.height = metrics.heightPixels
-            screenCaptureParameters.videoCaptureParameters.framerate = 10
-            screenCaptureParameters.captureAudio = true
-            screenCaptureParameters.audioCaptureParameters.captureSignalVolume = 50
+    fun startScreenSharing(metrics: DisplayMetrics) {
+        // Set screen capture parameters
+        val screenCaptureParameters = ScreenCaptureParameters()
+        screenCaptureParameters.captureVideo = true
+        screenCaptureParameters.captureAudio = true
+        screenCaptureParameters.videoCaptureParameters.width = metrics.widthPixels
+        screenCaptureParameters.videoCaptureParameters.height = metrics.heightPixels
+        screenCaptureParameters.videoCaptureParameters.framerate = 15
+        screenCaptureParameters.audioCaptureParameters.captureSignalVolume = 100
 
-            // Start screen sharing
-            agoraEngine!!.startScreenCapture(screenCaptureParameters)
-            // Update channel media options to publish the screen sharing video stream
-            updateMediaPublishOptions(true)
-
-
-        } else { // Stop sharing
-            agoraEngine!!.stopScreenCapture()
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                if (fgServiceIntent != null) stopService(fgServiceIntent)
-            }
-
-            // Restore camera and microphone publishing
-            updateMediaPublishOptions(false)
-        }
+        // Start screen sharing
+        agoraEngine!!.startScreenCapture(screenCaptureParameters)
+        // Update channel media options to publish the screen sharing video stream
+        updateMediaPublishOptions(true)
     }
 
-    fun screenSharePreview(frameLayout: FrameLayout): FrameLayout {
+    fun stopScreenSharing() {
+        agoraEngine!!.stopScreenCapture()
+        // Restore camera and microphone publishing
+        updateMediaPublishOptions(false)
+    }
+
+    fun screenShareSurfaceView(): SurfaceView {
         // Create render view by RtcEngine
         val surfaceView = SurfaceView(mContext)
-        if (frameLayout.childCount > 0) {
-            frameLayout.removeAllViews()
-        }
-        // Add SurfaceView to the local FrameLayout
-        frameLayout.addView(
-            surfaceView,
-            FrameLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT
-            )
-        )
-
-        // Setup local video to render your local camera preview
+        // Setup and return a SurfaceView to render your screen sharing preview
         agoraEngine?.setupLocalVideo(VideoCanvas(surfaceView, Constants.RENDER_MODE_FIT, 0))
         agoraEngine?.startPreview(Constants.VideoSourceType.VIDEO_SOURCE_SCREEN_PRIMARY)
-        return frameLayout
+        return surfaceView
     }
 
-    fun updateMediaPublishOptions(publishScreen: Boolean) {
+    private fun updateMediaPublishOptions(publishScreen: Boolean) {
         val mediaOptions = ChannelMediaOptions()
         mediaOptions.publishCameraTrack = !publishScreen
         mediaOptions.publishMicrophoneTrack = !publishScreen

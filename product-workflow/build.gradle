@@ -29,6 +29,7 @@ android {
 
 dependencies {
     implementation "io.agora.rtc:full-sdk:${project.agoraSDKVersion}"
+    implementation files('libs/AgoraScreenShareExtension.aar')
     implementation project(':agora-manager')
     implementation project(':authentication-workflow')
     implementation 'com.squareup.okhttp3:okhttp:4.9.3'

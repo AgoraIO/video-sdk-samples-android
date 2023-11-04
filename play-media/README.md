@@ -17,4 +17,3 @@ For the UI implementation of this example, refer to [`PlayMediaActivity.kt`](../
 ## How to run this example
 
 To see how to run this example, refer to the [README](../README.md) in the root folder or one of the complete product guides.
-
