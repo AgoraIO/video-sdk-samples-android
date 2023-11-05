@@ -3,18 +3,18 @@ package io.agora.android_reference_app
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.util.DisplayMetrics
 
 import android.view.View
 import android.widget.*
 import androidx.core.content.ContextCompat
+import io.agora.agora_manager.AgoraManager
 import io.agora.product_workflow_manager.ProductWorkflowManager
 
 class ProductWorkflowActivity : BasicImplementationActivity() {
     private lateinit var productWorkflowManager: ProductWorkflowManager
     var selectedVolumeType = ProductWorkflowManager.VolumeTypes.PLAYBACK_SIGNAL_VOLUME
-    var fgServiceIntent: Intent? = null
-    var isSharingScreen = false
+    private var fgServiceIntent: Intent? = null
+    private var isSharingScreen = false
 
     // Override the UI layout
     override val layoutResourceId: Int
@@ -27,6 +27,10 @@ class ProductWorkflowActivity : BasicImplementationActivity() {
         setupVolumeSpinner()
         setupVolumeSeekbar()
         setupMuteCheckbox()
+
+        if (productWorkflowManager.currentProduct == AgoraManager.ProductName.VOICE_CALLING) {
+            findViewById<Button>(R.id.shareScreenButton).isEnabled = false
+        }
     }
 
     private fun setupMuteCheckbox() {
@@ -98,56 +102,44 @@ class ProductWorkflowActivity : BasicImplementationActivity() {
         if (!productWorkflowManager.isJoined) {
             showMessage("Join a channel first")
             return
+        } else if (!agoraManager.isBroadcaster) {
+            showMessage("Join as a host to share your screen")
+            return
         }
         val button: Button = view as Button
         isSharingScreen = !isSharingScreen
 
         if (isSharingScreen) {
             // Ensure that your build version is Lollipop or higher.
-            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    fgServiceIntent = Intent(this, BasicImplementationActivity::class.java)
-                    ContextCompat.startForegroundService(this, fgServiceIntent!!)
-                }
-                // Get the screen metrics
-                val metrics = DisplayMetrics()
-                windowManager.getDefaultDisplay().getMetrics(metrics)
-                productWorkflowManager.startScreenSharing(metrics)
-
-                showScreenSharePreview();
-                button.setText(getString(R.string.stop_screen_sharing))
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                fgServiceIntent = Intent(this, BasicImplementationActivity::class.java)
+                ContextCompat.startForegroundService(this, fgServiceIntent!!)
             }
+            productWorkflowManager.startScreenSharing()
+
+            showScreenSharePreview(true)
+            button.text = getString(R.string.stop_screen_sharing)
+
         } else {
-            //productWorkflowManager.shareScreen(isSharingScreen)
-            //setupLocalVideo()
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 if (fgServiceIntent != null) stopService(fgServiceIntent)
             }
             productWorkflowManager.stopScreenSharing()
-            button.setText(getString(R.string.start_screen_sharing))
+            showScreenSharePreview(false)
+            button.text = getString(R.string.start_screen_sharing)
         }
     }
 
-    private fun showScreenSharePreview() {
-        // Create a new FrameLayout
-        var targetLayout = FrameLayout(applicationContext)
-        // Set an onclick listener for video swapping
-        targetLayout.setOnClickListener(videoClickListener)
-        // Set the layout parameters for the new FrameLayout
-        val layoutParams = LinearLayout.LayoutParams(
-            400,
-            LinearLayout.LayoutParams.MATCH_PARENT
-        )
-        layoutParams.setMargins(6, 6, 6, 6)
-        // Set the id for the new FrameLayout
-        targetLayout.id = View.generateViewId()
-        // Add the new FrameLayout to the parent LinearLayout
-        containerLayout.addView(targetLayout, layoutParams)
-        var screenShareSurfaceView = productWorkflowManager.screenShareSurfaceView()
-        // Add the SurfaceView to the FrameLayout
-        targetLayout.addView(screenShareSurfaceView)
-        // Associate an id with the FrameLayout for use in swapping
-        targetLayout.tag = "-100"
-        videoFrameMap[-100] = targetLayout
+    private fun showScreenSharePreview(show:Boolean) {
+        val targetLayout = videoFrameMap[agoraManager.localUid]
+
+        targetLayout?.removeAllViews()
+        val surfaceView = if (show) {
+            productWorkflowManager.screenShareSurfaceView()
+        } else {
+            productWorkflowManager.localVideo
+        }
+        targetLayout?.addView(surfaceView)
+        if (targetLayout == mainFrame) surfaceViewMain = surfaceView
     }
 }

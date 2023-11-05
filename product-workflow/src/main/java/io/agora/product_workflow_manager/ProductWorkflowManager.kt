@@ -1,16 +1,13 @@
 package io.agora.product_workflow_manager
 
 import android.content.Context
-import android.util.DisplayMetrics
 import android.view.SurfaceView
-import androidx.activity.result.contract.ActivityResultContracts
 
 import io.agora.authentication_manager.AuthenticationManager
 import io.agora.rtc2.ChannelMediaOptions
 import io.agora.rtc2.Constants
 import io.agora.rtc2.ScreenCaptureParameters
 import io.agora.rtc2.video.VideoCanvas
-
 
 class ProductWorkflowManager(context: Context?) : AuthenticationManager(context) {
 
@@ -67,13 +64,11 @@ class ProductWorkflowManager(context: Context?) : AuthenticationManager(context)
         // agoraEngine?.muteRemoteAudioStream(remoteUid, muted)
     }
 
-    fun startScreenSharing(metrics: DisplayMetrics) {
+    fun startScreenSharing() {
         // Set screen capture parameters
         val screenCaptureParameters = ScreenCaptureParameters()
         screenCaptureParameters.captureVideo = true
         screenCaptureParameters.captureAudio = true
-        screenCaptureParameters.videoCaptureParameters.width = metrics.widthPixels
-        screenCaptureParameters.videoCaptureParameters.height = metrics.heightPixels
         screenCaptureParameters.videoCaptureParameters.framerate = 15
         screenCaptureParameters.audioCaptureParameters.captureSignalVolume = 100
 
@@ -93,8 +88,8 @@ class ProductWorkflowManager(context: Context?) : AuthenticationManager(context)
         // Create render view by RtcEngine
         val surfaceView = SurfaceView(mContext)
         // Setup and return a SurfaceView to render your screen sharing preview
-        agoraEngine?.setupLocalVideo(VideoCanvas(surfaceView, Constants.RENDER_MODE_FIT, 0))
         agoraEngine?.startPreview(Constants.VideoSourceType.VIDEO_SOURCE_SCREEN_PRIMARY)
+        agoraEngine?.setupLocalVideo(VideoCanvas(surfaceView, Constants.RENDER_MODE_FIT, 0))
         return surfaceView
     }
 
