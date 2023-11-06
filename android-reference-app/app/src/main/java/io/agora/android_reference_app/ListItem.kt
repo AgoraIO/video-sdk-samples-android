@@ -7,7 +7,10 @@ data class ListItem(val title: String, val id: ExampleId) {
         AUTHENTICATION_WORKFLOW,
         CALL_QUALITY,
         PLAY_MEDIA,
-        PRODUCT_WORKFLOW
+        PRODUCT_WORKFLOW,
+        CLOUD_PROXY,
+        MEDIA_STREAM_ENCRYPTION,
+        GEOFENCING
     }
 }
 

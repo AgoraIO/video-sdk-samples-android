@@ -66,6 +66,10 @@ open class AuthenticationManager(context: Context?) : AgoraManager(
             override fun onUserOffline(uid: Int, reason: Int) {
                 baseEventHandler!!.onUserOffline(uid, reason)
             }
+
+            override fun onConnectionStateChanged(state: Int, reason: Int) {
+                connectionStateChanged(state, reason)
+            }
         }
 
     fun fetchToken(channelName: String, callback: TokenCallback) {
@@ -121,7 +125,7 @@ open class AuthenticationManager(context: Context?) : AgoraManager(
         return joinChannelWithToken(channelName)
     }
 
-    fun joinChannelWithToken(channelName: String): Int {
+    open fun joinChannelWithToken(channelName: String): Int {
         if (agoraEngine == null) setupAgoraEngine()
         return if (isValidURL(serverUrl)) { // A valid server url is available
             // Fetch a token from the server for channelName
@@ -141,6 +145,10 @@ open class AuthenticationManager(context: Context?) : AgoraManager(
             val token = config!!.optString("rtcToken")
             joinChannel(channelName, token)
         }
+    }
+
+    open fun connectionStateChanged(state: Int, reason: Int) {
+
     }
 
     companion object {

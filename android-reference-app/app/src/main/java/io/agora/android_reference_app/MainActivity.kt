@@ -72,7 +72,12 @@ class MainActivity : AppCompatActivity() {
             ListItem("DEVELOP", ListItem.ExampleId.HEADER),
             ListItem("Call quality best practice", ListItem.ExampleId.CALL_QUALITY),
             ListItem("Stream media to a channel", ListItem.ExampleId.PLAY_MEDIA),
-            ListItem("Screen share, volume control and mute", ListItem.ExampleId.PRODUCT_WORKFLOW)
+            ListItem("Screen share, volume control and mute", ListItem.ExampleId.PRODUCT_WORKFLOW),
+            ListItem("Cloud proxy", ListItem.ExampleId.CLOUD_PROXY),
+            ListItem("Media stream encryption", ListItem.ExampleId.MEDIA_STREAM_ENCRYPTION),
+
+            ListItem("INTEGRATE FEATURES", ListItem.ExampleId.HEADER),
+            ListItem("Geofencing", ListItem.ExampleId.GEOFENCING),
         )
         // Set up the adapter with the list of items and click listener
         val adapter = ItemListAdapter(itemList, object : ItemListAdapter.ItemClickListener {
@@ -83,6 +88,9 @@ class MainActivity : AppCompatActivity() {
                     ListItem.ExampleId.CALL_QUALITY -> launchActivity(CallQualityActivity::class.java)
                     ListItem.ExampleId.PLAY_MEDIA -> launchActivity(PlayMediaActivity::class.java)
                     ListItem.ExampleId.PRODUCT_WORKFLOW -> launchActivity(ProductWorkflowActivity::class.java)
+                    ListItem.ExampleId.CLOUD_PROXY -> launchActivity(CloudProxyActivity::class.java)
+                    ListItem.ExampleId.MEDIA_STREAM_ENCRYPTION -> launchActivity(MediaStreamEncryptionActivity::class.java)
+                    ListItem.ExampleId.GEOFENCING -> launchActivity(GeofencingActivity::class.java)
                     else -> {}
                 }
             }

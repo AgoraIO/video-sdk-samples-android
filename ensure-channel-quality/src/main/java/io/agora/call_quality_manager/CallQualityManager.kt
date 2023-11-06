@@ -16,7 +16,7 @@ class CallQualityManager(context: Context?) : AuthenticationManager(context) {
     private val baseEventHandler: IRtcEngineEventHandler = super.iRtcEngineEventHandler // Reuse the base class event handler
     private var counter = 0 // To control the frequency of messages
 
-    fun startProbeTest() {
+    private fun startProbeTest() {
         if (agoraEngine == null) setupAgoraEngine()
         // Configure a LastmileProbeConfig instance.
         val config = LastmileProbeConfig()

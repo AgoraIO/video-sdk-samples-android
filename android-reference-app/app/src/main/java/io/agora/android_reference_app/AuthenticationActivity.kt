@@ -6,7 +6,7 @@ import io.agora.authentication_manager.AuthenticationManager.TokenCallback
 import android.widget.EditText
 import android.os.Bundle
 
-class AuthenticationActivity : BasicImplementationActivity() {
+open class AuthenticationActivity : BasicImplementationActivity() {
     private lateinit var authenticationManager: AuthenticationManager
     private var editChannelName // To read the channel name from the UI.
             : EditText? = null
