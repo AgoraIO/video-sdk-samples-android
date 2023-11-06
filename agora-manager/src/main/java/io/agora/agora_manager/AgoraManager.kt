@@ -136,7 +136,7 @@ open class AgoraManager(context: Context) {
         return joinChannel(channelName, token)
     }
 
-    fun joinChannel(channelName: String, token: String?): Int {
+    open fun joinChannel(channelName: String, token: String?): Int {
         // Ensure that necessary Android permissions have been granted
         if (!checkSelfPermission()) {
             sendMessage("Permissions were not granted")
@@ -243,7 +243,7 @@ open class AgoraManager(context: Context) {
             }
         }
 
-    private fun checkSelfPermission(): Boolean {
+    protected fun checkSelfPermission(): Boolean {
         return ContextCompat.checkSelfPermission(
             mContext,
             REQUESTED_PERMISSIONS[0]

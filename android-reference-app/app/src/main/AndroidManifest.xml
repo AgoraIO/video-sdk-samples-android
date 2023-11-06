@@ -47,6 +47,18 @@
             android:label="Screen share, volume control and mute">
         </activity>
 
+        <activity android:name=".CloudProxyActivity"
+            android:label="Connect through restricted networks with Cloud Proxy">
+        </activity>
+
+        <activity android:name=".MediaStreamEncryptionActivity"
+            android:label="Media stream encryption">
+        </activity>
+
+        <activity android:name=".GeofencingActivity"
+            android:label="Geofencing">
+        </activity>
+
     </application>
 
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>

@@ -1,0 +1,19 @@
+# Secure channel encryption
+
+Media stream encryption ensures that only the authorized users in a channel can see and hear each other. This ensures that potential eavesdroppers cannot access sensitive and private information shared in a channel. While not every use case requires media stream encryption, Video Calling provides built-in encryption methods that guarantee data confidentiality during transmission.
+
+This sample project shows you how to integrate built-in media stream encryption into your app using Video SDK.
+
+## Understand the code
+
+For context on this sample, and a full explanation of the essential code snippets used in this project, read the **Stream media to a channel** document for your product of interest:
+
+* [Video calling](https://docs.agora.io/en/video-calling/develop/media-stream-encryption?platform=android)
+* [Interactive live Streaming](https://docs.agora.io/en/interactive-live-streaming/develop/media-stream-encryption?platform=android)
+* [Broadcast streaming](https://docs.agora.io/en/broadcast-streaming/develop/media-stream-encryption?platform=android)
+
+For the UI implementation of this example, refer to [`MediaStreamEncryptionActivity.kt`](../android-reference-app/app/src/main/java/io/agora/android_reference_app/MediaStreamEncryptionActivity.kt).
+
+## How to run this example
+
+To see how to run this example, refer to the [README](../README.md) in the root folder or one of the complete product guides.
