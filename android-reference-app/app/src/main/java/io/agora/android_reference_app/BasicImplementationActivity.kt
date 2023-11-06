@@ -173,6 +173,8 @@ open class BasicImplementationActivity : AppCompatActivity() {
                         } else {
                             mainFrame.removeView(surfaceViewMain)
                         }
+                    } else {
+                        containerLayout.removeView(frameLayoutOfUser)
                     }
                     videoFrameMap.remove(remoteUid)
                 }

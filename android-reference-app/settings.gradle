@@ -14,7 +14,10 @@ dependencyResolutionManagement {
 }
 rootProject.name = "android-reference-app"
 
-include ':app', ':agora-manager', 'authentication-workflow', 'ensure-channel-quality'
+include ':app', ':agora-manager', ':authentication-workflow', ':ensure-channel-quality', ':play-media'
+include ':product-workflow'
 project(':agora-manager').projectDir = new File(rootProject.projectDir, '../agora-manager')
 project(':authentication-workflow').projectDir = new File(rootProject.projectDir, '../authentication-workflow')
 project(':ensure-channel-quality').projectDir = new File(rootProject.projectDir, '../ensure-channel-quality')
+project(':play-media').projectDir = new File(rootProject.projectDir, '../play-media')
+project(':product-workflow').projectDir = new File(rootProject.projectDir, '../product-workflow')

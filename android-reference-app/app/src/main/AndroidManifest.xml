@@ -38,6 +38,15 @@
         <activity android:name=".CallQualityActivity"
             android:label="Call quality best practice">
         </activity>
+
+        <activity android:name=".PlayMediaActivity"
+            android:label="Stream media to a channel">
+        </activity>
+
+        <activity android:name=".ProductWorkflowActivity"
+            android:label="Screen share, volume control and mute">
+        </activity>
+
     </application>
 
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
@@ -47,6 +56,7 @@
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
 
     <!-- The Agora SDK requires Bluetooth permissions in case users are using Bluetooth devices. -->
     <uses-permission android:name="android.permission.BLUETOOTH" />
