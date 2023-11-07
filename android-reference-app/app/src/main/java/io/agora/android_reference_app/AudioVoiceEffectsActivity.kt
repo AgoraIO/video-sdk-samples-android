@@ -5,6 +5,7 @@ import android.view.View
 import android.widget.Button
 import androidx.appcompat.widget.SwitchCompat
 import io.agora.audio_voice_effects_manager.AudioVoiceEffectsManager
+import io.agora.rtc2.Constants
 
 class AudioVoiceEffectsActivity : BasicImplementationActivity() {
     private lateinit var audioVoiceEffectsManager: AudioVoiceEffectsManager
@@ -30,7 +31,7 @@ class AudioVoiceEffectsActivity : BasicImplementationActivity() {
         super.onCreate(savedInstanceState)
         speakerphoneSwitch = findViewById(R.id.SwitchSpeakerphone)
         speakerphoneSwitch!!.setOnCheckedChangeListener { buttonView, isChecked ->
-
+            audioVoiceEffectsManager.setAudioRoute(isChecked)
         }
     }
 
@@ -67,6 +68,7 @@ class AudioVoiceEffectsActivity : BasicImplementationActivity() {
 
     fun playSoundEffect(view: View) {
         if (playEffectButton == null) playEffectButton = view as Button
+
         if (soundEffectStatus == 0) { // Stopped
             audioVoiceEffectsManager.playEffect(soundEffectId, soundEffectFilePath)
             playEffectButton?.text = getString(R.string.pause_audio_effect)
@@ -82,7 +84,63 @@ class AudioVoiceEffectsActivity : BasicImplementationActivity() {
         }
     }
 
-    fun applyVoiceEffect(view: View) {
+    override fun handleEngineEvent(eventName: String, eventArgs: Map<String, Any>) {
+        super.handleEngineEvent(eventName, eventArgs)
+        when (eventName) {
+            "onAudioEffectFinished" -> {
+                // Update the UI
+                soundEffectStatus = 0 // Stopped
+                runOnUiThread { playEffectButton!!.text = getString(R.string.play_audio_effect) }
+            }
+        }
+    }
 
+    fun applyVoiceEffect(view: View) {
+        if (voiceEffectButton == null) voiceEffectButton = view as Button
+        voiceEffectIndex++
+
+        if (voiceEffectIndex == 1) {
+            audioVoiceEffectsManager.applyVoiceBeautifierPreset(Constants.CHAT_BEAUTIFIER_MAGNETIC)
+            voiceEffectButton!!.text = "Voice effect: Chat Beautifier"
+        } else if (voiceEffectIndex == 2) {
+            audioVoiceEffectsManager.applyVoiceBeautifierPreset(Constants.SINGING_BEAUTIFIER)
+            voiceEffectButton!!.text = "Voice effect: Singing Beautifier"
+        } else if (voiceEffectIndex == 3) {
+            // Turn off previous effect
+            audioVoiceEffectsManager.applyVoiceBeautifierPreset(Constants.VOICE_BEAUTIFIER_OFF)
+            // Modify the timbre using the formantRatio
+            // Range is [-1.0, 1.0], [giant, child] default value is 0.
+            audioVoiceEffectsManager.applyLocalVoiceFormant(0.6)
+            voiceEffectButton!!.text = "Voice effect: Adjust Formant"
+        } else if (voiceEffectIndex == 4) {
+            // Remove previous effect
+            audioVoiceEffectsManager.applyLocalVoiceFormant(0.0)
+            // Apply audio effect preset
+            audioVoiceEffectsManager.applyAudioEffectPreset(Constants.VOICE_CHANGER_EFFECT_HULK)
+            voiceEffectButton!!.text = "Audio effect: Hulk"
+        } else if (voiceEffectIndex == 5) {
+            // Remove previous effect
+            audioVoiceEffectsManager.applyAudioEffectPreset(Constants.AUDIO_EFFECT_OFF)
+            // Apply voice conversion preset
+            audioVoiceEffectsManager.applyVoiceConversionPreset(Constants.VOICE_CHANGER_CARTOON)
+            voiceEffectButton!!.text = "Audio effect: Voice Changer"
+        } else if (voiceEffectIndex == 6) {
+            // Remove previous effect
+            audioVoiceEffectsManager.applyVoiceConversionPreset(Constants.VOICE_CONVERSION_OFF)
+            // Set voice equalization
+            audioVoiceEffectsManager.setVoiceEqualization(
+                Constants.AUDIO_EQUALIZATION_BAND_FREQUENCY.fromInt(4), 3
+            )
+            audioVoiceEffectsManager.setVoicePitch(0.5)
+            voiceEffectButton!!.text = "Audio effect: Voice Equalization"
+        } else if (voiceEffectIndex > 6) {
+            // Remove voice equalization and pitch modification
+            audioVoiceEffectsManager.setVoicePitch(1.0)
+            audioVoiceEffectsManager.setVoiceEqualization(
+                Constants.AUDIO_EQUALIZATION_BAND_FREQUENCY.fromInt(4), 0
+            )
+            voiceEffectIndex = 0
+            voiceEffectButton!!.text = "Apply voice effect"
+        }
     }
 }

@@ -4,6 +4,7 @@ Video SDK makes it simple for you to publish audio captured through the micropho
 
 This sample project shows you how to:
 
+* Set an audio profile and scenario
 * Implement audio effects and audio mixing
 * Apply voice effects
 * Set the audio route

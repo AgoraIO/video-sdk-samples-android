@@ -93,6 +93,10 @@ class CallQualityActivity : BasicImplementationActivity() {
                 // Disable the echo test button
                 btnEchoTest!!.isEnabled = false
             }
+
+            override fun onEngineEvent(eventName: String, eventArgs: Map<String, Any>) {
+
+            }
         })
     }
 

@@ -267,6 +267,7 @@ open class AgoraManager(context: Context) {
         fun onRemoteUserJoined(remoteUid: Int, surfaceView: SurfaceView?)
         fun onRemoteUserLeft(remoteUid: Int)
         fun onJoinChannelSuccess(channel: String?, uid: Int, elapsed: Int)
+        fun onEngineEvent(eventName: String, eventArgs: Map<String, Any>)
     }
 
     protected fun sendMessage(message: String?) {
