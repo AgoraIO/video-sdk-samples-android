@@ -190,7 +190,15 @@ open class BasicImplementationActivity : AppCompatActivity() {
                         View.INVISIBLE
                 }
             }
+
+            override fun onEngineEvent(eventName: String, eventArgs: Map<String, Any>) {
+                handleEngineEvent(eventName, eventArgs)
+            }
         }
+
+    open fun handleEngineEvent(eventName: String, eventArgs: Map<String, Any>) {
+        // Override in derived classes
+    }
 
     // A small video frame was clicked
     protected val videoClickListener: View.OnClickListener

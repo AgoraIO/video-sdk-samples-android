@@ -78,6 +78,7 @@ class MainActivity : AppCompatActivity() {
 
             ListItem("INTEGRATE FEATURES", ListItem.ExampleId.HEADER),
             ListItem("Geofencing", ListItem.ExampleId.GEOFENCING),
+            ListItem("Audio and voice effects", ListItem.ExampleId.AUDIO_VOICE_EFFECTS),
         )
         // Set up the adapter with the list of items and click listener
         val adapter = ItemListAdapter(itemList, object : ItemListAdapter.ItemClickListener {
@@ -91,6 +92,7 @@ class MainActivity : AppCompatActivity() {
                     ListItem.ExampleId.CLOUD_PROXY -> launchActivity(CloudProxyActivity::class.java)
                     ListItem.ExampleId.MEDIA_STREAM_ENCRYPTION -> launchActivity(MediaStreamEncryptionActivity::class.java)
                     ListItem.ExampleId.GEOFENCING -> launchActivity(GeofencingActivity::class.java)
+                    ListItem.ExampleId.AUDIO_VOICE_EFFECTS -> launchActivity(AudioVoiceEffectsActivity::class.java)
                     else -> {}
                 }
             }

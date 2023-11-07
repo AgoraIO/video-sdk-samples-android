@@ -20,4 +20,11 @@
     <string name="volume_type">Volume type:</string>
     <string name="start_screen_sharing">Start Screen Sharing</string>
     <string name="stop_screen_sharing">Stop screen sharing</string>
+    <string name="start_audio_mixing">Start Audio Mixing</string>
+    <string name="play_audio_effect">Play audio effect</string>
+    <string name="apply_voice_effect">Apply voice effect</string>
+    <string name="speakerphone">Speakerphone</string>
+    <string name="stop_audio_mixing">Stop audio mixing</string>
+    <string name="pause_audio_effect">Pause audio effect</string>
+    <string name="resume_audio_effect">Resume audio effect</string>
 </resources>
