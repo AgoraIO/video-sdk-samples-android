@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".PlayMediaActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="8dp">
+
+        <include
+            android:id="@+id/base_layout"
+            layout="@layout/base_layout" />
+
+        <RadioGroup
+            android:id="@+id/radioGroupBackground"
+            android:layout_width="wrap_content"
+            android:layout_below="@id/base_layout"
+            android:layout_height="wrap_content">
+
+            <RadioButton
+                android:id="@+id/optionNone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="@string/no_background"/>
+
+            <RadioButton
+                android:id="@+id/optionBlur"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/blur_background"/>
+
+            <RadioButton
+                android:id="@+id/optionSolid"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/solid_background"/>
+
+            <RadioButton
+                android:id="@+id/optionImage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/image_background"/>
+        </RadioGroup>
+
+    </RelativeLayout>
+
+</ScrollView>

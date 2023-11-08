@@ -80,6 +80,7 @@ class MainActivity : AppCompatActivity() {
             ListItem("Audio and voice effects", ListItem.ExampleId.AUDIO_VOICE_EFFECTS),
             ListItem("3D Spatial audio", ListItem.ExampleId.SPATIAL_AUDIO),
             ListItem("Geofencing", ListItem.ExampleId.GEOFENCING),
+            ListItem("Virtual background", ListItem.ExampleId.VIRTUAL_BACKGROUND),
         )
         // Set up the adapter with the list of items and click listener
         val adapter = ItemListAdapter(itemList, object : ItemListAdapter.ItemClickListener {
@@ -95,6 +96,7 @@ class MainActivity : AppCompatActivity() {
                     ListItem.ExampleId.GEOFENCING -> launchActivity(GeofencingActivity::class.java)
                     ListItem.ExampleId.AUDIO_VOICE_EFFECTS -> launchActivity(AudioVoiceEffectsActivity::class.java)
                     ListItem.ExampleId.SPATIAL_AUDIO -> launchActivity(SpatialAudioActivity::class.java)
+                    ListItem.ExampleId.VIRTUAL_BACKGROUND -> launchActivity(VirtualBackgroundActivity::class.java)
                     else -> {}
                 }
             }

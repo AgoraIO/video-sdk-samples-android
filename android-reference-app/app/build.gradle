@@ -44,6 +44,7 @@ dependencies {
     implementation project(':geofencing')
     implementation project(':audio-and-voice-effects')
     implementation project(':spatial-audio')
+    implementation project(':virtual-background')
 
     implementation 'com.squareup.okhttp3:okhttp:4.9.3'
     implementation 'androidx.core:core-ktx:1.10.1'
