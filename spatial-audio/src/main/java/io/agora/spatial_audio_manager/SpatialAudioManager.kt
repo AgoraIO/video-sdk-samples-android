@@ -2,34 +2,56 @@ package io.agora.spatial_audio_manager
 
 import android.content.Context
 import io.agora.authentication_manager.AuthenticationManager
-import io.agora.rtc2.RtcEngine
-import io.agora.rtc2.RtcEngineConfig
-import io.agora.rtc2.RtcEngineConfig.AreaCode.*
-import java.lang.Exception
+import io.agora.spatialaudio.ILocalSpatialAudioEngine
+import io.agora.spatialaudio.LocalSpatialAudioConfig
+import io.agora.spatialaudio.RemoteVoicePositionInfo
 
 class SpatialAudioManager(context: Context?) : AuthenticationManager(context) {
+    // Instance of the spatial audio engine
+    private var spatialAudioEngine: ILocalSpatialAudioEngine? = null
+
+    private fun configureSpatialAudioEngine() {
+        // Enable spatial audio
+        agoraEngine!!.enableSpatialAudio(true)
+
+        // Create and initialize the spatial audio engine
+        val localSpatialAudioConfig = LocalSpatialAudioConfig()
+        localSpatialAudioConfig.mRtcEngine = agoraEngine
+        spatialAudioEngine = ILocalSpatialAudioEngine.create()
+        spatialAudioEngine?.initialize(localSpatialAudioConfig)
+
+        // Set the audio reception range of the local user in meters
+        spatialAudioEngine?.setAudioRecvRange(50F)
+
+        // Set the length of unit distance in meters
+        spatialAudioEngine?.setDistanceUnit(1F)
+
+        // Define the position of the local user
+        val pos = floatArrayOf(0.0f, 0.0f, 0.0f)
+        val forward = floatArrayOf(1.0f, 0.0f, 0.0f)
+        val right = floatArrayOf(0.0f, 1.0f, 0.0f)
+        val up = floatArrayOf(0.0f, 0.0f, 1.0f)
+        // Set the position of the local user
+        spatialAudioEngine?.updateSelfPosition(pos, forward, right, up)
+    }
+
+    fun updateRemoteSpatialAudioPosition(remoteUid: Int, front: Float, right: Float, top: Float) { //View view){
+        // Define a remote user's spatial position
+        val positionInfo = RemoteVoicePositionInfo()
+        // The three values represent the front, right, and top coordinates
+        positionInfo.position = floatArrayOf(front, right, top)
+        positionInfo.forward = floatArrayOf(0.0f, 0.0f, -1.0f)
+
+        // Update the spatial position of the specified remote user
+        spatialAudioEngine?.updateRemotePosition(remoteUid, positionInfo)
+        sendMessage("Spatial position of remote user ${remoteUid} updated")
+    }
 
     override fun setupAgoraEngine(): Boolean {
-        try {
-            // Set the engine configuration
-            val config = RtcEngineConfig()
-            config.mContext = mContext
-            config.mAppId = appId
-            // Assign an event handler to receive engine callbacks
-            config.mEventHandler = iRtcEngineEventHandler
-
-            // Set the geofencing area code(s)
-            config.mAreaCode = AREA_CODE_NA or AREA_CODE_EU // AreaCodes support bitwise operations
-            sendMessage("Setting region for connection")
-
-            // Create an RtcEngine instance
-            agoraEngine = RtcEngine.create(config)
-            // By default, the video module is disabled, call enableVideo to enable it.
-            agoraEngine!!.enableVideo()
-        } catch (e: Exception) {
-            sendMessage(e.toString())
-            return false
-        }
-        return true
+        val result = super.setupAgoraEngine()
+        
+        // Setup the spatial audio engine
+        configureSpatialAudioEngine()
+        return result
     }
 }

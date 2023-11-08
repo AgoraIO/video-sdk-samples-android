@@ -76,6 +76,11 @@
         <activity android:name=".AudioVoiceEffectsActivity"
             android:label="Audio and voice effects">
         </activity>
+
+        <activity android:name=".SpatialAudioActivity"
+            android:label="3D Spatial audio">
+        </activity>
+
     </application>
 
 
