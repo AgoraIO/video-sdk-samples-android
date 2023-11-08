@@ -11,7 +11,8 @@ data class ListItem(val title: String, val id: ExampleId) {
         CLOUD_PROXY,
         MEDIA_STREAM_ENCRYPTION,
         GEOFENCING,
-        AUDIO_VOICE_EFFECTS
+        AUDIO_VOICE_EFFECTS,
+        SPATIAL_AUDIO
     }
 }
 

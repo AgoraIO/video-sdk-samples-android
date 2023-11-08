@@ -6,7 +6,7 @@ This sample project shows you how to enable Geofencing in your client.
 
 ## Understand the code
 
-For context on this sample, and a full explanation of the essential code snippets used in this project, read the **Stream media to a channel** document for your product of interest:
+For context on this sample, and a full explanation of the essential code snippets used in this project, read the **Geofencing** document for your product of interest:
 
 * [Video calling](https://docs.agora.io/en/video-calling/enable-features/geofencing?platform=android)
 * [Interactive live Streaming](https://docs.agora.io/en/interactive-live-streaming/enable-features/geofencing?platform=android)
