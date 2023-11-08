@@ -6,7 +6,7 @@ This sample project shows you how to integrate built-in media stream encryption 
 
 ## Understand the code
 
-For context on this sample, and a full explanation of the essential code snippets used in this project, read the **Stream media to a channel** document for your product of interest:
+For context on this sample, and a full explanation of the essential code snippets used in this project, read the **Secure channel encryption** document for your product of interest:
 
 * [Video calling](https://docs.agora.io/en/video-calling/develop/media-stream-encryption?platform=android)
 * [Interactive live Streaming](https://docs.agora.io/en/interactive-live-streaming/develop/media-stream-encryption?platform=android)

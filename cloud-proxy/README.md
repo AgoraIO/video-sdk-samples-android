@@ -6,7 +6,7 @@ This sample project shows you how to implement these features in your channel.
 
 ## Understand the code
 
-For context on this sample, and a full explanation of the essential code snippets used in this project, read the **Stream media to a channel** document for your product of interest:
+For context on this sample, and a full explanation of the essential code snippets used in this project, read the **Connect through restricted networks with Cloud Proxy** document for your product of interest:
 
 * [Video calling](https://docs.agora.io/en/video-calling/develop/cloud-proxy?platform=android)
 * [Interactive live Streaming](https://docs.agora.io/en/interactive-live-streaming/develop/cloud-proxy?platform=android)
