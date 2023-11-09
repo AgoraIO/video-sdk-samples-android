@@ -85,6 +85,14 @@
             android:label="Virtual background">
         </activity>
 
+        <activity android:name=".CustomVideoAudioActivity"
+            android:label="Custom video and audio">
+        </activity>
+
+        <activity android:name=".RawVideoAudioActivity"
+            android:label="Stream raw video and audio">
+        </activity>
+
     </application>
 
 
