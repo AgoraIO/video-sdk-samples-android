@@ -5,13 +5,13 @@ Virtual Background enables users to blur their background or replace it with a s
 This sample project shows you how to set:
 
 * Blurred background
-* Image background
 * Color background
-* Video background
+* Image background
+
 
 ## Understand the code
 
-For context on this sample, and a full explanation of the essential code snippets used in this project, read the **Virtual Background** document for your product of interest:
+For context on this sample and a full explanation of the essential code snippets used in this project, read the **Virtual Background** document for your product of interest:
 
 * [Video calling](https://docs.agora.io/en/video-calling/enable-features/virtual-background?platform=android)
 * [Interactive live Streaming](https://docs.agora.io/en/interactive-live-streaming/enable-features/virtual-background?platform=android)
