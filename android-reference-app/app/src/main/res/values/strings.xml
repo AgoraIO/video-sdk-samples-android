@@ -31,4 +31,6 @@
     <string name="blur_background">Blur background</string>
     <string name="solid_background">Solid background</string>
     <string name="image_background">Image background</string>
+    <string name="start_pushing_custom_audio">Start pushing custom audio</string>
+    <string name="stop_pushing_custom_audio">Stop pushing custom audio</string>
 </resources>

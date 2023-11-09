@@ -13,7 +13,7 @@ class CustomVideoAudioManager(context: Context?) : AuthenticationManager(context
     // Audio file parameters
     private var customAudioTrackId = -1
     private val audioFile = "applause.wav" // raw audio file
-
+    // Configure audio parameters
     private val sampleRate = 44100
     private val numberOfChannels = 2
     private val bitsPerSample = 16
@@ -22,78 +22,44 @@ class CustomVideoAudioManager(context: Context?) : AuthenticationManager(context
     private val pushInterval = samples * 1000 / sampleRate
 
     private var inputStream: InputStream? = null
-    private var pushingTask: Thread = Thread(PushingTask(this))
+    private var pushingTask: Thread? = null
 
     var pushingAudio = false
 
-    override fun joinChannel(channelName: String, token: String?): Int {
-        // Ensure that necessary Android permissions have been granted
-        if (!checkSelfPermission()) {
-            sendMessage("Permissions were not granted")
-            return -1
-        }
-        this.channelName = channelName
+    fun playCustomAudio() {
+        // Create a custom audio track
+        val audioTrackConfig = AudioTrackConfig()
+        audioTrackConfig.enableLocalPlayback = true
 
-        // Create an RTCEngine instance
-        if (agoraEngine == null) setupAgoraEngine()
+        customAudioTrackId = agoraEngine!!.createCustomAudioTrack(
+            Constants.AudioTrackType.AUDIO_TRACK_MIXABLE,
+            audioTrackConfig
+        )
+
+        // Set custom audio publishing options
         val options = ChannelMediaOptions()
-        if (currentProduct == ProductName.VIDEO_CALLING || currentProduct == ProductName.VOICE_CALLING) {
-            // For a Video/Voice call, set the channel profile as COMMUNICATION.
-            options.channelProfile = Constants.CHANNEL_PROFILE_COMMUNICATION
-            isBroadcaster = true
-        } else {
-            // For Live Streaming and Broadcast streaming,
-            // set the channel profile as LIVE_BROADCASTING.
-            options.channelProfile = Constants.CHANNEL_PROFILE_LIVE_BROADCASTING
-            if (!isBroadcaster && currentProduct == ProductName.BROADCAST_STREAMING) {
-                // Set Low latency for Broadcast streaming
-                options.audienceLatencyLevel =
-                    Constants.AUDIENCE_LATENCY_LEVEL_LOW_LATENCY
-            } else if (!isBroadcaster && currentProduct == ProductName.INTERACTIVE_LIVE_STREAMING) {
-                options.audienceLatencyLevel =
-                    Constants.AUDIENCE_LATENCY_LEVEL_ULTRA_LOW_LATENCY
-            }
-        }
+        options.publishCustomAudioTrack = true // Enable publishing custom audio
+        options.publishCustomAudioTrackId = customAudioTrackId
+        options.publishMicrophoneTrack = false // Disable publishing microphone audio
+        agoraEngine!!.updateChannelMediaOptions(options)
 
-        // Set the client role as BROADCASTER or AUDIENCE according to the scenario.
-        if (isBroadcaster) { // Broadcasting Host or Video-calling client
-            options.clientRoleType = Constants.CLIENT_ROLE_BROADCASTER
+        // Open the audio file
+        openAudioFile()
 
-            // Set up custom audio
-            val audioTrackConfig = AudioTrackConfig()
-            audioTrackConfig.enableLocalPlayback = true
-
-            customAudioTrackId = agoraEngine!!.createCustomAudioTrack(
-                Constants.AudioTrackType.AUDIO_TRACK_MIXABLE,
-                audioTrackConfig
-            )
-            options.publishCustomAudioTrack = true // Enable publishing custom audio
-            options.publishCustomAudioTrackId = customAudioTrackId
-            options.publishMicrophoneTrack = false // Disable publishing microphone audio
-
-            // Start local preview.
-            agoraEngine!!.startPreview()
-        } else { // Audience
-            options.clientRoleType = Constants.CLIENT_ROLE_AUDIENCE
-        }
-
-        // Join the channel with a token.
-        agoraEngine!!.joinChannel(token, channelName, localUid, options)
-        return 0
+        // Start the pushing task
+        pushingTask = Thread(PushingTask(this))
+        pushingAudio = true
+        pushingTask?.start()
     }
 
-    override fun setupAgoraEngine(): Boolean {
-        val result = super.setupAgoraEngine()
-
-        // open the audio file
+    fun openAudioFile() {
+        // Open the audio file
         try {
             inputStream = mContext.resources.assets.open(audioFile)
             // Use the inputStream as needed
         } catch (e: IOException) {
             e.printStackTrace()
         }
-
-        return result
     }
 
     internal class PushingTask(private val manager: CustomVideoAudioManager) : Runnable {
@@ -121,14 +87,6 @@ class CustomVideoAudioManager(context: Context?) : AuthenticationManager(context
         }
     }
 
-    override fun handleOnJoinChannelSuccess(channel: String, uid: Int, elapsed: Int) {
-        if (isBroadcaster) {
-            // Start the pushing task
-            pushingAudio = true
-            pushingTask.start()
-        }
-    }
-
     private fun readBuffer(): ByteArray? {
         // Read the audio file buffer
         val byteSize = bufferSize
@@ -142,5 +100,10 @@ class CustomVideoAudioManager(context: Context?) : AuthenticationManager(context
             e.printStackTrace()
         }
         return buffer
+    }
+
+    fun stopCustomAudio() {
+        pushingAudio = false
+        pushingTask?.interrupt()
     }
 }
