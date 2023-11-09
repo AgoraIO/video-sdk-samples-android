@@ -6,6 +6,7 @@ import io.agora.virtual_background_manager.VirtualBackgroundManager
 
 class VirtualBackgroundActivity : BasicImplementationActivity() {
     private lateinit var virtualBackgroundManager: VirtualBackgroundManager
+    private lateinit var radioGroupBackground: RadioGroup
 
     // Override the UI layout
     override val layoutResourceId: Int
@@ -14,26 +15,29 @@ class VirtualBackgroundActivity : BasicImplementationActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val radioGroup = findViewById<RadioGroup>(R.id.radioGroupBackground)
+        radioGroupBackground = findViewById<RadioGroup>(R.id.radioGroupBackground)
+        radioGroupBackground.isEnabled = false
 
-        radioGroup.setOnCheckedChangeListener { _, checkedId ->
+        radioGroupBackground.setOnCheckedChangeListener { _, checkedId ->
 
-            when (checkedId) {
-                R.id.optionNone -> {
-                    virtualBackgroundManager.removeBackground()
-                    showMessage("Virtual background turned off")
-                }
-                R.id.optionBlur -> {
-                    virtualBackgroundManager.setBlurBackground()
-                    showMessage("Blur background enabled")
-                }
-                R.id.optionSolid -> {
-                    virtualBackgroundManager.setSolidBackground()
-                    showMessage("Solid background enabled")
-                }
-                R.id.optionImage -> {
-                    virtualBackgroundManager.setImageBackground()
-                    showMessage("Image background enabled")
+            if (virtualBackgroundManager.isJoined) {
+                when (checkedId) {
+                    R.id.optionNone -> {
+                        virtualBackgroundManager?.removeBackground()
+                        showMessage("Virtual background turned off")
+                    }
+                    R.id.optionBlur -> {
+                        virtualBackgroundManager?.setBlurBackground()
+                        showMessage("Blur background enabled")
+                    }
+                    R.id.optionSolid -> {
+                        virtualBackgroundManager?.setSolidBackground()
+                        showMessage("Solid background enabled")
+                    }
+                    R.id.optionImage -> {
+                        virtualBackgroundManager?.setImageBackground()
+                        showMessage("Image background enabled")
+                    }
                 }
             }
         }
@@ -50,6 +54,8 @@ class VirtualBackgroundActivity : BasicImplementationActivity() {
 
     override fun join() {
         virtualBackgroundManager.joinChannelWithToken()
+
+        radioGroupBackground.isEnabled = true
 
         if (virtualBackgroundManager.isFeatureAvailable()){
             showMessage("Your device supports virtual backgrounds")
