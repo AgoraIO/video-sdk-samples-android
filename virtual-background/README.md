@@ -17,7 +17,7 @@ For context on this sample and a full explanation of the essential code snippets
 * [Interactive live Streaming](https://docs.agora.io/en/interactive-live-streaming/enable-features/virtual-background?platform=android)
 * [Broadcast streaming](https://docs.agora.io/en/broadcast-streaming/enable-features/virtual-background?platform=android)
 
-For the UI implementation of this example, refer to [`GeofencingActivity.kt`](../android-reference-app/app/src/main/java/io/agora/android_reference_app/GeofencingActivity.kt).
+For the UI implementation of this example, refer to [`VirtualBackgroundActivity.kt`](../android-reference-app/app/src/main/java/io/agora/android_reference_app/VirtualBackgroundActivity.kt).
 
 ## How to run this example
 
