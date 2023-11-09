@@ -27,4 +27,8 @@
     <string name="stop_audio_mixing">Stop audio mixing</string>
     <string name="pause_audio_effect">Pause audio effect</string>
     <string name="resume_audio_effect">Resume audio effect</string>
+    <string name="no_background">No background</string>
+    <string name="blur_background">Blur background</string>
+    <string name="solid_background">Solid background</string>
+    <string name="image_background">Image background</string>
 </resources>

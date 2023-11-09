@@ -16,7 +16,7 @@ rootProject.name = "android-reference-app"
 
 include ':app', ':agora-manager', ':authentication-workflow', ':ensure-channel-quality', ':play-media'
 include ':product-workflow', ':geofencing', ':media-stream-encryption', ':cloud-proxy', ':audio-and-voice-effects'
-include ':spatial-audio'
+include ':spatial-audio', ':virtual-background'
 
 project(':agora-manager').projectDir = new File(rootProject.projectDir, '../agora-manager')
 project(':authentication-workflow').projectDir = new File(rootProject.projectDir, '../authentication-workflow')
@@ -28,3 +28,4 @@ project(':media-stream-encryption').projectDir = new File(rootProject.projectDir
 project(':cloud-proxy').projectDir = new File(rootProject.projectDir, '../cloud-proxy')
 project(':audio-and-voice-effects').projectDir = new File(rootProject.projectDir, '../audio-and-voice-effects')
 project(':spatial-audio').projectDir = new File(rootProject.projectDir, '../spatial-audio')
+project(':virtual-background').projectDir = new File(rootProject.projectDir, '../virtual-background')

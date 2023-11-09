@@ -81,6 +81,10 @@
             android:label="3D Spatial audio">
         </activity>
 
+        <activity android:name=".VirtualBackgroundActivity"
+            android:label="Virtual background">
+        </activity>
+
     </application>
 
 
