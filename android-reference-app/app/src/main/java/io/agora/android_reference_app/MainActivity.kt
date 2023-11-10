@@ -75,12 +75,16 @@ class MainActivity : AppCompatActivity() {
             ListItem("Screen share, volume control and mute", ListItem.ExampleId.PRODUCT_WORKFLOW),
             ListItem("Cloud proxy", ListItem.ExampleId.CLOUD_PROXY),
             ListItem("Media stream encryption", ListItem.ExampleId.MEDIA_STREAM_ENCRYPTION),
+            ListItem("Custom video and audio", ListItem.ExampleId.CUSTOM_VIDEO_AUDIO),
+            ListItem("Stream raw video and audio", ListItem.ExampleId.RAW_VIDEO_AUDIO),
+            ListItem("Live streaming over multiple channels", ListItem.ExampleId.LIVE_STREAMING_OVER_MULTIPLE_CHANNELS),
 
             ListItem("INTEGRATE FEATURES", ListItem.ExampleId.HEADER),
             ListItem("Audio and voice effects", ListItem.ExampleId.AUDIO_VOICE_EFFECTS),
             ListItem("3D Spatial audio", ListItem.ExampleId.SPATIAL_AUDIO),
             ListItem("Geofencing", ListItem.ExampleId.GEOFENCING),
             ListItem("Virtual background", ListItem.ExampleId.VIRTUAL_BACKGROUND),
+            ListItem("AI noise suppression", ListItem.ExampleId.AI_NOISE_SUPPRESSION),
         )
         // Set up the adapter with the list of items and click listener
         val adapter = ItemListAdapter(itemList, object : ItemListAdapter.ItemClickListener {
@@ -97,6 +101,8 @@ class MainActivity : AppCompatActivity() {
                     ListItem.ExampleId.AUDIO_VOICE_EFFECTS -> launchActivity(AudioVoiceEffectsActivity::class.java)
                     ListItem.ExampleId.SPATIAL_AUDIO -> launchActivity(SpatialAudioActivity::class.java)
                     ListItem.ExampleId.VIRTUAL_BACKGROUND -> launchActivity(VirtualBackgroundActivity::class.java)
+                    ListItem.ExampleId.CUSTOM_VIDEO_AUDIO -> launchActivity(CustomVideoAudioActivity::class.java)
+                    ListItem.ExampleId.RAW_VIDEO_AUDIO -> launchActivity(RawVideoAudioActivity::class.java)
                     else -> {}
                 }
             }

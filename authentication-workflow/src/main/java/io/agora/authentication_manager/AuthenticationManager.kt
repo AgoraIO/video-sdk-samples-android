@@ -61,6 +61,7 @@ open class AuthenticationManager(context: Context?) : AgoraManager(
 
             override fun onJoinChannelSuccess(channel: String, uid: Int, elapsed: Int) {
                 baseEventHandler!!.onJoinChannelSuccess(channel, uid, elapsed)
+                handleOnJoinChannelSuccess(channel, uid, elapsed)
             }
 
             override fun onUserOffline(uid: Int, reason: Int) {
@@ -71,6 +72,10 @@ open class AuthenticationManager(context: Context?) : AgoraManager(
                 connectionStateChanged(state, reason)
             }
         }
+
+    open fun handleOnJoinChannelSuccess(channel: String, uid: Int, elapsed: Int) {
+        // For adding code in derived classes
+    }
 
     fun fetchToken(channelName: String, callback: TokenCallback) {
         // Use the uid from the config file if not specified
