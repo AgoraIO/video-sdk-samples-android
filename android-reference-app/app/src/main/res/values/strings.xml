@@ -33,4 +33,5 @@
     <string name="image_background">Image background</string>
     <string name="start_pushing_custom_audio">Start pushing custom audio</string>
     <string name="stop_pushing_custom_audio">Stop pushing custom audio</string>
+    <string name="start_pushing_custom_video">Start pushing custom video</string>
 </resources>

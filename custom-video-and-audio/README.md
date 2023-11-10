@@ -1,18 +1,23 @@
-# Geofencing
+# Custom video and audio sources
 
-When a user joins a channel, Video SDK automatically connects them to the closest geographical region of Agora SD-RTN™. However, to meet the laws and regulations of your region, you may want to filter in or filter out connections to a specific geographical region. Agora geofencing enables you to control and customize data routing in your app by specifying the Agora SD-RTN™ region users connect to.
+By default, Video SDK uses the basic audio and video modules on the device your app runs on. However, there are certain scenarios where you want to integrate a custom audio or video source into your app, such as:
 
-This sample project shows you how to enable Geofencing in your client.
+- Your app has its own audio or video module.
+- You want to use a non-camera source, such as recorded screen data.
+- You need to process the captured audio or video with a pre-processing library for audio or image enhancement.
+- You need flexible device resource allocation to avoid conflicts with other services.
+
+This sample project shows you to push custom audio and video to a channel.
 
 ## Understand the code
 
-For context on this sample, and a full explanation of the essential code snippets used in this project, read the **Geofencing** document for your product of interest:
+For context on this sample, and a full explanation of the essential code snippets used in this project, read the **Custom video and audio sources** document for your product of interest:
 
-* [Video calling](https://docs.agora.io/en/video-calling/enable-features/geofencing?platform=android)
-* [Interactive live Streaming](https://docs.agora.io/en/interactive-live-streaming/enable-features/geofencing?platform=android)
-* [Broadcast streaming](https://docs.agora.io/en/broadcast-streaming/enable-features/geofencing?platform=android)
+* [Video calling](https://docs.agora.io/en/video-calling/develop/custom-video-and-audio?platform=android)
+* [Interactive live Streaming](https://docs.agora.io/en/interactive-live-streaming/develop/custom-video-and-audio?platform=android)
+* [Broadcast streaming](https://docs.agora.io/en/broadcast-streaming/develop/custom-video-and-audio?platform=android)
 
-For the UI implementation of this example, refer to [`GeofencingActivity.kt`](../android-reference-app/app/src/main/java/io/agora/android_reference_app/GeofencingActivity.kt).
+For the UI implementation of this example, refer to [`CustomVideoAudioActivity.kt`](../android-reference-app/app/src/main/java/io/agora/android_reference_app/CustomVideoAudioActivity.kt).
 
 ## How to run this example
 

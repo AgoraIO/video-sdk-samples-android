@@ -26,6 +26,16 @@
             android:onClick="pushAudio"
             android:text="@string/start_pushing_custom_audio" />
 
+        <Button
+            android:id="@+id/customVideoButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/customAudioButton"
+            android:layout_alignEnd="@id/base_layout"
+            android:layout_alignStart="@id/base_layout"
+            android:onClick="pushVideo"
+            android:text="@string/start_pushing_custom_video" />
+
     </RelativeLayout>
 
 </ScrollView>
