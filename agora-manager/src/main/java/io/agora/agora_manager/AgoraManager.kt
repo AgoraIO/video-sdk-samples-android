@@ -179,7 +179,7 @@ open class AgoraManager(context: Context) {
         return 0
     }
 
-    fun leaveChannel() {
+    open fun leaveChannel() {
         if (!isJoined) {
             sendMessage("Join a channel first")
         } else {

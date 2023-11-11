@@ -4,7 +4,7 @@
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".CustomVideoAudioActivity">
+    tools:context=".RawVideoAudioActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -23,18 +23,8 @@
             android:layout_below="@id/base_layout"
             android:layout_alignEnd="@id/base_layout"
             android:layout_alignStart="@id/base_layout"
-            android:onClick="pushAudio"
-            android:text="@string/start_pushing_custom_audio" />
-
-        <Button
-            android:id="@+id/customVideoButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/customAudioButton"
-            android:layout_alignEnd="@id/base_layout"
-            android:layout_alignStart="@id/base_layout"
-            android:onClick="pushVideo"
-            android:text="@string/start_pushing_custom_video" />
+            android:onClick="zoom"
+            android:text="@string/zoom_in" />
 
     </RelativeLayout>
 
