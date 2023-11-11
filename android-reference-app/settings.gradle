@@ -17,6 +17,7 @@ rootProject.name = "android-reference-app"
 include ':app', ':agora-manager', ':authentication-workflow', ':ensure-channel-quality', ':play-media'
 include ':product-workflow', ':geofencing', ':media-stream-encryption', ':cloud-proxy', ':audio-and-voice-effects'
 include ':spatial-audio', ':virtual-background', ':custom-video-and-audio', ':stream-raw-video-and-audio'
+include ':live-streaming-over-multiple-channels'
 
 project(':agora-manager').projectDir = new File(rootProject.projectDir, '../agora-manager')
 project(':authentication-workflow').projectDir = new File(rootProject.projectDir, '../authentication-workflow')
@@ -31,3 +32,4 @@ project(':spatial-audio').projectDir = new File(rootProject.projectDir, '../spat
 project(':virtual-background').projectDir = new File(rootProject.projectDir, '../virtual-background')
 project(':custom-video-and-audio').projectDir = new File(rootProject.projectDir, '../custom-video-and-audio')
 project(':stream-raw-video-and-audio').projectDir = new File(rootProject.projectDir, '../stream-raw-video-and-audio')
+project(':live-streaming-over-multiple-channels').projectDir = new File(rootProject.projectDir, '../live-streaming-over-multiple-channels')
