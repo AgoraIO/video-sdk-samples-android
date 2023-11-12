@@ -17,24 +17,20 @@
             layout="@layout/base_layout" />
 
         <Button
-            android:id="@+id/customAudioButton"
-            android:layout_width="wrap_content"
+            android:id="@+id/mediaRelayButton"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/base_layout"
-            android:layout_alignEnd="@id/base_layout"
-            android:layout_alignStart="@id/base_layout"
             android:onClick="channelRelay"
             android:text="@string/start_channel_media_relay" />
 
         <Button
-            android:id="@+id/customVideoButton"
-            android:layout_width="wrap_content"
+            android:id="@+id/secondChannelButton"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/customAudioButton"
-            android:layout_alignEnd="@id/base_layout"
-            android:layout_alignStart="@id/base_layout"
-            android:onClick="streamToMultipleChannels"
-            android:text="Stream to multiple channels" />
+            android:layout_below="@id/mediaRelayButton"
+            android:onClick="joinSecondChannel"
+            android:text="@string/stream_to_multiple_channels" />
 
     </RelativeLayout>
 

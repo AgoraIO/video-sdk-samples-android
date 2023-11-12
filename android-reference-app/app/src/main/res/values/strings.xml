@@ -37,4 +37,9 @@
     <string name="zoom_in">Zoom In</string>
     <string name="zoom_out">Zoom Out</string>
     <string name="start_channel_media_relay">Start channel media relay</string>
+    <string name="stop_channel_media_relay">Stop Channel Media Relay</string>
+    <string name="connecting_">Connecting...</string>
+    <string name="stream_to_multiple_channels">Stream to multiple channels</string>
+    <string name="leave_second_channel">Leave Second Channel</string>
+    <string name="join_second_channel">Join Second Channel</string>
 </resources>
