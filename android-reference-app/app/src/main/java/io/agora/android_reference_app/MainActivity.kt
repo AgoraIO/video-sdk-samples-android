@@ -103,6 +103,8 @@ class MainActivity : AppCompatActivity() {
                     ListItem.ExampleId.VIRTUAL_BACKGROUND -> launchActivity(VirtualBackgroundActivity::class.java)
                     ListItem.ExampleId.CUSTOM_VIDEO_AUDIO -> launchActivity(CustomVideoAudioActivity::class.java)
                     ListItem.ExampleId.RAW_VIDEO_AUDIO -> launchActivity(RawVideoAudioActivity::class.java)
+                    ListItem.ExampleId.LIVE_STREAMING_OVER_MULTIPLE_CHANNELS -> launchActivity(MultipleChannelsActivity::class.java)
+                    ListItem.ExampleId.AI_NOISE_SUPPRESSION -> launchActivity(NoiseSuppressionActivity::class.java)
                     else -> {}
                 }
             }

@@ -1,4 +1,4 @@
-package io.agora.geofencing_manager
+package io.agora.multiple_channels_manager
 
 import android.content.Context
 import io.agora.authentication_manager.AuthenticationManager
@@ -26,6 +26,7 @@ class MultipleChannelsManager(context: Context?) : AuthenticationManager(context
             agoraEngine = RtcEngine.create(config)
             // By default, the video module is disabled, call enableVideo to enable it.
             agoraEngine!!.enableVideo()
+
         } catch (e: Exception) {
             sendMessage(e.toString())
             return false
