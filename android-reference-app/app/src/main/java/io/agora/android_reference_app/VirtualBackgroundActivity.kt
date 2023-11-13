@@ -15,7 +15,7 @@ class VirtualBackgroundActivity : BasicImplementationActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        radioGroupBackground = findViewById<RadioGroup>(R.id.radioGroupBackground)
+        radioGroupBackground = findViewById(R.id.radioGroupBackground)
         radioGroupBackground.isEnabled = false
 
         radioGroupBackground.setOnCheckedChangeListener { _, checkedId ->

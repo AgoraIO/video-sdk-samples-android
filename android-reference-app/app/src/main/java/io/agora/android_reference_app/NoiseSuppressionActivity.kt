@@ -1,6 +1,5 @@
 package io.agora.android_reference_app
 
-import android.view.View
 import io.agora.noise_suppression_manager.NoiseSuppressionManager
 
 class NoiseSuppressionActivity : BasicImplementationActivity() {

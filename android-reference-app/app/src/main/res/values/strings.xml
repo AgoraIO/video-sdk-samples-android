@@ -42,4 +42,11 @@
     <string name="stream_to_multiple_channels">Stream to multiple channels</string>
     <string name="leave_second_channel">Leave Second Channel</string>
     <string name="join_second_channel">Join Second Channel</string>
+    <string name="voice_effect_chat_beautifier">Voice effect: Chat Beautifier</string>
+    <string name="voice_effect_singing_beautifier">Voice effect: Singing Beautifier</string>
+    <string name="voice_effect_adjust_formant">Voice effect: Adjust Formant</string>
+    <string name="audio_effect_hulk">Audio effect: Hulk</string>
+    <string name="audio_effect_voice_changer">Audio effect: Voice Changer</string>
+    <string name="audio_effect_voice_equalization">Audio effect: Voice Equalization</string>
+    <string name="apply_voice_equalization">Apply voice effect</string>
 </resources>

@@ -32,42 +32,51 @@ class MultipleChannelsActivity : BasicImplementationActivity() {
 
     override fun handleEngineEvent(eventName: String, eventArgs: Map<String, Any>) {
 
-        if (eventName == "onChannelMediaRelayStateChanged") {
-            when (eventArgs["state"]) {
-                // This example shows toast messages when the relay state changes,
-                // a production level app needs to handle state change properly.
-                1 -> {
-                    showMessage("Channel media relay connecting.")
-                    runOnUiThread { channelMediaButton?.text = getString(R.string.connecting_) }
-                }
-                2 -> {
-                    showMessage("Channel media relay running.")
-                    runOnUiThread {
-                        channelMediaButton?.text = getString(R.string.stop_channel_media_relay)
+        when (eventName) {
+            "onChannelMediaRelayStateChanged" -> {
+                when (eventArgs["state"]) {
+                    // This example shows toast messages when the relay state changes,
+                    // a production level app needs to handle state change properly.
+                    1 -> {
+                        showMessage("Channel media relay connecting.")
+                        runOnUiThread { channelMediaButton?.text = getString(R.string.connecting_) }
                     }
-                }
-                3 -> {
-                    if (eventArgs["code"] == 2) {
-                        showMessage("No server response. Make sure that co-hosting token authentication has been enabled for your project.")
-                    } else {
-                        showMessage("Channel media relay failure. Error code: ${eventArgs["code"]}")
+                    2 -> {
+                        showMessage("Channel media relay running.")
+                        runOnUiThread {
+                            channelMediaButton?.text = getString(R.string.stop_channel_media_relay)
+                        }
                     }
-                    runOnUiThread {
-                        channelMediaButton?.text = getString(R.string.start_channel_media_relay)
+                    3 -> {
+                        if (eventArgs["code"] == 2) {
+                            showMessage("No server response. Make sure that co-hosting token authentication has been enabled for your project.")
+                        } else {
+                            showMessage("Channel media relay failure. Error code: ${eventArgs["code"]}")
+                        }
+                        runOnUiThread {
+                            channelMediaButton?.text = getString(R.string.start_channel_media_relay)
+                        }
                     }
-                }
-                else -> {
+                    else -> {
 
+                    }
                 }
             }
-        } else if (eventName == "onJoinChannelSuccess2") {
-            runOnUiThread { secondChannelButton?.text = getString(R.string.leave_second_channel) }
-        } else if (eventName == "onLeaveChannel2") {
-            runOnUiThread { secondChannelButton?.text = getString(R.string.join_second_channel) }
-        } else if (eventName == "onUserJoined2") {
-            // Display remote video
-            showMessage("A remote user joined the second channel")
-            showRemoteVideo(eventArgs["uid"] as Int, eventArgs["surfaceView"] as SurfaceView?)
+            "onJoinChannelSuccess2" -> {
+                runOnUiThread {
+                    secondChannelButton?.text = getString(R.string.leave_second_channel)
+                }
+            }
+            "onLeaveChannel2" -> {
+                runOnUiThread {
+                    secondChannelButton?.text = getString(R.string.join_second_channel)
+                }
+            }
+            "onUserJoined2" -> {
+                // Display remote video
+                showMessage("A remote user joined the second channel")
+                showRemoteVideo(eventArgs["uid"] as Int, eventArgs["surfaceView"] as SurfaceView?)
+            }
         }
     }
 
