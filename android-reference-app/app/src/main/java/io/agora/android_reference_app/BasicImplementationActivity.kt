@@ -105,6 +105,7 @@ open class BasicImplementationActivity : AppCompatActivity() {
         videoFrameMap.clear()
     }
 
+    @Suppress("UNUSED_PARAMETER")
     fun joinLeave(view: View) {
         // Join/Leave button clicked
         if (!agoraManager.isJoined) {
@@ -125,37 +126,7 @@ open class BasicImplementationActivity : AppCompatActivity() {
             }
 
             override fun onRemoteUserJoined(remoteUid: Int, surfaceView: SurfaceView?) {
-                runOnUiThread {
-                    val targetLayout: FrameLayout?
-                    if (agoraManager.currentProduct === ProductName.VIDEO_CALLING) {
-                        // Create a new FrameLayout
-                        targetLayout = FrameLayout(applicationContext)
-                        // Set an onclick listener for video swapping
-                        targetLayout.setOnClickListener(videoClickListener)
-                        // Set the layout parameters for the new FrameLayout
-                        val layoutParams = LinearLayout.LayoutParams(
-                            400,
-                            LinearLayout.LayoutParams.MATCH_PARENT
-                        )
-                        layoutParams.setMargins(6, 6, 6, 6)
-                        // Set the id for the new FrameLayout
-                        targetLayout.id = View.generateViewId()
-                        // Add the new FrameLayout to the parent LinearLayout
-                        containerLayout.addView(targetLayout, layoutParams)
-                    } else if (!agoraManager.isBroadcaster) {
-                        // Use the main frame
-                        targetLayout = mainFrame
-                        surfaceViewMain = surfaceView
-                    } else {
-                        return@runOnUiThread
-                    }
-
-                    // Add the SurfaceView to the FrameLayout
-                    targetLayout.addView(surfaceView)
-                    // Associate the remoteUid with the FrameLayout for use in swapping
-                    targetLayout.tag = remoteUid
-                    videoFrameMap[remoteUid] = targetLayout
-                }
+               showRemoteVideo(remoteUid, surfaceView)
             }
 
             override fun onRemoteUserLeft(remoteUid: Int) {
@@ -201,11 +172,45 @@ open class BasicImplementationActivity : AppCompatActivity() {
     }
 
     // A small video frame was clicked
-    protected val videoClickListener: View.OnClickListener
+    private val videoClickListener: View.OnClickListener
         get() = View.OnClickListener { v: View ->
             // A small video frame was clicked
             swapVideo(v.id)
         }
+
+    open fun showRemoteVideo(remoteUid: Int, surfaceView: SurfaceView?) {
+        runOnUiThread {
+            val targetLayout: FrameLayout?
+            if (agoraManager.currentProduct === ProductName.VIDEO_CALLING) {
+                // Create a new FrameLayout
+                targetLayout = FrameLayout(applicationContext)
+                // Set an onclick listener for video swapping
+                targetLayout.setOnClickListener(videoClickListener)
+                // Set the layout parameters for the new FrameLayout
+                val layoutParams = LinearLayout.LayoutParams(
+                    400,
+                    LinearLayout.LayoutParams.MATCH_PARENT
+                )
+                layoutParams.setMargins(6, 6, 6, 6)
+                // Set the id for the new FrameLayout
+                targetLayout.id = View.generateViewId()
+                // Add the new FrameLayout to the parent LinearLayout
+                containerLayout.addView(targetLayout, layoutParams)
+            } else if (!agoraManager.isBroadcaster) {
+                // Use the main frame
+                targetLayout = mainFrame
+                surfaceViewMain = surfaceView
+            } else {
+                return@runOnUiThread
+            }
+
+            // Add the SurfaceView to the FrameLayout
+            targetLayout.addView(surfaceView)
+            // Associate the remoteUid with the FrameLayout for use in swapping
+            targetLayout.tag = remoteUid
+            videoFrameMap[remoteUid] = targetLayout
+        }
+    }
 
     protected open fun swapVideo(frameId: Int) {
         // Swap the  video in the small frame with the main frame

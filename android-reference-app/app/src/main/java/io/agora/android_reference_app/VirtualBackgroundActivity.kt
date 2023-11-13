@@ -23,19 +23,19 @@ class VirtualBackgroundActivity : BasicImplementationActivity() {
             if (virtualBackgroundManager.isJoined) {
                 when (checkedId) {
                     R.id.optionNone -> {
-                        virtualBackgroundManager?.removeBackground()
+                        virtualBackgroundManager.removeBackground()
                         showMessage("Virtual background turned off")
                     }
                     R.id.optionBlur -> {
-                        virtualBackgroundManager?.setBlurBackground()
+                        virtualBackgroundManager.setBlurBackground()
                         showMessage("Blur background enabled")
                     }
                     R.id.optionSolid -> {
-                        virtualBackgroundManager?.setSolidBackground()
+                        virtualBackgroundManager.setSolidBackground()
                         showMessage("Solid background enabled")
                     }
                     R.id.optionImage -> {
-                        virtualBackgroundManager?.setImageBackground()
+                        virtualBackgroundManager.setImageBackground()
                         showMessage("Image background enabled")
                     }
                 }

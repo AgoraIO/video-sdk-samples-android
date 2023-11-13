@@ -1,5 +1,6 @@
 package io.agora.android_reference_app
 
+import android.view.SurfaceView
 import android.view.View
 import android.widget.Button
 import io.agora.multiple_channels_manager.MultipleChannelsManager
@@ -65,14 +66,17 @@ class MultipleChannelsActivity : BasicImplementationActivity() {
             runOnUiThread { secondChannelButton?.text = getString(R.string.join_second_channel) }
         } else if (eventName == "onUserJoined2") {
             // Display remote video
-            showMessage("user joined")
+            showMessage("A remote user joined the second channel")
+            showRemoteVideo(eventArgs["uid"] as Int, eventArgs["surfaceView"] as SurfaceView?)
         }
     }
 
+    @Suppress("UNUSED_PARAMETER")
     fun channelRelay(view: View) {
         multipleChannelsManager.channelRelay()
     }
 
+    @Suppress("UNUSED_PARAMETER")
     fun joinSecondChannel(view: View) {
         multipleChannelsManager.joinSecondChannel()
     }

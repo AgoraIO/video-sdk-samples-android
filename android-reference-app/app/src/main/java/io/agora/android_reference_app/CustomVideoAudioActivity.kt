@@ -26,6 +26,7 @@ class CustomVideoAudioActivity : BasicImplementationActivity() {
         customVideoAudioManager.joinChannelWithToken()
     }
 
+    @Suppress("UNUSED_PARAMETER")
     fun pushVideo(view: View) {
         customVideoAudioManager.setupCustomVideo()
         // Set up a preview TextureView for the custom video

@@ -48,6 +48,7 @@ class AudioVoiceEffectsActivity : BasicImplementationActivity() {
         audioVoiceEffectsManager.joinChannelWithToken()
     }
 
+    @Suppress("UNUSED_PARAMETER")
     fun audioMixing(view: View) {
         val button: Button =  findViewById(R.id.AudioMixingButton)
         audioPlaying = !audioPlaying
