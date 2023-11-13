@@ -45,6 +45,7 @@ class PlayMediaActivity : BasicImplementationActivity() {
         mediaButton?.isEnabled = true
     }
 
+    @Suppress("UNUSED_PARAMETER")
     fun playMedia(view: View) {
         when (playMediaManager.mediaPlayerState()) {
             Constants.MediaPlayerState.PLAYER_STATE_OPEN_COMPLETED -> {

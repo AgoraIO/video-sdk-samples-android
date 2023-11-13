@@ -1,10 +1,17 @@
 {
-  "uid": "10",
+  "uid": "0",
   "appId": "9d2498880e934632b38b0a68fa2f1622",
   "channelName": "demo",
-  "rtcToken": "",
+  "rtcToken": "007eJxTYDgbZF7jxOPv6fM3l8PwZYDc+6LVnTN7s3tq101qSIxmilNgSDW3MDM0szA2MjE3M0lKNrAACpgbmVgkJ6WZGKemGC48FJDaEMjIIKwUy8jIwMjAAsQgPhOYZAaTLFAyJTU3n4EBAKX4Hw0=",
   "serverUrl": "https://agora-token-service-production-b619.up.railway.app",
   "tokenExpiryTime": "600",
   "salt": "FlGQKElY4nhZEtSxTUlNiXINzkwQeySNiMxl90x2EVg=",
-  "cipherKey": "e0e9a7aab1fc936f18cfac50c78109ce5ea400af005e5666ad639da6a196e85a"
+  "cipherKey": "e0e9a7aab1fc936f18cfac50c78109ce5ea400af005e5666ad639da6a196e85a",
+  "destinationChannelName": "destiny",
+  "destinationChannelUid": "100",
+  "destinationChannelToken": "007eJxTYLgy4e27Yp3LLF+mWiyLjFp6I0VkCoPUyc2XeOs35uyN+9ajwGCZYmRiaWFhYZBqaWxiZmyUZGyRZJBoZpGWaJRmaGZkxOITlNoQyMiwb8cNVkYGCATx2RlSUotLMvMqGRgA/w4hXA==",
+  "sourceChannelToken": "007eJxTYLDf1anZ8Ozuyf3cJq7GjwWcO1kf5xzsaNsl3n982oF9bXMVGCxTjEwsLSwsDFItjU3MjI2SjC2SDBLNLNISjdIMzYyM5HyCUhsCGRlKurYyMzJAIIjPwpCSmpvPwAAASgse4g==",
+  "secondChannelName": "demo2",
+  "secondChannelUid": "100",
+  "secondChannelToken": ""
 }

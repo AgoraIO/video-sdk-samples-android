@@ -93,8 +93,14 @@
             android:label="Stream raw video and audio">
         </activity>
 
+        <activity android:name=".MultipleChannelsActivity"
+            android:label="Live streaming over multiple channels">
+        </activity>
+
+        <activity android:name=".NoiseSuppressionActivity"
+            android:label="AI noise suppression">
+        </activity>
+
     </application>
-
-
 
 </manifest>

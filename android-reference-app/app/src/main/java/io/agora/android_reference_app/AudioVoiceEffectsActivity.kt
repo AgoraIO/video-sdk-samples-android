@@ -30,7 +30,7 @@ class AudioVoiceEffectsActivity : BasicImplementationActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         speakerphoneSwitch = findViewById(R.id.SwitchSpeakerphone)
-        speakerphoneSwitch!!.setOnCheckedChangeListener { buttonView, isChecked ->
+        speakerphoneSwitch!!.setOnCheckedChangeListener { _, isChecked ->
             audioVoiceEffectsManager.setAudioRoute(isChecked)
         }
     }
@@ -48,12 +48,13 @@ class AudioVoiceEffectsActivity : BasicImplementationActivity() {
         audioVoiceEffectsManager.joinChannelWithToken()
     }
 
+    @Suppress("UNUSED_PARAMETER")
     fun audioMixing(view: View) {
         val button: Button =  findViewById(R.id.AudioMixingButton)
         audioPlaying = !audioPlaying
 
         if (audioPlaying) {
-            button.setText(getString(R.string.stop_audio_mixing))
+            button.text = getString(R.string.stop_audio_mixing)
             try {
                 audioVoiceEffectsManager. startMixing(audioFilePath, false, 1, 0)
                 showMessage("Audio playing")
@@ -69,18 +70,22 @@ class AudioVoiceEffectsActivity : BasicImplementationActivity() {
     fun playSoundEffect(view: View) {
         if (playEffectButton == null) playEffectButton = view as Button
 
-        if (soundEffectStatus == 0) { // Stopped
-            audioVoiceEffectsManager.playEffect(soundEffectId, soundEffectFilePath)
-            playEffectButton?.text = getString(R.string.pause_audio_effect)
-            soundEffectStatus = 1
-        } else if (soundEffectStatus == 1) { // Playing
-            audioVoiceEffectsManager.pauseEffect(soundEffectId)
-            soundEffectStatus = 2
-            playEffectButton?.text = getString(R.string.resume_audio_effect)
-        } else if (soundEffectStatus == 2) { // Paused
-            audioVoiceEffectsManager.resumeEffect(soundEffectId)
-            soundEffectStatus = 1
-            playEffectButton?.text  =getString(R.string.pause_audio_effect)
+        when (soundEffectStatus) {
+            0 -> { // Stopped
+                audioVoiceEffectsManager.playEffect(soundEffectId, soundEffectFilePath)
+                playEffectButton?.text = getString(R.string.pause_audio_effect)
+                soundEffectStatus = 1
+            }
+            1 -> { // Playing
+                audioVoiceEffectsManager.pauseEffect(soundEffectId)
+                soundEffectStatus = 2
+                playEffectButton?.text = getString(R.string.resume_audio_effect)
+            }
+            2 -> { // Paused
+                audioVoiceEffectsManager.resumeEffect(soundEffectId)
+                soundEffectStatus = 1
+                playEffectButton?.text  =getString(R.string.pause_audio_effect)
+            }
         }
     }
 
@@ -101,29 +106,29 @@ class AudioVoiceEffectsActivity : BasicImplementationActivity() {
 
         if (voiceEffectIndex == 1) {
             audioVoiceEffectsManager.applyVoiceBeautifierPreset(Constants.CHAT_BEAUTIFIER_MAGNETIC)
-            voiceEffectButton!!.text = "Voice effect: Chat Beautifier"
+            voiceEffectButton!!.text = getString(R.string.voice_effect_chat_beautifier)
         } else if (voiceEffectIndex == 2) {
             audioVoiceEffectsManager.applyVoiceBeautifierPreset(Constants.SINGING_BEAUTIFIER)
-            voiceEffectButton!!.text = "Voice effect: Singing Beautifier"
+            voiceEffectButton!!.text = getString(R.string.voice_effect_singing_beautifier)
         } else if (voiceEffectIndex == 3) {
             // Turn off previous effect
             audioVoiceEffectsManager.applyVoiceBeautifierPreset(Constants.VOICE_BEAUTIFIER_OFF)
             // Modify the timbre using the formantRatio
             // Range is [-1.0, 1.0], [giant, child] default value is 0.
             audioVoiceEffectsManager.applyLocalVoiceFormant(0.6)
-            voiceEffectButton!!.text = "Voice effect: Adjust Formant"
+            voiceEffectButton!!.text = getString(R.string.voice_effect_adjust_formant)
         } else if (voiceEffectIndex == 4) {
             // Remove previous effect
             audioVoiceEffectsManager.applyLocalVoiceFormant(0.0)
             // Apply audio effect preset
             audioVoiceEffectsManager.applyAudioEffectPreset(Constants.VOICE_CHANGER_EFFECT_HULK)
-            voiceEffectButton!!.text = "Audio effect: Hulk"
+            voiceEffectButton!!.text = getString(R.string.audio_effect_hulk)
         } else if (voiceEffectIndex == 5) {
             // Remove previous effect
             audioVoiceEffectsManager.applyAudioEffectPreset(Constants.AUDIO_EFFECT_OFF)
             // Apply voice conversion preset
             audioVoiceEffectsManager.applyVoiceConversionPreset(Constants.VOICE_CHANGER_CARTOON)
-            voiceEffectButton!!.text = "Audio effect: Voice Changer"
+            voiceEffectButton!!.text = getString(R.string.audio_effect_voice_changer)
         } else if (voiceEffectIndex == 6) {
             // Remove previous effect
             audioVoiceEffectsManager.applyVoiceConversionPreset(Constants.VOICE_CONVERSION_OFF)
@@ -132,7 +137,7 @@ class AudioVoiceEffectsActivity : BasicImplementationActivity() {
                 Constants.AUDIO_EQUALIZATION_BAND_FREQUENCY.fromInt(4), 3
             )
             audioVoiceEffectsManager.setVoicePitch(0.5)
-            voiceEffectButton!!.text = "Audio effect: Voice Equalization"
+            voiceEffectButton!!.text = getString(R.string.audio_effect_voice_equalization)
         } else if (voiceEffectIndex > 6) {
             // Remove voice equalization and pitch modification
             audioVoiceEffectsManager.setVoicePitch(1.0)
@@ -140,7 +145,7 @@ class AudioVoiceEffectsActivity : BasicImplementationActivity() {
                 Constants.AUDIO_EQUALIZATION_BAND_FREQUENCY.fromInt(4), 0
             )
             voiceEffectIndex = 0
-            voiceEffectButton!!.text = "Apply voice effect"
+            voiceEffectButton!!.text = getString(R.string.apply_voice_equalization)
         }
     }
 }

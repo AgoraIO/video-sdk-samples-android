@@ -1,20 +1,18 @@
 plugins {
-    id 'com.android.application'
+    id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
 }
 
 android {
-    namespace 'io.agora.android_reference_app'
+    namespace 'io.agora.noise_suppression_manager'
     compileSdk 33
 
     defaultConfig {
-        applicationId "io.agora.android_reference_app"
         minSdk 24
         targetSdk 33
-        versionCode 1
-        versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
     }
 
     buildTypes {
@@ -27,34 +25,15 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-    kotlinOptions {
-        jvmTarget = '1.8'
-    }
 }
 
 dependencies {
     implementation "io.agora.rtc:full-sdk:${project.agoraSDKVersion}"
     implementation project(':agora-manager')
     implementation project(':authentication-workflow')
-    implementation project(':ensure-channel-quality')
-    implementation project(':play-media')
-    implementation project(':product-workflow')
-    implementation project(':cloud-proxy')
-    implementation project(':media-stream-encryption')
-    implementation project(':geofencing')
-    implementation project(':audio-and-voice-effects')
-    implementation project(':spatial-audio')
-    implementation project(':virtual-background')
-    implementation project(':custom-video-and-audio')
-    implementation project(':stream-raw-video-and-audio')
-    implementation project(':live-streaming-over-multiple-channels')
-    implementation project('::ai-noise-suppression')
-
     implementation 'com.squareup.okhttp3:okhttp:4.9.3'
-    implementation 'androidx.core:core-ktx:1.10.1'
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.9.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'

@@ -2,7 +2,6 @@ package io.agora.android_reference_app
 
 import android.view.View
 import android.widget.Button
-import android.widget.FrameLayout
 import io.agora.custom_video_audio_manager.CustomVideoAudioManager
 
 class CustomVideoAudioActivity : BasicImplementationActivity() {
@@ -26,13 +25,14 @@ class CustomVideoAudioActivity : BasicImplementationActivity() {
         customVideoAudioManager.joinChannelWithToken()
     }
 
+    @Suppress("UNUSED_PARAMETER")
     fun pushVideo(view: View) {
         customVideoAudioManager.setupCustomVideo()
         // Set up a preview TextureView for the custom video
         val previewTextureView = customVideoAudioManager.customLocalVideoPreview()
 
         // Show the preview TextureView
-        previewTextureView!!.visibility = View.VISIBLE
+        previewTextureView.visibility = View.VISIBLE
 
         // Add the TextureView to the local video FrameLayout
         val videoFrame = videoFrameMap[agoraManager.localUid]

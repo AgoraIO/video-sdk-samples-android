@@ -110,6 +110,7 @@ class CallQualityActivity : BasicImplementationActivity() {
         overlayText = null
     }
 
+    @Suppress("UNUSED_PARAMETER")
     fun echoTest(view: View) {
         if (!isEchoTestRunning) {
             btnEchoTest!!.setText(R.string.stop_echo_test)

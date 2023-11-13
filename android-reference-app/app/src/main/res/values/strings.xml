@@ -10,10 +10,10 @@
     <string name="audience">Audience</string>
     <string name="start_echo_test">Start Echo Test</string>
     <string name="stop_echo_test">Stop Echo Test</string>
-    <string name="product">Product:</string>
+    <string name="product">Select a product:</string>
     <string name="open_media_file">Open Media File</string>
     <string name="play_media_file">" Play Media File"</string>
-    <string name="opening_media_file">Opening Media File...</string>
+    <string name="opening_media_file">Opening Media File…</string>
     <string name="pause">Pause media</string>
     <string name="resume">Resume</string>
     <string name="mute">Mute</string>
@@ -36,4 +36,16 @@
     <string name="start_pushing_custom_video">Start pushing custom video</string>
     <string name="zoom_in">Zoom In</string>
     <string name="zoom_out">Zoom Out</string>
+    <string name="start_channel_media_relay">Start channel media relay</string>
+    <string name="stop_channel_media_relay">Stop Channel Media Relay</string>
+    <string name="connecting_">Connecting…</string>
+    <string name="leave_second_channel">Leave Second Channel</string>
+    <string name="join_second_channel">Join Second Channel</string>
+    <string name="voice_effect_chat_beautifier">Voice effect: Chat Beautifier</string>
+    <string name="voice_effect_singing_beautifier">Voice effect: Singing Beautifier</string>
+    <string name="voice_effect_adjust_formant">Voice effect: Adjust Formant</string>
+    <string name="audio_effect_hulk">Audio effect: Hulk</string>
+    <string name="audio_effect_voice_changer">Audio effect: Voice Changer</string>
+    <string name="audio_effect_voice_equalization">Audio effect: Voice Equalization</string>
+    <string name="apply_voice_equalization">Apply voice effect</string>
 </resources>
