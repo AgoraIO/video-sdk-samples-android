@@ -23,7 +23,7 @@ class MainActivity : AppCompatActivity() {
         setupProductSpinner()
 
         recyclerView = findViewById(R.id.recyclerView)
-        setupRecyclerView()
+        setupRecyclerView(selectedProduct)
     }
 
     private fun setupProductSpinner() {
@@ -43,6 +43,7 @@ class MainActivity : AppCompatActivity() {
         productSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 selectedProduct = AgoraManager.ProductName.values()[position]
+                setupRecyclerView(selectedProduct)
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -62,7 +63,7 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    private fun setupRecyclerView() {
+    private fun setupRecyclerView(selectedProduct: AgoraManager.ProductName) {
         // Sample list of items
         val itemList = listOf(
             ListItem("GET STARTED", ListItem.ExampleId.HEADER),
@@ -86,8 +87,31 @@ class MainActivity : AppCompatActivity() {
             ListItem("Virtual background", ListItem.ExampleId.VIRTUAL_BACKGROUND),
             ListItem("AI noise suppression", ListItem.ExampleId.AI_NOISE_SUPPRESSION),
         )
+
+        // Filter the list based on the selected product
+        val filteredItemList = when (selectedProduct) {
+            AgoraManager.ProductName.VIDEO_CALLING -> {
+                itemList.filter { item ->
+                    item.id !in setOf(
+                        ListItem.ExampleId.LIVE_STREAMING_OVER_MULTIPLE_CHANNELS
+                    )
+                }
+            }
+            AgoraManager.ProductName.VOICE_CALLING -> {
+                itemList.filter { item ->
+                    item.id !in setOf(
+                        ListItem.ExampleId.LIVE_STREAMING_OVER_MULTIPLE_CHANNELS,
+                        ListItem.ExampleId.VIRTUAL_BACKGROUND,
+                    )
+                }
+            }
+            else -> { // Interactive Live Streaming and Broadcast streaming
+                itemList
+            }
+        }
+
         // Set up the adapter with the list of items and click listener
-        val adapter = ItemListAdapter(itemList, object : ItemListAdapter.ItemClickListener {
+        val adapter = ItemListAdapter(filteredItemList, object : ItemListAdapter.ItemClickListener {
             override fun onItemClick(item: ListItem) {
                 when (item.id) {
                     ListItem.ExampleId.SDK_QUICKSTART -> launchActivity(BasicImplementationActivity::class.java)

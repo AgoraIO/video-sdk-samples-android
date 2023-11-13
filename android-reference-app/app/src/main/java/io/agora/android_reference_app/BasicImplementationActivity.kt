@@ -19,6 +19,7 @@ open class BasicImplementationActivity : AppCompatActivity() {
     protected lateinit var radioGroup: RadioGroup
     protected lateinit var videoFrameMap: MutableMap<Int, FrameLayout?>
     protected var surfaceViewMain: SurfaceView? = null
+    protected var forceShowRemoteViews = false
 
     // The overridable UI layout for this activity
     protected open val layoutResourceId: Int
@@ -130,25 +131,7 @@ open class BasicImplementationActivity : AppCompatActivity() {
             }
 
             override fun onRemoteUserLeft(remoteUid: Int) {
-                runOnUiThread {
-                    // Get the FrameLayout in which the video was displayed
-                    val frameLayoutOfUser = videoFrameMap[remoteUid]
-
-                    // If the video was in the main frame swap it with the local frame
-                    if (frameLayoutOfUser!!.id == mainFrame.id) {
-                        if (agoraManager.currentProduct === ProductName.VIDEO_CALLING) {
-                            swapVideo(videoFrameMap[agoraManager.localUid]!!.id)
-                            // Remove the FrameLayout from the LinearLayout
-                            val frameLayoutToDelete = videoFrameMap[remoteUid]
-                            containerLayout.removeView(frameLayoutToDelete)
-                        } else {
-                            mainFrame.removeView(surfaceViewMain)
-                        }
-                    } else {
-                        containerLayout.removeView(frameLayoutOfUser)
-                    }
-                    videoFrameMap.remove(remoteUid)
-                }
+                removeUserView(remoteUid)
             }
 
             override fun onJoinChannelSuccess(channel: String?, uid: Int, elapsed: Int) {
@@ -181,7 +164,7 @@ open class BasicImplementationActivity : AppCompatActivity() {
     open fun showRemoteVideo(remoteUid: Int, surfaceView: SurfaceView?) {
         runOnUiThread {
             val targetLayout: FrameLayout?
-            if (agoraManager.currentProduct === ProductName.VIDEO_CALLING) {
+            if (agoraManager.currentProduct === ProductName.VIDEO_CALLING || forceShowRemoteViews) {
                 // Create a new FrameLayout
                 targetLayout = FrameLayout(applicationContext)
                 // Set an onclick listener for video swapping
@@ -209,6 +192,30 @@ open class BasicImplementationActivity : AppCompatActivity() {
             // Associate the remoteUid with the FrameLayout for use in swapping
             targetLayout.tag = remoteUid
             videoFrameMap[remoteUid] = targetLayout
+        }
+    }
+
+    open fun removeUserView(remoteUid: Int) {
+        runOnUiThread {
+            // Get the FrameLayout in which the video was displayed
+            val frameLayoutOfUser: FrameLayout? = videoFrameMap[remoteUid]
+
+            if (frameLayoutOfUser == null) return@runOnUiThread
+
+            // If the video was in the main frame swap it with the local frame
+            if (frameLayoutOfUser!!.id == mainFrame.id) {
+                if (agoraManager.currentProduct === ProductName.VIDEO_CALLING || forceShowRemoteViews) {
+                    swapVideo(videoFrameMap[agoraManager.localUid]!!.id)
+                    // Remove the FrameLayout from the LinearLayout
+                    val frameLayoutToDelete = videoFrameMap[remoteUid]
+                    containerLayout.removeView(frameLayoutToDelete)
+                } else {
+                    mainFrame.removeView(surfaceViewMain)
+                }
+            } else {
+                containerLayout.removeView(frameLayoutOfUser)
+            }
+            videoFrameMap.remove(remoteUid)
         }
     }
 

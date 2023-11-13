@@ -10,10 +10,10 @@
     <string name="audience">Audience</string>
     <string name="start_echo_test">Start Echo Test</string>
     <string name="stop_echo_test">Stop Echo Test</string>
-    <string name="product">Product:</string>
+    <string name="product">Select a product:</string>
     <string name="open_media_file">Open Media File</string>
     <string name="play_media_file">" Play Media File"</string>
-    <string name="opening_media_file">Opening Media File...</string>
+    <string name="opening_media_file">Opening Media File…</string>
     <string name="pause">Pause media</string>
     <string name="resume">Resume</string>
     <string name="mute">Mute</string>
@@ -38,8 +38,7 @@
     <string name="zoom_out">Zoom Out</string>
     <string name="start_channel_media_relay">Start channel media relay</string>
     <string name="stop_channel_media_relay">Stop Channel Media Relay</string>
-    <string name="connecting_">Connecting...</string>
-    <string name="stream_to_multiple_channels">Stream to multiple channels</string>
+    <string name="connecting_">Connecting…</string>
     <string name="leave_second_channel">Leave Second Channel</string>
     <string name="join_second_channel">Join Second Channel</string>
     <string name="voice_effect_chat_beautifier">Voice effect: Chat Beautifier</string>

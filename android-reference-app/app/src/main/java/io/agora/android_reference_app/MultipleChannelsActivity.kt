@@ -1,5 +1,6 @@
 package io.agora.android_reference_app
 
+import android.os.Bundle
 import android.view.SurfaceView
 import android.view.View
 import android.widget.Button
@@ -22,8 +23,15 @@ class MultipleChannelsActivity : BasicImplementationActivity() {
         // Set up a listener for updating the UI
         agoraManager.setListener(agoraManagerListener)
 
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        forceShowRemoteViews = true
+        super.onCreate(savedInstanceState)
+
         channelMediaButton = findViewById(R.id.mediaRelayButton)
         secondChannelButton = findViewById(R.id.secondChannelButton)
+        findViewById<View>(R.id.smallVideosView).visibility = View.VISIBLE
     }
 
     override fun join() {
@@ -76,6 +84,10 @@ class MultipleChannelsActivity : BasicImplementationActivity() {
                 // Display remote video
                 showMessage("A remote user joined the second channel")
                 showRemoteVideo(eventArgs["uid"] as Int, eventArgs["surfaceView"] as SurfaceView?)
+            }
+            "onUserOffline2" -> {
+                showMessage("A remote user left the second channel")
+                removeUserView(eventArgs["uid"] as Int)
             }
         }
     }

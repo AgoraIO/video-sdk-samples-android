@@ -22,9 +22,9 @@ class MultipleChannelsManager(context: Context?) : AuthenticationManager(context
     // Multi channel streaming variables
     private lateinit var agoraEngineEx: RtcEngineEx
     private var rtcSecondConnection: RtcConnection? = null
-    private val secondChannelName = "demo2"// name of the second channel"
-    private val secondChannelUid = 100 // Uid for the second channel
-    private val secondChannelToken = "007eJxTYFDaYHCJ/f/xadUWvypW2aw/c9l0VsAModXvdh1z3WfXv+mqAkOquYWZoZmFsZGJuZlJUrKBBVDA3MjEIjkpzcQ4NcXw6JuA1IZARgaTkHYmRgZGBhYgBvGZwCQzmGQBk6wMKam5+UYMDABghSPM" // Access token for the second channel
+    private var secondChannelName: String // Name of the second channel"
+    private var secondChannelUid = 0 // Uid for the second channel
+    private var secondChannelToken: String  // Access token for the second channel
     private var isSecondChannelJoined = false // Track connection state of the second channel
 
     init {
@@ -33,6 +33,10 @@ class MultipleChannelsManager(context: Context?) : AuthenticationManager(context
         destinationChannelUid = config!!.optInt("destinationChannelUid")
         destinationChannelToken = config!!.optString("destinationChannelToken")
         sourceChannelToken = config!!.optString("sourceChannelToken")
+
+        secondChannelName = config!!.optString("secondChannelName")
+        secondChannelUid = config!!.optInt("secondChannelUid")
+        secondChannelToken = config!!.optString("secondChannelToken")
     }
 
     override fun setupAgoraEngine(): Boolean {
@@ -137,12 +141,33 @@ class MultipleChannelsManager(context: Context?) : AuthenticationManager(context
             rtcSecondConnection = RtcConnection()
             rtcSecondConnection!!.channelId = secondChannelName
             rtcSecondConnection!!.localUid = secondChannelUid
-            agoraEngineEx.joinChannelEx(
-                secondChannelToken,
-                rtcSecondConnection,
-                mediaOptions,
-                secondChannelEventHandler
-            )
+
+            if (isValidURL(serverUrl)) {
+                fetchToken(channelName, secondChannelUid, object : TokenCallback {
+                    override fun onTokenReceived(rtcToken: String?) {
+                        // Handle the received rtcToken
+                        if (rtcToken != null) secondChannelToken = rtcToken
+                        agoraEngineEx.joinChannelEx(
+                            secondChannelToken,
+                            rtcSecondConnection,
+                            mediaOptions,
+                            secondChannelEventHandler
+                        )
+                    }
+
+                    override fun onError(errorMessage: String) {
+                        // Handle the error
+                        sendMessage("Error: $errorMessage")
+                    }
+                })
+            } else {
+                agoraEngineEx.joinChannelEx(
+                    secondChannelToken,
+                    rtcSecondConnection,
+                    mediaOptions,
+                    secondChannelEventHandler
+                )
+            }
         }
     }
 
@@ -185,6 +210,12 @@ class MultipleChannelsManager(context: Context?) : AuthenticationManager(context
                 eventArgs["uid"] = uid
                 eventArgs["surfaceView"] = remoteSurfaceView
                 mListener?.onEngineEvent("onUserJoined2", eventArgs)
+            }
+
+            override fun onUserOffline(uid: Int, reason: Int) {
+                val eventArgs = mutableMapOf<String, Any>()
+                eventArgs["uid"] = uid
+                mListener?.onEngineEvent("onUserOffline2", eventArgs)
             }
         }
 }

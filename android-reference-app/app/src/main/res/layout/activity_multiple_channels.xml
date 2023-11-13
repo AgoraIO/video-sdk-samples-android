@@ -30,7 +30,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/mediaRelayButton"
             android:onClick="joinSecondChannel"
-            android:text="@string/stream_to_multiple_channels" />
+            android:text="@string/join_second_channel" />
 
     </RelativeLayout>
 
