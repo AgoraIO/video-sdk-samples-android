@@ -9,9 +9,9 @@
   "cipherKey": "e0e9a7aab1fc936f18cfac50c78109ce5ea400af005e5666ad639da6a196e85a",
   "destinationChannelName": "destiny",
   "destinationChannelUid": "100",
-  "destinationChannelToken": "007eJxTYBC2vKEpavHC2cq3581bBb147g8329NezpC+aix26Oy9LWoKDKnmFmaGZhbGRibmZiZJyQYWQAFzIxOL5KQ0E+PUFMPlxwJSGwIZGSTldjEyMjAysAAxiM8EJpnBJAuYZGdISS0uycyrZGAAAHoeIes=",
-  "sourceChannelToken": "007eJxTYAiptL0m/aD5N5POv/ich6V6judd1bWsU8W07cwVpVdWZSswpJpbmBmaWRgbmZibmSQlG1gABcyNTCySk9JMjFNTDJ2OBaQ2BDIyFDjMZmRkYGRgAWIQnwlMMoNJFiiZkpqbz8AAAD5uHfw=",
+  "destinationChannelToken": "007eJxTYLgy4e27Yp3LLF+mWiyLjFp6I0VkCoPUyc2XeOs35uyN+9ajwGCZYmRiaWFhYZBqaWxiZmyUZGyRZJBoZpGWaJRmaGZkxOITlNoQyMiwb8cNVkYGCATx2RlSUotLMvMqGRgA/w4hXA==",
+  "sourceChannelToken": "007eJxTYLDf1anZ8Ozuyf3cJq7GjwWcO1kf5xzsaNsl3n982oF9bXMVGCxTjEwsLSwsDFItjU3MjI2SjC2SDBLNLNISjdIMzYyM5HyCUhsCGRlKurYyMzJAIIjPwpCSmpvPwAAASgse4g==",
   "secondChannelName": "demo2",
-  "secondChannelUid": "200",
+  "secondChannelUid": "100",
   "secondChannelToken": ""
 }

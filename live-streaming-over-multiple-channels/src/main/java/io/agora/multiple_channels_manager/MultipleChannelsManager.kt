@@ -61,11 +61,15 @@ class MultipleChannelsManager(context: Context?) : AuthenticationManager(context
     }
 
     fun channelRelay() {
+        if (agoraEngine == null) {
+            return
+        }
+
         if (mediaRelaying) {
             agoraEngine!!.stopChannelMediaRelay()
         } else {
-            // Configure the source channel information.
-            val srcChannelInfo = ChannelMediaInfo(channelName, sourceChannelToken, 0)
+            // Configure the source channel information
+           val srcChannelInfo = ChannelMediaInfo(channelName, sourceChannelToken, 0)
             val mediaRelayConfiguration = ChannelMediaRelayConfiguration()
             mediaRelayConfiguration.setSrcChannelInfo(srcChannelInfo)
 
@@ -143,7 +147,7 @@ class MultipleChannelsManager(context: Context?) : AuthenticationManager(context
             rtcSecondConnection!!.localUid = secondChannelUid
 
             if (isValidURL(serverUrl)) {
-                fetchToken(channelName, secondChannelUid, object : TokenCallback {
+                fetchToken(secondChannelName, secondChannelUid, object : TokenCallback {
                     override fun onTokenReceived(rtcToken: String?) {
                         // Handle the received rtcToken
                         if (rtcToken != null) secondChannelToken = rtcToken
