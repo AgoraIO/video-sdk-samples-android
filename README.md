@@ -15,23 +15,23 @@ This reference app includes several samples that illustrate the functionality an
 
 **Get Started**
 - [SDK quickstart](./agora-manager)
-- [Secure authentication with tokens](authentication-workflow)
+- [Secure authentication with tokens](./authentication-workflow)
 
 **Develop**
-- [Call quality best practice](ensure-channel-quality)
-- [Stream media to a channel](play-media)
-- [Screen share, volume control, and mute](product-workflow)
-- [Connect through restricted networks with Cloud Proxy](cloud-proxy)
-- [Secure channel encryption](media-stream-encryption)
-- [Custom video and audio sources](custom-video-and-audio)
-- [Raw video and audio processing](stream-raw-audio-and-video)
-- [Live streaming over multiple channels]()
+- [Call quality best practice](./ensure-channel-quality)
+- [Stream media to a channel](./play-media)
+- [Screen share, volume control, and mute](./product-workflow)
+- [Connect through restricted networks with Cloud Proxy](./cloud-proxy)
+- [Secure channel encryption](./media-stream-encryption)
+- [Custom video and audio sources](./custom-video-and-audio)
+- [Raw video and audio processing](./stream-raw-video-and-audio)
+- [Live streaming over multiple channels](./live-streaming-over-multiple-channels)
   
 **Integrate Features**
-- [Audio and voice effects]()
-- [3D Spatial audio]()
-- [Geofencing](geofencing)
-- [Virtual Background]()
+- [Audio and voice effects](./audio-and-voice-effects)
+- [3D Spatial audio](./spatial-audio)
+- [Geofencing](./geofencing)
+- [Virtual Background](./virtual-background)
 - [AI noise suppression](./ai-noise-suppression)
 
 To view the UI implementation, open the relevant Activity Class file [here]( android-reference-app/app/src/main/java/io/agora/android_reference_app).
