@@ -1,8 +1,8 @@
 # Agora Video SDK for Android reference app
 
-This app demonstrates the use of [Agora's Video SDK](https://docs.agora.io/en/video-calling/get-started/get-started-sdk) for real-time audio and video communication. It is a robust and comprehensive documentation reference app for Android, designed to enhance your productivity and understanding. It's built to be flexible, easily extensible, and beginner-friendly.
+This reference app demonstrates the use of [Agora's Video SDK](https://docs.agora.io/en/video-calling/get-started/get-started-sdk) for real-time audio and video communication. It is a robust and comprehensive documentation reference app for Android, designed to enhance your productivity and understanding. It's built to be flexible, easily extensible, and beginner-friendly.
 
-Clone the repo, run and test the samples, and use the code in your own project. Enjoy.
+Clone the repo, run and test the samples, and use the code in your own projects. Enjoy!
 
 - [Samples](#samples-)
 - [Prerequisites](#prerequisites)
@@ -13,20 +13,28 @@ Clone the repo, run and test the samples, and use the code in your own project. 
 
 This reference app includes several samples that illustrate the functionality and features of Agora Video and Voice SDKs. Each sample is self-contained and the relevant code can be found in its own folder in the root directory. For more information about each sample, see:
 
+**Get Started**
 - [SDK quickstart](./agora-manager)
 - [Secure authentication with tokens](authentication-workflow)
-- [Call quality best practice](ensure-channel-quality)
 
-- [Connect through restricted networks with Cloud Proxy](cloud-proxy)
+**Develop**
+- [Call quality best practice](ensure-channel-quality)
 - [Stream media to a channel](play-media)
+- [Screen share, volume control, and mute](product-workflow)
+- [Connect through restricted networks with Cloud Proxy](cloud-proxy)
 - [Secure channel encryption](media-stream-encryption)
-- [Screen share, volume control and mute](product-workflow)
 - [Custom video and audio sources](custom-video-and-audio)
 - [Raw video and audio processing](stream-raw-audio-and-video)
+- [Live streaming over multiple channels]()
+  
+**Integrate Features**
+- [Audio and voice effects]()
+- [3D Spatial audio]()
 - [Geofencing](geofencing)
+- [Virtual Background]()
+- [AI noise suppression](./ai-noise-suppression)
 
 To view the UI implementation, open the relevant Activity Class file [here]( android-reference-app/app/src/main/java/io/agora/android_reference_app).
-
 
 ## Prerequisites
 
