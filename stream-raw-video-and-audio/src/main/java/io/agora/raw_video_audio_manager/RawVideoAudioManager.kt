@@ -116,31 +116,35 @@ class RawVideoAudioManager(context: Context?) : AuthenticationManager(context) {
         }
     }
 
+    private fun modifyVideoBuffer(videoFrame: VideoFrame) {
+        if (isZoomed) {
+            // Read the videoFrame buffer
+            var buffer = videoFrame.buffer
+
+            val w = buffer.width
+            val h = buffer.height
+            val cropX = (w - 320) / 2
+            val cropY = (h - 240) / 2
+            val cropWidth = 320
+            val cropHeight = 240
+            val scaleWidth = 320
+            val scaleHeight = 240
+
+            // modify the buffer
+            buffer = buffer.cropAndScale(
+                cropX, cropY,
+                cropWidth, cropHeight,
+                scaleWidth, scaleHeight
+            )
+
+            // replace the videoFrame buffer with the modified buffer
+            videoFrame.replaceBuffer(buffer, 270, videoFrame.timestampNs)
+        }
+    }
+
     private val iVideoFrameObserver: IVideoFrameObserver = object : IVideoFrameObserver {
         override fun onCaptureVideoFrame(sourceType: Int, videoFrame: VideoFrame): Boolean {
-            if (isZoomed) {
-                // Read the videoFrame buffer
-                var buffer = videoFrame.buffer
-
-                val w = buffer.width
-                val h = buffer.height
-                val cropX = (w - 320) / 2
-                val cropY = (h - 240) / 2
-                val cropWidth = 320
-                val cropHeight = 240
-                val scaleWidth = 320
-                val scaleHeight = 240
-
-                // modify the buffer
-                buffer = buffer.cropAndScale(
-                    cropX, cropY,
-                    cropWidth, cropHeight,
-                    scaleWidth, scaleHeight
-                )
-
-                // replace the videoFrame buffer with the modified buffer
-                videoFrame.replaceBuffer(buffer, 270, videoFrame.timestampNs)
-            }
+            modifyVideoBuffer(videoFrame)
             return true
         }
 
