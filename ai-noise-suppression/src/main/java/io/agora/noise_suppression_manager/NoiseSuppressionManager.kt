@@ -16,8 +16,8 @@ class NoiseSuppressionManager(context: Context?) : AuthenticationManager(context
         val mode = 2
         // Choose a noise suppression mode from the following:
         // 0: (Default) Balanced noise reduction mode
-        // 1: Strong noise reduction mode
-        // 2: Low latency and strong noise reduction mode
+        // 1: Aggressive mode
+        // 2: Aggressive mode with low latency
         agoraEngine!!.setAINSMode(true, mode)
 
         return result
