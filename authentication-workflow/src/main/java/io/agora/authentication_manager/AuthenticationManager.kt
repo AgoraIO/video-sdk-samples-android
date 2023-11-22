@@ -8,6 +8,7 @@ import okhttp3.Request.*
 import org.json.JSONObject
 import org.json.JSONException
 import android.content.Context
+import android.util.Log
 import java.io.IOException
 import java.net.MalformedURLException
 import java.net.URL
@@ -70,6 +71,20 @@ open class AuthenticationManager(context: Context?) : AgoraManager(
 
             override fun onConnectionStateChanged(state: Int, reason: Int) {
                 connectionStateChanged(state, reason)
+            }
+
+            override fun onEncryptionError(errorType: Int) {
+                Log.d("Encryption error", errorType.toString())
+            }
+
+            override fun onProxyConnected(
+                channel: String?,
+                uid: Int,
+                proxyType: Int,
+                localProxyIp: String?,
+                elapsed: Int
+            ) {
+                // Connected to proxyType
             }
         }
 

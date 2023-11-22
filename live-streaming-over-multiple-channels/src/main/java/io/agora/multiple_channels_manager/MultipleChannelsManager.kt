@@ -82,7 +82,6 @@ class MultipleChannelsManager(context: Context?) : AuthenticationManager(context
         }
     }
 
-    // Listen for the event that a token is about to expire
     override val iRtcEngineEventHandler: IRtcEngineEventHandler
         get() = object : IRtcEngineEventHandler() {
             override fun onChannelMediaRelayStateChanged(state: Int, code: Int) {

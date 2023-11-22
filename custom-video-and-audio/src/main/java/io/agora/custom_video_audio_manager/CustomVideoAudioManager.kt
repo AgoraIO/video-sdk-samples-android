@@ -20,7 +20,6 @@ import java.io.InputStream
 
 class CustomVideoAudioManager(context: Context?) : AuthenticationManager(context) {
     // Custom video parameters
-    // private var previewTextureView: TextureView? = null
     private lateinit var previewTextureView: TextureView
     private var previewSurfaceTexture: SurfaceTexture? = null
 
