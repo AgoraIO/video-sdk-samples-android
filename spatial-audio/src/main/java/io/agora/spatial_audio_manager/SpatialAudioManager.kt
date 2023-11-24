@@ -35,7 +35,7 @@ class SpatialAudioManager(context: Context?) : AuthenticationManager(context) {
         spatialAudioEngine?.updateSelfPosition(pos, forward, right, up)
     }
 
-    fun updateRemoteSpatialAudioPosition(remoteUid: Int, front: Float, right: Float, top: Float) { //View view){
+    fun updateRemoteSpatialAudioPosition(remoteUid: Int, front: Float, right: Float, top: Float) { 
         // Define a remote user's spatial position
         val positionInfo = RemoteVoicePositionInfo()
         // The three values represent the front, right, and top coordinates
