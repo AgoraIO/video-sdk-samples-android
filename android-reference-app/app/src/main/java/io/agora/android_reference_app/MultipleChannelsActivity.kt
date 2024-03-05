@@ -57,7 +57,7 @@ class MultipleChannelsActivity : BasicImplementationActivity() {
                     }
                     3 -> {
                         if (eventArgs["code"] == 2) {
-                            showMessage("No server response. Make sure that co-hosting token authentication has been enabled for your project.")
+                            showMessage("No server response. Make sure that channel media relay service has been enabled for your project.")
                         } else {
                             showMessage("Channel media relay failure. Error code: ${eventArgs["code"]}")
                         }
